@@ -14,6 +14,8 @@ class Account extends Model
     protected $fillable = [
         'email',
         'name',
+        'login_type',
+        'login_type_id'
     ];
 
     public $timestamps = false;

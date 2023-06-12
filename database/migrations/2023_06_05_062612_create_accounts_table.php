@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('name');
+            $table->string('login_type')->nullable();
+            $table->string('login_type_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

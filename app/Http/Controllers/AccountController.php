@@ -115,42 +115,61 @@ class AccountController extends Controller
 
 
     public function redirectToGoogle(){
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
 
     public function handleGoogleCallback(){
         try{
-            $user = Socialite::driver('google')->user();
+            $user = Socialite::driver('google')->stateless()->user();
         }catch(\Exception $e){
             return redirect('/login');
         }
 
         $existingAccount = Account::where('email', $user->email)->first();
-        $existingUser = User::where('account_id', $existingAccount->id)->first();
+        if($existingAccount){
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
 
-        if($existingUser){
-            auth()->login($existingUser, true);
         }else{
-            $newAccount_id = Account::insertGetId([
+            $existingAccount = Account::create([
                 'email' => $user->email,
                 'name' => $user->name,
+                'login_type' => "google",
+                'login_type_id' => $user->id,
+                'created_at' => Carbon::now(),
             ]);
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }
+       
+        if($existingUser){
+            auth()->login($existingUser, true);
+            
+            return response([
+                'user' => $existingUser,
+                'token' => $user->token,
+                'message' => "Sign-in with Google Successful"
+            ],200);
+
+        }else{
 
             $full_name = explode(" ", $user->name);
-            $newUser = User::new([
-                'account_id' => $newAccount_id,
+            $newUser = User::create([
+                'account_id' => $existingAccount->id,
                 'first_name' => $full_name[0],
                 'last_name' => $full_name[1],
+                'email' => $user->email,
+                'password' => Hash::make("password"),
+                'created_at' => Carbon::now(),
             ]);
 
             $newUser->save();
-
             auth()->login($newUser, true);
+
+            return response([
+                'user' => $newUser,
+                'token' => $user->token,
+                'message' => "Sign-in with Google Successful"
+            ],200);
         }
-        return response([
-            'user' => $newUser,
-            'message' => "Sign-in with Google Successful"
-        ],200);
     }
 }
