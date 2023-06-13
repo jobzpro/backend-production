@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Auth\Events\Registered;
 
 class AccountController extends Controller
 {
@@ -43,6 +44,8 @@ class AccountController extends Controller
             'password' => Hash::make($data['password']),
             'created_at' => Carbon::now(),
         ]);
+
+        event(new Registered($user));
 
         $token = $user->createToken('API Token')->accessToken;
 
@@ -171,5 +174,181 @@ class AccountController extends Controller
                 'message' => "Sign-in with Google Successful"
             ],200);
         }
+    }
+
+    public function redirectToApple(){
+        return Socialite::driver('apple')->stateless()->redirect();
+    }
+
+    public function handleAppleCallback(){
+        try{
+            $user = Socialite::driver('apple')->stateless()->user();
+        }catch(\Exception $e){
+            return redirect('/login');
+        }
+
+        $existingAccount = Account::where('email', '=', $user->email)->first();
+
+        if($existingAccount){
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }else{
+            $existingAccount = Account::create([
+                'email' => $user->email,
+                'name' => $user->name,
+                'login_type' => "apple",
+                'login_type_id' => $user->id,
+                'created_at' => Carbon::now(),
+            ]);
+
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }
+
+        if($existingUser){
+            auth()->login($existingUser,true);
+
+            return response([
+                'user' => $existingUser,
+                'token' => $user->token,
+                'messsage' => 'Sign-in with Apple Successful'
+            ],200);
+        }else{
+
+            $full_name = explode(" ", $user->name);
+            $newUser = User::create([
+                'account_id' => $existingAccount->id,
+                'first_name' => $full_name[0],
+                'last_name' => $full_name[1],
+                'email' => $user->email,
+                'password' => Hash::make("password"),
+                'created_at' => Carbon::now(),
+            ]);
+
+            $newUser->save();
+            auth()->login($newUser, true);
+
+            return response([
+                'user' => $newUser,
+                'token' => $user->token,
+                'message' => "Sign-in with Apple Successful"
+            ],200);
+        }
+    }
+
+
+    public function redirectToLinkedIn(){
+        return Socialite::driver('linkedin')->stateless()->redirect();
+    }
+
+    public function handleLinkedInCallback(){
+        try{
+            $user = Socialite::driver('linkedin')->stateless()->user();
+        }catch(\Exception $e){
+            return redirect('/login');
+        }
+
+        $existingAccount = Account::where('email', '=', $user->email)->first();
+
+        if($existingAccount){
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }else{
+            $existingAccount = Account::create([
+                'email' => $user->email,
+                'name' => $user->name,
+                'login_type' => "linkedin",
+                'login_type_id' => $user->id,
+                'created_at' => Carbon::now(),
+            ]);
+
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }
+
+        if($existingUser){
+            auth()->login($existingUser,true);
+
+            return response([
+                'user' => $existingUser,
+                'token' => $user->token,
+                'messsage' => 'Sign-in with LinkedIn Successful'
+            ],200);
+        }else{
+
+            $full_name = explode(" ", $user->name);
+            $newUser = User::create([
+                'account_id' => $existingAccount->id,
+                'first_name' => $full_name[0],
+                'last_name' => $full_name[1],
+                'email' => $user->email,
+                'password' => Hash::make("password"),
+                'created_at' => Carbon::now(),
+            ]);
+
+            $newUser->save();
+            auth()->login($newUser, true);
+
+            return response([
+                'user' => $newUser,
+                'token' => $user->token,
+                'message' => "Sign-in with LinkedIn Successful"
+            ],200);
+        } 
+    }
+
+
+    public function redirectToFacebook(){
+        return Socialite::driver('facebook')->stateless()->redirect();
+    }
+
+    public function handleFacebookCallback(){
+        try{
+            $user = Socialite::driver('facebook')->stateless()->user();
+        }catch(\Exception $e){
+            return redirect('/login');
+        }
+
+        $existingAccount = Account::where('email', '=', $user->email)->first();
+
+        if($existingAccount){
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }else{
+            $existingAccount = Account::create([
+                'email' => $user->email,
+                'name' => $user->name,
+                'login_type' => "facebook",
+                'login_type_id' => $user->id,
+                'created_at' => Carbon::now(),
+            ]);
+
+            $existingUser = User::where('account_id', $existingAccount->id)->first();
+        }
+
+        if($existingUser){
+            auth()->login($existingUser,true);
+
+            return response([
+                'user' => $existingUser,
+                'token' => $user->token,
+                'messsage' => 'Sign-in with Facebook Successful'
+            ],200);
+        }else{
+
+            $full_name = explode(" ", $user->name);
+            $newUser = User::create([
+                'account_id' => $existingAccount->id,
+                'first_name' => $full_name[0],
+                'last_name' => $full_name[1],
+                'email' => $user->email,
+                'password' => Hash::make("password"),
+                'created_at' => Carbon::now(),
+            ]);
+
+            $newUser->save();
+            auth()->login($newUser, true);
+
+            return response([
+                'user' => $newUser,
+                'token' => $user->token,
+                'message' => "Sign-in with Facebook Successful"
+            ],200);
+        } 
     }
 }

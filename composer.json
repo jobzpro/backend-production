@@ -11,6 +11,7 @@
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.6",
+        "laravel/telescope": "^4.14",
         "laravel/tinker": "^2.8"
     },
     "require-dev": {
@@ -64,5 +65,12 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+
+    "post-install-cmd": [
+        "php artisan clear-compiled",
+        "chmod -R 777 storage",
+        "php artisan passport:keys"
+    ]
+
 }
