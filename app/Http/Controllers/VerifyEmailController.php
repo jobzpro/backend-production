@@ -31,4 +31,13 @@ class VerifyEmailController extends Controller
         ],200);
     }
 
+
+    public function resendEmail(Request $request){
+        $request->user()->sendEmailVerificationNotification();
+
+        return response([
+            'message' => "Verification has been sent."
+        ],200);
+    }
+
 }

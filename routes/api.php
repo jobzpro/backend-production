@@ -43,16 +43,15 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
         Route::get('/callback', 'handleLinkedInCallback');
     });
 
+    Route::post('/forget-password', 'resetPasswordRequest')->middleware('guest')->name('password.email');
+    Route::post('/password-reset', 'resetPassword')->middleware('guest')->name('password.reset');
+
 
 });
 
 Route::prefix('/email/verify')->controller(VerifyEmailController::class)->group(function(){
     Route::get('/{id}/{hash}', '__invoke')->middleware(['signed', 'throttle:6.1'])->name('verification.verify');
-    Route::post('/resend', function(Request $request){
-        $request->user()->sendEmailVerificationNotification();
-        return back()->with('message', 'Verification link sent!');
-    })->middleware('auth:api')->name('verification.send');
-
+    Route::post('/resend', 'resendEmail')->middleware('auth:api')->name('verification.send');
     Route::get('/success', 'successVerified');
     Route::get('/already-success', 'alreadyVerified');
 });

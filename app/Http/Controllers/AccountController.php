@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\User;
+use App\Models\PasswordResetTokens;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
 
 class AccountController extends Controller
 {
@@ -351,4 +354,99 @@ class AccountController extends Controller
             ],200);
         } 
     }
+
+
+
+    public function resetPasswordRequest(Request $request){
+        
+        $data = $request->all();
+        $user = User::where('email', '=', $data['email'])->first();
+
+        if(!$user){
+            return response([
+                'message' => "User doesn't not exist."
+            ],400);
+        }
+
+        //create password tokens
+        PasswordResetTokens::create([
+            'email' => $data['email'],
+            'token' => Str::random(60),
+            'created_at' => Carbon::now()
+        ]);
+
+        $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
+
+        //$this->sendResetEmail($data['email'], $tokenData->token);
+
+        if($this->sendResetEmail($data['email'], $tokenData->token)){
+            return response([
+                'message' => "A reset link has been sent to your email address."
+            ],200);
+        }else{
+            return response([
+                'message' => "A network error occured. Please try again."
+            ],500);
+        }
+    }
+
+    public function sendResetEmail($email, $token){
+        $user = User::where("email", "=", $email)->select('first_name', 'email')->first();
+
+        $link = env('FRONT_URL'). '/auth/password-reset/'. $token . '?email=' .urlencode($user->email);
+
+        //app('App\Http\Controllers\MailerController')->sendResetPasswordEmail($user, $link);
+
+        try{
+            app('App\Http\Controllers\MailerController')->sendResetPasswordEmail($user, $link);
+            return true;
+        }catch(\Exception $e){
+            return false;
+        }
+    }
+
+
+    public function resetPassword(Request $request){
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|confirmed',
+            'token' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'message' => 'Please complete the details',
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $tokenData = PasswordResetTokens::where('token', '=', $request->token)->first();
+
+        if(!$tokenData){
+            return response([
+                'message' => 'Incorrect token data.'
+            ],400);
+            
+        }
+
+        $user = User::where('email', '=', $request->email())->first();
+
+        if(!$user){
+            return response([
+                'message' => 'Email not found',
+            ],400);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->update();
+
+       // Auth::login($user);
+
+    }
+
+
+    
+
+
+
 }
