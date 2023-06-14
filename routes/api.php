@@ -44,8 +44,8 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
     });
 
     Route::post('/forget-password', 'resetPasswordRequest')->middleware('guest')->name('password.email');
+    Route::get('/password-reset/{token}','resetPasswordView');
     Route::post('/password-reset', 'resetPassword')->middleware('guest')->name('password.reset');
-
 
 });
 

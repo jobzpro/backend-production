@@ -355,8 +355,6 @@ class AccountController extends Controller
         } 
     }
 
-
-
     public function resetPasswordRequest(Request $request){
         
         $data = $request->all();
@@ -377,8 +375,6 @@ class AccountController extends Controller
 
         $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
 
-        //$this->sendResetEmail($data['email'], $tokenData->token);
-
         if($this->sendResetEmail($data['email'], $tokenData->token)){
             return response([
                 'message' => "A reset link has been sent to your email address."
@@ -395,8 +391,6 @@ class AccountController extends Controller
 
         $link = env('FRONT_URL'). '/auth/password-reset/'. $token . '?email=' .urlencode($user->email);
 
-        //app('App\Http\Controllers\MailerController')->sendResetPasswordEmail($user, $link);
-
         try{
             app('App\Http\Controllers\MailerController')->sendResetPasswordEmail($user, $link);
             return true;
@@ -404,7 +398,6 @@ class AccountController extends Controller
             return false;
         }
     }
-
 
     public function resetPassword(Request $request){
         $validator = Validator::make($request->all(),[
@@ -420,7 +413,8 @@ class AccountController extends Controller
             ],400);
         }
 
-        $tokenData = PasswordResetTokens::where('token', '=', $request->token)->first();
+        $data = $request->all();
+        $tokenData = PasswordResetTokens::where('token', '=', $data['token'])->first();
 
         if(!$tokenData){
             return response([
@@ -429,7 +423,7 @@ class AccountController extends Controller
             
         }
 
-        $user = User::where('email', '=', $request->email())->first();
+        $user = User::where('email', '=', $data['email'])->first();
 
         if(!$user){
             return response([
@@ -437,16 +431,33 @@ class AccountController extends Controller
             ],400);
         }
 
-        $user->password = Hash::make($request->password);
+        $user->password = Hash::make($data['password']);
         $user->update();
 
-       // Auth::login($user);
+       PasswordResetTokens::where('email', '=', $request->email)->delete();
 
+       if(app('App\Http\Controllers\MailerController')->sendSuccessEmail($tokenData->email)){
+            return response([
+                'message' => "Password Sucessfully changed."
+            ],200);
+       }else{
+            return response([
+                'message' => "A Network Error occurred. Please try again."
+            ],500);
+       }
+    }
+
+    public function resetPasswordView(Request $request){
+        $token = $request->token;
+        $email = urldecode($request->email);
+        return response([
+            'token' => $token,
+            'email' => $email,
+            'message' => 'Success'
+        ],200);
     }
 
 
     
-
-
 
 }

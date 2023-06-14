@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
 use App\Mail\PasswordReset;
+use App\Mail\SuccessEmail;
 
 class MailerController extends Controller
 {
     public function sendResetPasswordEmail($user, $link){
-        //dd($user);
-        
+
         $mailData = [
             'user_first_name' => $user->first_name,
             'link' => $link,
@@ -19,5 +19,11 @@ class MailerController extends Controller
 
         Mail::to($user->email)->send(new PasswordReset($mailData));
         
+    }
+
+    public function sendSuccessEmail($email){
+        
+        Mail::to($email)->send(new SuccessEmail());
+        return true;
     }
 }
