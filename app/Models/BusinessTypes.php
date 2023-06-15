@@ -6,20 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Company extends Model
+class BusinessTypes extends Model
 {
     use HasFactory, SoftDeletes;
 
-
     protected $fillable = [
         'name',
-        'address_line',
-        'city', 
-        'state',
-        'zip_code',
-        'email',
-        'company_email',
-        'business_type_id',
-        'owner_full_name',
+        'description',
     ];
 }

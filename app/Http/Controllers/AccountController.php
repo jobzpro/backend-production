@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Account;
 use App\Models\User;
 use App\Models\PasswordResetTokens;
+use App\Models\Company;
+use App\Models\UserRole;
 use Carbon\Carbon;
-use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,6 @@ class AccountController extends Controller
         ]);
 
         event(new Registered($user));
-
-        $token = $user->createToken('API Token')->accessToken;
 
         $result = [
             'user' => $user,
@@ -456,9 +455,117 @@ class AccountController extends Controller
         ],200);
     }
 
-    // public function signUpAsEmployeer(){
+    public function signUpAsAnEmployeer(Request $request){
+        $data = $request->all();
 
-    // }
+        $company = Company::create([
+            "name" => $data['company_name'],
+            "address_line" => $data['address_line'],
+            "city" => $data['city'],
+            "state" => $data['state'],
+            //"zip_code" => $data['zip_code'],
+            "company_email" => $data['company_email'],
+            "business_type_id" => $data['business_type_id'],
+            "owner_full_name" => $data['owner_full_name'],
+        ]);
+
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|unique:accounts',
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'message' => "Company creation Unsuccessful",
+                'errors' => $validator->errors()
+            ],500);
+        }
+
+        $account_id = Account::insertGetId([
+            'email' => $data['email'],
+            //'name' => $data['first_name'].' '.$data['last_name'],
+            'created_at' => Carbon::now(),
+        ]);
+
+        $user_password = Str::random(12);
+
+        $user = User::create([
+            'account_id' => $account_id,
+            'first_name' => $data['first_name'],
+            //'middle_name' => $data['middle_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => Hash::make($user_password),
+            'created_at' => Carbon::now(),
+        ]);
+
+        $userRole = UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => 2,
+            'designation' => $data['designation'],
+        ]);
+
+        if(app('App\Http\Controllers\MailerController')->sendEmployerSuccessEmail($company, $user, $user_password)){
+            return response([
+                'message' => "Successful"
+            ],200);
+       }else{
+            return response([
+                'message' => "A Network Error occurred. Please try again."
+            ],500);
+       }
+    }
+
+    public function signInAsEmployeer(Request $request){
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'email' => ['required'],
+            'password' => ['required'],
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'message' => "Login Unsuccessful",
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $data = $request->all();
+
+        $account = Account::where('email', '=', $data['email'])->first();
+
+        if($account){
+            $user = User::where('account_id', '=', $account->id)->first();
+            $userRole = UserRole::where('user_id', "=", $user->id)->first();
+
+            if($userRole->role_id == 2){
+                if(Hash::check($data['password'], $user['password'])){
+                    $token = $user->createToken('API Token')->accessToken;
+    
+                    $result = [
+                        'user' => $user,
+                        'token' => $token,
+                        'message' => "Login Successful"
+                    ];
+    
+                    return response()->json($result, 200);
+                }else{
+                    return response([
+                        'message' => 'username and password do not match'
+                    ],400);
+                }
+            }else{
+                return response([
+                    'message' => 'employer account not found'
+                ],400);
+            }
+
+        }else{
+            return response([
+                'message' => "Cannot find account",
+            ],400);
+        }
+    }
 
 
 }

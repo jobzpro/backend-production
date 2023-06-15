@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\EmployerSignUpSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
@@ -24,6 +25,18 @@ class MailerController extends Controller
     public function sendSuccessEmail($email){
         
         Mail::to($email)->send(new SuccessEmail());
+        return true;
+    }
+
+    public function sendEmployerSuccessEmail($company, $user, $password){
+        $mailData = [
+            'company_name' => $company->name,
+            'user_name' => $user->first_name." ".$user->last_name,
+            'email' => $user->email,
+            'temp_password' => $password,
+        ];
+
+        Mail::to($user->email)->send(new EmployerSignUpSuccess($mailData));
         return true;
     }
 }
