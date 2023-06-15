@@ -54,7 +54,7 @@ class AccountController extends Controller
 
         $result = [
             'user' => $user,
-            'token' => $token,
+            //'token' => $token,
             'message' => "Registration Successful"
         ];
 
