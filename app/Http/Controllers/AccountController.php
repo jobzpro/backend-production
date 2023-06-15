@@ -54,7 +54,6 @@ class AccountController extends Controller
 
         $result = [
             'user' => $user,
-            //'token' => $token,
             'message' => "Registration Successful"
         ];
 
@@ -457,7 +456,9 @@ class AccountController extends Controller
         ],200);
     }
 
+    // public function signUpAsEmployeer(){
 
-    
+    // }
+
 
 }

@@ -47,6 +47,10 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
     Route::get('/password-reset/{token}','resetPasswordView');
     Route::post('/password-reset', 'resetPassword')->middleware('guest')->name('password.reset');
 
+    // Route::prefix('/employer')->group(function(){
+
+    // });
+
 });
 
 Route::prefix('/email/verify')->controller(VerifyEmailController::class)->group(function(){
