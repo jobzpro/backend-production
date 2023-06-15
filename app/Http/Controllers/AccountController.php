@@ -39,7 +39,7 @@ class AccountController extends Controller
         ]);
 
         $user = User::create([
-            // 'account_id' => $account_id,
+            'account_id' => $account_id,
             // 'first_name' => $data['first_name'],
             // 'middle_name' => $data['middle_name'],
             // 'last_name' => $data['last_name'],
