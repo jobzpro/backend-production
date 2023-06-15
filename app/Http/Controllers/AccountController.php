@@ -34,15 +34,15 @@ class AccountController extends Controller
 
         $account_id = Account::insertGetId([
             'email' => $data['email'],
-            'name' => $data['first_name'].' '.$data['last_name'],
+            //'name' => $data['first_name'].' '.$data['last_name'],
             'created_at' => Carbon::now(),
         ]);
 
         $user = User::create([
-            'account_id' => $account_id,
-            'first_name' => $data['first_name'],
-            'middle_name' => $data['middle_name'],
-            'last_name' => $data['last_name'],
+            // 'account_id' => $account_id,
+            // 'first_name' => $data['first_name'],
+            // 'middle_name' => $data['middle_name'],
+            // 'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'created_at' => Carbon::now(),
