@@ -21,8 +21,11 @@ class AppServiceProvider extends ServiceProvider
     {
         if($this->app->environment('production')) {
             \URL::forceScheme('https');
-        }else{
+        }elseif($this->app->environment(('staging'))){
             \URL::forceScheme('https');
+        }
+        else{
+            \URL::forceScheme('http');
         }
     }
 }

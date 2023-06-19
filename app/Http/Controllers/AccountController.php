@@ -148,11 +148,11 @@ class AccountController extends Controller
         }
        
         if($existingUser){
-            auth()->login($existingUser, true);
-            
+            $token = $existingAccount->createToken('API Token')->accessToken;
+
             return response([
                 'user' => $existingUser,
-                'token' => $user->token,
+                'token' => $token,
                 'message' => "Sign-in with Google Successful"
             ],200);
 
@@ -167,11 +167,11 @@ class AccountController extends Controller
             ]);
 
             $newUser->save();
-            auth()->login($newUser, true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $newUser,
-                'token' => $user->token,
+                'token' => $token,
                 'message' => "Sign-in with Google Successful"
             ],200);
         }
@@ -206,11 +206,11 @@ class AccountController extends Controller
         }
 
         if($existingUser){
-            auth()->login($existingUser,true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $existingUser,
-                'token' => $user->token,
+                'token' => $token,
                 'messsage' => 'Sign-in with Apple Successful'
             ],200);
         }else{
@@ -224,11 +224,11 @@ class AccountController extends Controller
             ]);
 
             $newUser->save();
-            auth()->login($newUser, true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $newUser,
-                'token' => $user->token,
+                'token' => $token,
                 'message' => "Sign-in with Apple Successful"
             ],200);
         }
@@ -264,11 +264,11 @@ class AccountController extends Controller
         }
 
         if($existingUser){
-            auth()->login($existingUser,true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $existingUser,
-                'token' => $user->token,
+                'token' => $token,
                 'messsage' => 'Sign-in with LinkedIn Successful'
             ],200);
         }else{
@@ -282,11 +282,11 @@ class AccountController extends Controller
             ]);
 
             $newUser->save();
-            auth()->login($newUser, true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $newUser,
-                'token' => $user->token,
+                'token' => $token,
                 'message' => "Sign-in with LinkedIn Successful"
             ],200);
         } 
@@ -322,11 +322,11 @@ class AccountController extends Controller
         }
 
         if($existingUser){
-            auth()->login($existingUser,true);
+            $token = $existingAccount->createToken('API Token')->accessToken;
 
             return response([
                 'user' => $existingUser,
-                'token' => $user->token,
+                'token' => $token,
                 'messsage' => 'Sign-in with Facebook Successful'
             ],200);
         }else{
@@ -340,11 +340,11 @@ class AccountController extends Controller
             ]);
 
             $newUser->save();
-            auth()->login($newUser, true);
-
+            $token = $existingAccount->createToken('API Token')->accessToken;
+            
             return response([
                 'user' => $newUser,
-                'token' => $user->token,
+                'token' => $token,
                 'message' => "Sign-in with Facebook Successful"
             ],200);
         } 
@@ -533,7 +533,7 @@ class AccountController extends Controller
             $userRole = UserRole::where('user_id', "=", $user->id)->first();
 
             if($userRole->role_id == 2){
-                if(Hash::check($data['password'], $user['password'])){
+                if(Hash::check($data['password'], $account['password'])){
                     $token = $user->createToken('API Token')->accessToken;
     
                     $result = [
