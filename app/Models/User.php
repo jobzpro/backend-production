@@ -1,7 +1,6 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,9 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
+    use HasFactory, HasApiTokens, SoftDeletes;
     
     /**
      * The attributes that are mass assignable.
@@ -24,8 +23,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'first_name',
         'last_name',
         'middle_name',
-        'email',
-        'password',
     ];
 
     /**
@@ -34,7 +31,6 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 

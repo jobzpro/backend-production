@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->integer('account_id');
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('last_name');
-            $table->rememberToken();
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('users', function(Blueprint $table){
+            $table->string('profession')->nullable()->after('last_name');
+
         });
     }
 

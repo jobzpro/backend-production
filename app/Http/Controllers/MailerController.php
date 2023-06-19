@@ -14,12 +14,11 @@ class MailerController extends Controller
     public function sendResetPasswordEmail($user, $link){
 
         $mailData = [
-            'user_first_name' => $user->first_name,
+            'user_first_name' => $user->user->first_name,
             'link' => $link,
         ];
 
         Mail::to($user->email)->send(new PasswordReset($mailData));
-        
     }
 
     public function sendSuccessEmail($email){

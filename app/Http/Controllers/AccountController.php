@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
+use App\Http\Controllers\MailerController as MailerController;
+
 
 class AccountController extends Controller
 {
@@ -33,26 +35,27 @@ class AccountController extends Controller
 
         $data = $request->all();
 
-        $account_id = Account::insertGetId([
+        $account = Account::create([
             'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             //'name' => $data['first_name'].' '.$data['last_name'],
+            'login_type' => "email",
             'created_at' => Carbon::now(),
         ]);
 
-        $user = User::create([
-            'account_id' => $account_id,
+        $account->user()->create([
+            'account_id' => $account->id,
             // 'first_name' => $data['first_name'],
             // 'middle_name' => $data['middle_name'],
             // 'last_name' => $data['last_name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
             'created_at' => Carbon::now(),
         ]);
 
-        event(new Registered($user));
+        event(new Registered($account));
 
         $result = [
-            'user' => $user,
+            'user' => $account,
             'message' => "Registration Successful"
         ];
 
@@ -79,13 +82,11 @@ class AccountController extends Controller
         $account = Account::where('email', '=', $data['email'])->first();
 
         if($account){
-            $user = User::where('account_id', '=', $account->id)->first();
-
-            if(Hash::check($data['password'], $user['password'])){
-                $token = $user->createToken('API Token')->accessToken;
+            if(Hash::check($data['password'], $account['password'])){
+                $token = $account->createToken('API Token')->accessToken;
 
                 $result = [
-                    'user' => $user,
+                    'user' => $account,
                     'token' => $token,
                     'message' => "Login Successful"
                 ];
@@ -140,6 +141,7 @@ class AccountController extends Controller
                 'name' => $user->name,
                 'login_type' => "google",
                 'login_type_id' => $user->id,
+                'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
             ]);
             $existingUser = User::where('account_id', $existingAccount->id)->first();
@@ -160,9 +162,7 @@ class AccountController extends Controller
             $newUser = User::create([
                 'account_id' => $existingAccount->id,
                 'first_name' => $full_name[0],
-                'last_name' => $full_name[1],
-                'email' => $user->email,
-                'password' => Hash::make("password"),
+                'last_name' => $full_name[1],                
                 'created_at' => Carbon::now(),
             ]);
 
@@ -195,6 +195,7 @@ class AccountController extends Controller
         }else{
             $existingAccount = Account::create([
                 'email' => $user->email,
+                'password' => Hash::make("password"),
                 'name' => $user->name,
                 'login_type' => "apple",
                 'login_type_id' => $user->id,
@@ -219,8 +220,6 @@ class AccountController extends Controller
                 'account_id' => $existingAccount->id,
                 'first_name' => $full_name[0],
                 'last_name' => $full_name[1],
-                'email' => $user->email,
-                'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
             ]);
 
@@ -254,6 +253,7 @@ class AccountController extends Controller
         }else{
             $existingAccount = Account::create([
                 'email' => $user->email,
+                'password' => Hash::make("password"),
                 'name' => $user->name,
                 'login_type' => "linkedin",
                 'login_type_id' => $user->id,
@@ -278,8 +278,6 @@ class AccountController extends Controller
                 'account_id' => $existingAccount->id,
                 'first_name' => $full_name[0],
                 'last_name' => $full_name[1],
-                'email' => $user->email,
-                'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
             ]);
 
@@ -313,6 +311,7 @@ class AccountController extends Controller
         }else{
             $existingAccount = Account::create([
                 'email' => $user->email,
+                'password' => Hash::make("password"),
                 'name' => $user->name,
                 'login_type' => "facebook",
                 'login_type_id' => $user->id,
@@ -337,8 +336,6 @@ class AccountController extends Controller
                 'account_id' => $existingAccount->id,
                 'first_name' => $full_name[0],
                 'last_name' => $full_name[1],
-                'email' => $user->email,
-                'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
             ]);
 
@@ -356,7 +353,7 @@ class AccountController extends Controller
     public function resetPasswordRequest(Request $request){
         
         $data = $request->all();
-        $user = User::where('email', '=', $data['email'])->first();
+        $user = Account::where('email', '=', $data['email'])->first();
 
         if(!$user){
             return response([
@@ -372,7 +369,7 @@ class AccountController extends Controller
         ]);
 
         $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
-
+        
         if($this->sendResetEmail($data['email'], $tokenData->token)){
             return response([
                 'message' => "A reset link has been sent to your email address."
@@ -385,12 +382,11 @@ class AccountController extends Controller
     }
 
     public function sendResetEmail($email, $token){
-        $user = User::where("email", "=", $email)->select('first_name', 'email')->first();
-
+        $user = Account::where("email", "=", $email)->first();
         $link = env('FRONT_URL'). '/auth/password-reset/'. $token . '?email=' .urlencode($user->email);
 
         try{
-            app('App\Http\Controllers\MailerController')->sendResetPasswordEmail($user, $link);
+           (new MailerController)->sendResetPasswordEmail($user, $link);
             return true;
         }catch(\Exception $e){
             return false;
@@ -399,7 +395,7 @@ class AccountController extends Controller
 
     public function resetPassword(Request $request){
         $validator = Validator::make($request->all(),[
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email|exists:accounts,email',
             'password' => 'required|confirmed',
             'token' => 'required'
         ]);
@@ -421,7 +417,7 @@ class AccountController extends Controller
             
         }
 
-        $user = User::where('email', '=', $data['email'])->first();
+        $user = Account::where('email', '=', $data['email'])->first();
 
         if(!$user){
             return response([
@@ -434,7 +430,7 @@ class AccountController extends Controller
 
        PasswordResetTokens::where('email', '=', $request->email)->delete();
 
-       if(app('App\Http\Controllers\MailerController')->sendSuccessEmail($tokenData->email)){
+       if((new MailerController)->sendSuccessEmail($tokenData->email)){
             return response([
                 'message' => "Password Sucessfully changed."
             ],200);
@@ -480,21 +476,19 @@ class AccountController extends Controller
             ],500);
         }
 
+        $user_password = Str::random(12);
+
         $account_id = Account::insertGetId([
             'email' => $data['email'],
-            //'name' => $data['first_name'].' '.$data['last_name'],
+            'password' => Hash::make($user_password),
             'created_at' => Carbon::now(),
         ]);
-
-        $user_password = Str::random(12);
 
         $user = User::create([
             'account_id' => $account_id,
             'first_name' => $data['first_name'],
             //'middle_name' => $data['middle_name'],
             'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => Hash::make($user_password),
             'created_at' => Carbon::now(),
         ]);
 
@@ -504,7 +498,7 @@ class AccountController extends Controller
             'designation' => $data['designation'],
         ]);
 
-        if(app('App\Http\Controllers\MailerController')->sendEmployerSuccessEmail($company, $user, $user_password)){
+        if((new MailerController)->sendEmployerSuccessEmail($company, $user, $user_password)){
             return response([
                 'message' => "Successful"
             ],200);

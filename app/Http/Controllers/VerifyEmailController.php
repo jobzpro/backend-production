@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Auth\Events\Verified;
 //use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,17 +12,17 @@ use Illuminate\Routing\Controller;
 class VerifyEmailController extends Controller
 {
     public function __invoke(Request $request){
-        $user = User::find($request->route('id'));
-
-        if($user->hasVerifiedEmail()){
+        $account = Account::find($request->route('id'));
+        
+        if($account->hasVerifiedEmail()){
             //return redirect(env('FRONT_URL'). '/email/verify/already-success');
             return response([
                 'message' => "Email already verified."
             ],200);
         }
 
-        if($user->markEmailAsVerified()){
-            event(new Verified($user));
+        if($account->markEmailAsVerified()){
+            event(new Verified($account));
         }
 
         //return redirect(env('FRONT_URL').'/email/verify/success');

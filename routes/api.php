@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\VerifyEmailController;
+use App\Http\Controllers\UserController;
+
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->controller(AccountController::class)->group(function(){
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::get('/logout', 'logout')->middleware('auth:api');
+    Route::get('/logout', 'logout')->middleware(['auth:api']);
 
 
     Route::prefix('/google')->group(function(){
@@ -43,20 +45,27 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
         Route::get('/callback', 'handleLinkedInCallback');
     });
 
-    Route::post('/forget-password', 'resetPasswordRequest')->middleware('guest')->name('password.email');
+    Route::post('/forget-password', 'resetPasswordRequest')->middleware(['guest'])->name('password.email');
     Route::get('/password-reset/{token}','resetPasswordView');
-    Route::post('/password-reset', 'resetPassword')->middleware('guest')->name('password.reset');
+    Route::post('/password-reset', 'resetPassword')->middleware(['guest'])->name('password.reset');
 
     Route::prefix('/employer')->group(function(){
         Route::post('/register', 'signUpAsAnEmployeer');
         Route::post('/login', 'signInAsEmployeer');
+
     });
 
 });
 
 Route::prefix('/email/verify')->controller(VerifyEmailController::class)->group(function(){
-    Route::get('/{id}/{hash}', '__invoke')->middleware(['signed', 'throttle:6.1'])->name('verification.verify');
-    Route::post('/resend', 'resendEmail')->middleware('auth:api')->name('verification.send');
+    Route::get('/{id}/{hash}', '__invoke')->middleware(['signed','throttle:6.1'])->name('verification.verify');
+    Route::post('/resend', 'resendEmail')->middleware(['auth:api'])->name('verification.send');
     Route::get('/success', 'successVerified');
     Route::get('/already-success', 'alreadyVerified');
+});
+
+Route::middleware(['auth:api'])->group(function(){
+    Route::prefix('/jobseeker')->controller(UserController::class)->group(function(){
+        Route::get('/{id}/profile', 'showJobseekerProfile');
+    });
 });
