@@ -31,11 +31,11 @@ class MailerController extends Controller
         $mailData = [
             'company_name' => $company->name,
             'user_name' => $user->first_name." ".$user->last_name,
-            'email' => $user->email,
+            'email' => $user->account->email,
             'temp_password' => $password,
         ];
 
-        Mail::to($user->email)->send(new EmployerSignUpSuccess($mailData));
+        Mail::to($user->account->email)->send(new EmployerSignUpSuccess($mailData));
         return true;
     }
 }

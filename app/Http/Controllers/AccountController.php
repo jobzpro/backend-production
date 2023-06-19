@@ -534,7 +534,7 @@ class AccountController extends Controller
 
             if($userRole->role_id == 2){
                 if(Hash::check($data['password'], $account['password'])){
-                    $token = $user->createToken('API Token')->accessToken;
+                    $token = $account->createToken('API Token')->accessToken;
     
                     $result = [
                         'user' => $user,
