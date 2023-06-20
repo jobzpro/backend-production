@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -23,6 +24,19 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'middle_name',
+        'phone_number',
+        'profession',
+        'avatar_path',
+        'address_line',
+        'city',
+        'province',
+        'elementary_school',
+        'high_school',
+        'collage',
+        'description',
+        'certifications',
+        'skills',
+        
     ];
 
     /**
@@ -45,5 +59,9 @@ class User extends Authenticatable
 
     public function account(): BelongsTo{
         return $this->belongsTo(Account::class);
+    }
+
+    public function references(): HasMany{
+        return $this->hasMany(UserReference::class);
     }
 }

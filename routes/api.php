@@ -67,5 +67,6 @@ Route::prefix('/email/verify')->controller(VerifyEmailController::class)->group(
 Route::middleware(['auth:api'])->group(function(){
     Route::prefix('/jobseeker')->controller(UserController::class)->group(function(){
         Route::get('/{id}/profile', 'showJobseekerProfile');
+        Route::patch('/{id}/profile/update', 'updateJobseekerProfile');
     });
 });
