@@ -165,7 +165,7 @@ class AccountController extends Controller
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -204,7 +204,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Google Successful"
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -255,7 +255,7 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with Apple Successful'
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -286,7 +286,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Apple Successful"
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -339,7 +339,7 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with LinkedIn Successful'
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -370,7 +370,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with LinkedIn Successful"
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -423,7 +423,7 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with Facebook Successful'
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -454,7 +454,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Facebook Successful"
             // ],200);
 
-            return redirect('https://localhost:3000', 302,[
+            return redirect('http://localhost:3000', 302,[
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
