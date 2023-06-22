@@ -54,7 +54,7 @@ class AccountController extends Controller
 
         $userRole = UserRole::create([
             'user_id' => $account->user->id,
-            'role_id' => 2,
+            'role_id' => 3,
         ]);
 
         event(new Registered($account));
@@ -86,10 +86,11 @@ class AccountController extends Controller
         $data = $request->all();
     
         $account = Account::where('email', '=', $data['email'])->first();
-        $user = User::where('account_id', $account->id)->first();
-        $userRoles = UserRole::where('user_id', $user->id)->get();
 
         if($account){
+            $user = User::where('account_id', $account->id)->first();
+            $userRoles = UserRole::where('user_id', $user->id)->get();
+
             if(Hash::check($data['password'], $account['password'])){
                 $token = $account->createToken('API Token')->accessToken;
 
@@ -143,6 +144,11 @@ class AccountController extends Controller
         $existingAccount = Account::where('email', $user->email)->first();
         if($existingAccount){
             $existingUser = User::where('account_id', $existingAccount->id)->first();
+                        
+            $userRole = UserRole::create([
+                'user_id' => $existingUser->id,
+                'role_id' => 3,
+            ]);
 
         }else{
             $existingAccount = Account::create([
@@ -159,11 +165,20 @@ class AccountController extends Controller
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return response([
+            return redirect('https://localhost:3000', 302,[
                 'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
                 'message' => "Sign-in with Google Successful"
-            ],200);
+            ]);
+
+
+            // return response([
+            //     'user' => $existingUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'message' => "Sign-in with Google Successful"
+            // ],200);
 
         }else{
 
@@ -178,11 +193,23 @@ class AccountController extends Controller
             $newUser->save();
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return response([
-                'user' => $newUser,
+            $userRole = UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 3,
+            ]);
+
+            // return response([
+            //     'user' => $newUser,
+            //     'token' => $token,
+            //     'message' => "Sign-in with Google Successful"
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
+                'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
                 'message' => "Sign-in with Google Successful"
-            ],200);
+            ]);
         }
     }
 
@@ -201,6 +228,10 @@ class AccountController extends Controller
 
         if($existingAccount){
             $existingUser = User::where('account_id', $existingAccount->id)->first();
+            $userRole = UserRole::create([
+                'user_id' => $existingUser->id,
+                'role_id' => 3,
+            ]);
         }else{
             $existingAccount = Account::create([
                 'email' => $user->email,
@@ -217,11 +248,19 @@ class AccountController extends Controller
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return response([
+            // return response([
+            //     'user' => $existingUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'messsage' => 'Sign-in with Apple Successful'
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
                 'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
-                'messsage' => 'Sign-in with Apple Successful'
-            ],200);
+                'message' => "Sign-in with Apple Successful"
+            ]);
         }else{
 
             $full_name = explode(" ", $user->name);
@@ -234,12 +273,25 @@ class AccountController extends Controller
 
             $newUser->save();
             $token = $existingAccount->createToken('API Token')->accessToken;
+            
+            $userRole = UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 3,
+            ]);
 
-            return response([
-                'user' => $newUser,
+            // return response([
+            //     'user' => $newUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'message' => "Sign-in with Apple Successful"
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
+                'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
                 'message' => "Sign-in with Apple Successful"
-            ],200);
+            ]);
         }
     }
 
@@ -274,12 +326,26 @@ class AccountController extends Controller
 
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
+            
+            $userRole = UserRole::create([
+                'user_id' => $existingUser->id,
+                'role_id' => 3,
+            ]);
 
-            return response([
+            // return response([
+            //     'user' => $existingUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'messsage' => 'Sign-in with LinkedIn Successful'
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
                 'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
-                'messsage' => 'Sign-in with LinkedIn Successful'
-            ],200);
+                'message' => "Sign-in with LinkedIn Successful"
+            ]);
+
         }else{
 
             $full_name = explode(" ", $user->name);
@@ -292,16 +358,27 @@ class AccountController extends Controller
 
             $newUser->save();
             $token = $existingAccount->createToken('API Token')->accessToken;
+            
+            $userRole = UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 3,
+            ]);
 
-            return response([
-                'user' => $newUser,
+            // return response([
+            //     'user' => $newUser,
+            //     'token' => $token,
+            //     'message' => "Sign-in with LinkedIn Successful"
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
+                'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
                 'message' => "Sign-in with LinkedIn Successful"
-            ],200);
+            ]);
         }
 
     }
-
 
     public function redirectToFacebook(){
         return Socialite::driver('facebook')->stateless()->redirect();
@@ -333,12 +410,25 @@ class AccountController extends Controller
 
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
+            
+            $userRole = UserRole::create([
+                'user_id' => $existingUser->id,
+                'role_id' => 3,
+            ]);
 
-            return response([
+            // return response([
+            //     'user' => $existingUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'messsage' => 'Sign-in with Facebook Successful'
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
                 'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
-                'messsage' => 'Sign-in with Facebook Successful'
-            ],200);
+                'message' => "Sign-in with Facebook Successful"
+            ]);
         }else{
 
             $full_name = explode(" ", $user->name);
@@ -352,11 +442,24 @@ class AccountController extends Controller
             $newUser->save();
             $token = $existingAccount->createToken('API Token')->accessToken;
             
-            return response([
-                'user' => $newUser,
+            $userRole = UserRole::create([
+                'user_id' => $newUser->id,
+                'role_id' => 3,
+            ]);
+
+            // return response([
+            //     'user' => $newUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'message' => "Sign-in with Facebook Successful"
+            // ],200);
+
+            return redirect('https://localhost:3000', 302,[
+                'user' => $existingUser,
+                'user_role' => $userRole,
                 'token' => $token,
                 'message' => "Sign-in with Facebook Successful"
-            ],200);
+            ]);
         } 
     }
 

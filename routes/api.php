@@ -70,6 +70,10 @@ Route::middleware(['auth:api'])->group(function(){
         Route::patch('/{id}/profile/update', 'updateJobseekerProfile');
     });
 
+    Route::prefix('/company/jobs')->controller(JobListController::class)->group(function(){
+        Route::post('/post-job', 'store');
+    });
+
 });
 
 Route::apiResources([
