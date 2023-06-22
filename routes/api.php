@@ -3,9 +3,9 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\JobListController;
 
-use App\Models\Account;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,4 +69,10 @@ Route::middleware(['auth:api'])->group(function(){
         Route::get('/{id}/profile', 'showJobseekerProfile');
         Route::patch('/{id}/profile/update', 'updateJobseekerProfile');
     });
+
 });
+
+Route::apiResources([
+    'company' => CompanyController::class,
+    'jobs' => JobListController::class,
+],['only' => ['index', 'show']]);

@@ -4,19 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Role extends Model
+class Files extends Model
 {
     use HasFactory, SoftDeletes;
 
 
     protected $fillable = [
-        'role_name',
+        'name',
+        'path',
+        'type',
+        'size',
     ];
-
-    public function userRole(): BelongsTo{
-        return $this->belongsTo(UserRole::class);
-    }
 }

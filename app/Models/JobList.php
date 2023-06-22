@@ -4,19 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Role extends Model
+class JobList extends Model
 {
     use HasFactory, SoftDeletes;
 
-
     protected $fillable = [
-        'role_name',
+       'job_title',
+       'description',
+       'salary',
+       'company_id',
+       'experience_level_id',
+       'job_location_id',
     ];
-
-    public function userRole(): BelongsTo{
-        return $this->belongsTo(UserRole::class);
-    }
 }

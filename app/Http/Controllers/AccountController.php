@@ -52,10 +52,16 @@ class AccountController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
+        $userRole = UserRole::create([
+            'user_id' => $account->user->id,
+            'role_id' => 2,
+        ]);
+
         event(new Registered($account));
 
         $result = [
             'user' => $account,
+            'user_role' => $userRole,
             'message' => "Registration Successful"
         ];
 
@@ -78,15 +84,18 @@ class AccountController extends Controller
         }
 
         $data = $request->all();
-
+    
         $account = Account::where('email', '=', $data['email'])->first();
+        $user = User::where('account_id', $account->id)->first();
+        $userRoles = UserRole::where('user_id', $user->id)->get();
 
         if($account){
             if(Hash::check($data['password'], $account['password'])){
                 $token = $account->createToken('API Token')->accessToken;
 
                 $result = [
-                    'user' => $account,
+                    'account' => $account,
+                    'user_role' => $userRoles,
                     'token' => $token,
                     'message' => "Login Successful"
                 ];
@@ -289,7 +298,8 @@ class AccountController extends Controller
                 'token' => $token,
                 'message' => "Sign-in with LinkedIn Successful"
             ],200);
-        } 
+        }
+
     }
 
 
@@ -538,6 +548,7 @@ class AccountController extends Controller
     
                     $result = [
                         'user' => $user,
+                        'user_role' => $userRole,
                         'token' => $token,
                         'message' => "Login Successful"
                     ];

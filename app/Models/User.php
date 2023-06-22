@@ -64,4 +64,8 @@ class User extends Authenticatable
     public function references(): HasMany{
         return $this->hasMany(UserReference::class);
     }
+
+    public function userRoles(): HasMany{
+        return $this->hasMany(UserRole::class);
+    }
 }

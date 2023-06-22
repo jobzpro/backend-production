@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Image;
 use App\Helper\ImageManager;
+
 use App\Models\UserReference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,7 @@ class UserController extends Controller
     use ImageManager;
 
     public function showJobseekerProfile($id){
-        $result = User::find($id);
+        $result = User::where('id', $id)->with('references')->first();
 
         return response([
             'user' => $result,
@@ -117,4 +118,5 @@ class UserController extends Controller
             return $avatar = null;
         }
     }
+
 }
