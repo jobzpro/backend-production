@@ -16,7 +16,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use App\Http\Controllers\MailerController as MailerController;
-
+use Illuminate\Http\Response;
 
 class AccountController extends Controller
 {
@@ -165,12 +165,7 @@ class AccountController extends Controller
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return redirect('http://localhost:3000', 302,[
-                'user' => $existingUser,
-                'user_role' => $userRole,
-                'token' => $token,
-                'message' => "Sign-in with Google Successful"
-            ]);
+            return redirect('http://localhost:3000')->withCookie(cookie('token', $token));
 
 
             // return response([
@@ -204,7 +199,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Google Successful"
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -255,7 +250,7 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with Apple Successful'
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -286,7 +281,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Apple Successful"
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -339,11 +334,11 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with LinkedIn Successful'
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
-                'message' => "Sign-in with LinkedIn Successful"
+                'messsage' => 'Sign-in with LinkedIn Successful' 
             ]);
 
         }else{
@@ -370,7 +365,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with LinkedIn Successful"
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -423,7 +418,7 @@ class AccountController extends Controller
             //     'messsage' => 'Sign-in with Facebook Successful'
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
@@ -454,7 +449,7 @@ class AccountController extends Controller
             //     'message' => "Sign-in with Facebook Successful"
             // ],200);
 
-            return redirect('http://localhost:3000', 302,[
+            return redirect('http://localhost:3000')->withCookies([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
