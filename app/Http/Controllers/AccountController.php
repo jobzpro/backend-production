@@ -130,16 +130,13 @@ class AccountController extends Controller
 
 
     public function redirectToGoogle(){
-        return Socialite::driver('google')->stateless()->redirect();
+        //return Socialite::driver('google')->stateless()->redirect();
     }
 
 
-    public function handleGoogleCallback(){
-        try{
-            $user = Socialite::driver('google')->stateless()->user();
-        }catch(\Exception $e){
-            return redirect('/login');
-        }
+    public function handleGoogleCallback(Request $request){
+        $token = $request['token'];
+        $user = Socialite::driver('google')->userFromToken($token);
 
         $existingAccount = Account::where('email', $user->email)->first();
         if($existingAccount){
@@ -165,16 +162,13 @@ class AccountController extends Controller
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return redirect('http://localhost:3000')->withCookie(cookie('token', $token));
-
-
-            // return response([
-            //     'user' => $existingUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'message' => "Sign-in with Google Successful"
-            // ],200);
-
+            return response([
+                'user' => $existingUser,
+                'user_role' => $userRole,
+                'token'=> $token,
+                'message' => "Sign-in with Google Successful"
+            ],200);
+            
         }else{
 
             $full_name = explode(" ", $user->name);

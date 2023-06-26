@@ -27,7 +27,7 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
 
     Route::prefix('/google')->group(function(){
         Route::get('/redirect', 'redirectToGoogle');
-        Route::get('/callback', 'handleGoogleCallback');
+        Route::post('/callback', 'handleGoogleCallback');
     });
 
     Route::prefix('/apple')->group(function () {
