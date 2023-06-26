@@ -136,12 +136,18 @@ class AccountController extends Controller
 
     public function handleGoogleCallback(Request $request){
         $token = $request['token'];
-        $user = Socialite::driver('google')->userFromToken($token);
+        
+        try{
+            $user = Socialite::driver('google')->userFromToken($token);
+        }catch(\Exception $e){
+            return response([
+                "message" => "Something went wrong try again later",
+            ],400);
+        }
 
         $existingAccount = Account::where('email', $user->email)->first();
         if($existingAccount){
             $existingUser = User::where('account_id', $existingAccount->id)->first();
-                        
             $userRole = UserRole::create([
                 'user_id' => $existingUser->id,
                 'role_id' => 3,
@@ -174,8 +180,8 @@ class AccountController extends Controller
             $full_name = explode(" ", $user->name);
             $newUser = User::create([
                 'account_id' => $existingAccount->id,
-                'first_name' => $full_name[0],
-                'last_name' => $full_name[1],                
+                'first_name' => $full_name[0] ?? "",
+                'last_name' => $full_name[1] ?? "",                
                 'created_at' => Carbon::now(),
             ]);
 
@@ -187,23 +193,23 @@ class AccountController extends Controller
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $newUser,
-            //     'token' => $token,
-            //     'message' => "Sign-in with Google Successful"
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
-                'user' => $existingUser,
-                'user_role' => $userRole,
+            return response([
+                'user' => $newUser,
                 'token' => $token,
                 'message' => "Sign-in with Google Successful"
-            ]);
+            ],200);
+
+            // return redirect('http://localhost:3000')->withCookies([
+            //     'user' => $existingUser,
+            //     'user_role' => $userRole,
+            //     'token' => $token,
+            //     'message' => "Sign-in with Google Successful"
+            // ]);
         }
     }
 
     public function redirectToApple(){
-        return Socialite::driver('apple')->stateless()->redirect();
+       // return Socialite::driver('apple')->stateless()->redirect();
     }
 
     public function handleAppleCallback(){
@@ -485,7 +491,7 @@ class AccountController extends Controller
 
     public function sendResetEmail($email, $token){
         $user = Account::where("email", "=", $email)->first();
-        $link = env('FRONT_URL'). '/auth/password-reset/'. $token . '?email=' .urlencode($user->email);
+        $link = env('FRONT_URL'). '/change-password?token='. $token . '&email=' .urlencode($user->email);
 
         try{
            (new MailerController)->sendResetPasswordEmail($user, $link);

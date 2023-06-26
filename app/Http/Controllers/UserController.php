@@ -119,4 +119,13 @@ class UserController extends Controller
         }
     }
 
+
+    private function uploadFiles($file){
+        $path = 'files/';
+
+        !is_dir($path) && mkdir($path, 0077, true);
+
+        if($file = )
+    }
+
 }
