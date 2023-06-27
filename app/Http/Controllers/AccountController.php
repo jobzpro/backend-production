@@ -292,14 +292,18 @@ class AccountController extends Controller
 
 
     public function redirectToLinkedIn(){
-        return Socialite::driver('linkedin')->stateless()->redirect();
+        // return Socialite::driver('linkedin')->stateless()->redirect();
     }
 
-    public function handleLinkedInCallback(){
+    public function handleLinkedInCallback(Request $request){
+        $token = $request['token'];
+
         try{
-            $user = Socialite::driver('linkedin')->stateless()->user();
+            $user = Socialite::driver('linkedin')->userFromToken($token);
         }catch(\Exception $e){
-            return redirect('/login');
+            return response([
+                "message" => "Something went wrong. Please try again",
+            ],400);
         }
 
         $existingAccount = Account::where('email', '=', $user->email)->first();
@@ -327,19 +331,12 @@ class AccountController extends Controller
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $existingUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'messsage' => 'Sign-in with LinkedIn Successful'
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
+            return response([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
-                'messsage' => 'Sign-in with LinkedIn Successful' 
-            ]);
+                'messsage' => 'Sign-in with LinkedIn Successful'
+            ],200);
 
         }else{
 
@@ -359,24 +356,18 @@ class AccountController extends Controller
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $newUser,
-            //     'token' => $token,
-            //     'message' => "Sign-in with LinkedIn Successful"
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
-                'user' => $existingUser,
-                'user_role' => $userRole,
+            return response([
+                'user' => $newUser,
                 'token' => $token,
                 'message' => "Sign-in with LinkedIn Successful"
-            ]);
+            ],200);
+
         }
 
     }
 
     public function redirectToFacebook(){
-        return Socialite::driver('facebook')->stateless()->redirect();
+        //return Socialite::driver('facebook')->stateless()->redirect();
     }
 
     public function handleFacebookCallback(){
