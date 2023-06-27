@@ -25,7 +25,7 @@ class JobListController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-
+        
         
     }
 
@@ -53,5 +53,14 @@ class JobListController extends Controller
     public function destroy(JobList $jobList)
     {
         //
+    }
+
+
+    public function showJobsByCompany(Request $request){
+        $c_jobs_list = JobList::where('company_id', $request['company_id'])->get();
+
+        return response([
+            'job_list' => $c_jobs_list->paginate(10),
+        ],200);
     }
 }

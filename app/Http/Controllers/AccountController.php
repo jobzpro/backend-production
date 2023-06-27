@@ -297,6 +297,7 @@ class AccountController extends Controller
 
     public function handleLinkedInCallback(Request $request){
         $token = $request['token'];
+        //dd($token);
 
         try{
             $user = Socialite::driver('linkedin')->userFromToken($token);
@@ -370,9 +371,11 @@ class AccountController extends Controller
         //return Socialite::driver('facebook')->stateless()->redirect();
     }
 
-    public function handleFacebookCallback(){
+    public function handleFacebookCallback(Request $request){
+        $token = $request['token'];
+
         try{
-            $user = Socialite::driver('facebook')->stateless()->user();
+            $user = Socialite::driver('facebook')->userFromToken($token);
         }catch(\Exception $e){
             return redirect('/login');
         }

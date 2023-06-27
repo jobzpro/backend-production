@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             BusinessTypesSeeder::class,
             ExperienceLevelsSeeder::class,
             TypeSeeder::class,
+            IndustrySeeder::class,
         ]);
     }
 }

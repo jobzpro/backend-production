@@ -37,12 +37,12 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
 
     Route::prefix('/facebook')->group(function () {
         Route::get('/redirect', 'redirectToFacebook');
-        Route::get('/callback', 'handleFacebookCallback');
+        Route::post('/callback', 'handleFacebookCallback');
     });
 
     Route::prefix('/linkedin')->group(function () {
         Route::get('/redirect', 'redirectToLinkedIn');
-        Route::get('/callback', 'handleLinkedInCallback');
+        Route::post('/callback', 'handleLinkedInCallback');
     });
 
     Route::post('/forget-password', 'resetPasswordRequest')->middleware(['guest'])->name('password.email');
