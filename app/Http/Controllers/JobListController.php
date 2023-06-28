@@ -25,6 +25,8 @@ class JobListController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+ 
+         
         
         
     }
@@ -35,7 +37,7 @@ class JobListController extends Controller
     public function show(JobList $jobList)
     {
         return response([
-            'job_list' => $jobList->paginate(10),
+            'job_list' => $jobList,
         ],200);
     }
 

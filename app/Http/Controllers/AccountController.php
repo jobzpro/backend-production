@@ -60,7 +60,7 @@ class AccountController extends Controller
         event(new Registered($account));
 
         $result = [
-            'user' => $account,
+            'account' => $account,
             'user_role' => $userRole,
             'message' => "Registration Successful"
         ];
@@ -199,12 +199,6 @@ class AccountController extends Controller
                 'message' => "Sign-in with Google Successful"
             ],200);
 
-            // return redirect('http://localhost:3000')->withCookies([
-            //     'user' => $existingUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'message' => "Sign-in with Google Successful"
-            // ]);
         }
     }
 
@@ -541,7 +535,7 @@ class AccountController extends Controller
                 'message' => "A Network Error occurred. Please try again."
             ],500);
        }
-    }
+    }    
 
     public function resetPasswordView(Request $request){
         $token = $request->token;

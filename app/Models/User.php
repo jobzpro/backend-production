@@ -68,4 +68,12 @@ class User extends Authenticatable
     public function userRoles(): HasMany{
         return $this->hasMany(UserRole::class);
     }
+
+    public function files(): HasMany{
+        return $this->hasMany(FileAttachment::class);
+    }
+
+    public function experiences(): HasMany{
+        return $this->hasMany(UserExperience::class);
+    }
 }

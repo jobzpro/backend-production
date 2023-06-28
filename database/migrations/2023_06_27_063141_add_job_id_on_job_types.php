@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file_attachments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('path');
-            $table->string('type');
-            $table->string('size');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('job_types', function(Blueprint $table){
+            $table->foreignId('job_id')->after('id');
         });
     }
 
@@ -27,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('job_types');
     }
 };

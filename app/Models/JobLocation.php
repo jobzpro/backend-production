@@ -12,7 +12,6 @@ class JobLocation extends Model
 
     protected $fillable = [
         'location',
-        'address',
         'description',
     ];
 }

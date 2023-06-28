@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\FileManager;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\Image;
 use App\Helper\ImageManager;
-
+use App\Models\FileAttachment;
+use App\Models\UserExperience;
 use App\Models\UserReference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
-    use ImageManager;
+    use ImageManager, FileManager;
 
     public function showJobseekerProfile($id){
-        $result = User::where('id', $id)->with('references')->first();
+        $result = User::with('references', 'files','experiences')->where('id', $id)->first();
 
         return response([
             'user' => $result,
@@ -40,6 +43,47 @@ class UserController extends Controller
            $avatar =  $this->uploadAvatar($request['avatar']);
         }
 
+        $attached_file = [];
+
+        if($request->filled('files')){
+            $filesValidator = Validator::make($request->all(),[
+                'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
+            ]);
+
+            if($filesValidator->fails()){
+                return response([
+                    'message' => "Invalid file.",
+                    'errors' => $filesValidator->errors(),
+                ],400);
+            }else{
+    
+                $path = 'files/';
+                !is_dir($path) && mkdir($path, 0777, true);
+    
+                
+                foreach($request->file('files') as $file){
+                    $fileName = time() . $file->getClientOriginalName();
+                    Storage::disk('public')->put($path.$fileName, File::get($file));
+                    $file_name = $file->getClientOriginalName();
+                    $filePath   = $path . $fileName;
+                    $file_type  = $file->getClientOriginalExtension();
+                    $fileSize   = $this->attachmentfileSize($file);
+        
+                    $x = FileAttachment::create([
+                        'name' => $file_name,
+                        'user_id' => $id,
+                        'path' => $filePath,
+                        'type' => $file_type,
+                        'size' => $fileSize 
+                    ]);
+    
+                    array_push($attached_file, $x);
+                }
+            }
+        }
+
+        //dd($attached_file);
+
         $validator = Validator::make($request->all(),[
             'first_name' => 'required',
             'last_name' => 'required',
@@ -52,7 +96,7 @@ class UserController extends Controller
             ],400);
         }
 
-        $user = User::where('id', $id)->with('references')->first();
+        $user = User::with('references', 'files', 'experiences')->where('id', $id)->first();
 
         if($avatar == null){
             $fileName = $user->avatar_path;
@@ -77,19 +121,6 @@ class UserController extends Controller
             'certifications' => $request['certifications'],
             'skills' => $request['skills'],
         ]);
-
-
-        if($request->filled("references")){
-            $references = json_decode($request['references']);
-            //dd($references);
-            for($i = 0; $i < sizeof($references); $i++){
-                UserReference::create([
-                    'user_id' => $user->id,
-                    'name' => $references[$i]->name,
-                    'phone_number' => $references[$i]->phone_number,
-                ]);
-            }
-        }
 
         return response([
             'user' => $user,
@@ -120,12 +151,37 @@ class UserController extends Controller
     }
 
 
-    private function uploadFiles($file){
-        $path = 'files/';
+    public function updateReferences(Request $request, $id){
+        $user = User::with('references','files', 'experiences')->where('id', $id)->first();
+        
+        $reference = UserReference::create([
+            'user_id' => $user->id,
+            'name' => $request['name'],
+            'phone_number' => $request['phone_number'],
+        ]);
 
-        !is_dir($path) && mkdir($path, 0077, true);
 
-        if($file = )
+        return response([
+            'user' => $user,
+            'message' => "User references updated."
+        ],200);
+
     }
+
+    public function updateExperiences(Request $request, $id){
+        $user = User::with('references','files', 'experiences')->where('id', $id)->first();
+
+        $experience = UserExperience::create([
+            'user_id' => $user->id,
+            'name' => $request['name'],
+            'phone_number' => $request['phone_number']
+        ]);
+
+        return response([
+            'user' => $user,
+            'message' => "User experiences updated."
+        ],200);
+    }
+
 
 }

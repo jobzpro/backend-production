@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file_attachments', function (Blueprint $table) {
+        Schema::create('job_shifts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('path');
-            $table->string('type');
-            $table->string('size');
+            $table->foreignId('job_list_id');
+            $table->string('standard_shift')->nullable();
+            $table->string('weekly_schedule')->nullable();
+            $table->string('supplemental_schedule')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('job_shifts');
     }
 };

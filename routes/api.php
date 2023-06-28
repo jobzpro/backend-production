@@ -68,6 +68,8 @@ Route::middleware(['auth:api'])->group(function(){
     Route::prefix('/jobseeker')->controller(UserController::class)->group(function(){
         Route::get('/{id}/profile', 'showJobseekerProfile');
         Route::patch('/{id}/profile/update', 'updateJobseekerProfile');
+        Route::patch('/{id}/profile/references/update', 'updateReferences');
+        Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
     });
 
     Route::prefix('/company/jobs')->controller(JobListController::class)->group(function(){

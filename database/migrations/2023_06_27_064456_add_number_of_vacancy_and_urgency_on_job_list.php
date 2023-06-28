@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file_attachments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('path');
-            $table->string('type');
-            $table->string('size');
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('job_lists', function(Blueprint $table){
+            $table->integer('number_of_vacancies')->after('job_location_id')->nullable();
+            $table->string('hiring_urgency')->after('number_of_vacancies')->nullable();
         });
     }
 
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('job_lists');
     }
 };
