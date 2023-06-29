@@ -455,14 +455,20 @@ class AccountController extends Controller
             return response([
                 'message' => "User doesn't not exist."
             ],400);
+        }else{
+            
         }
 
         //create password tokens
-        PasswordResetTokens::create([
-            'email' => $data['email'],
-            'token' => Str::random(60),
-            'created_at' => Carbon::now()
-        ]);
+        try{
+            PasswordResetTokens::create([
+                'email' => $data['email'],
+                'token' => Str::random(60),
+                'created_at' => Carbon::now()
+            ]);
+        }catch(\Exception $e){
+            
+        }
 
         $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
         

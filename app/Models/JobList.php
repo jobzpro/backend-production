@@ -17,5 +17,16 @@ class JobList extends Model
        'company_id',
        'experience_level_id',
        'job_location_id',
+       'min_salary',
+       'max_salary',
+       'number_of_vacancies',
+       'hiring_urgency',
+       'pay_type',
+       'resume_required',
+       'start_conversion',
+       'send_auto_rejection',
+       'reject_candidates',
+       'reject_time_limit',
+       'other_email',
     ];
 }
