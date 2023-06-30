@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -76,4 +77,17 @@ class User extends Authenticatable
     public function experiences(): HasMany{
         return $this->hasMany(UserExperience::class);
     }
+
+    public function userCompanies(): HasMany{
+        return $this->hasMany(UserCompany::class);
+    }
+
+    public function company(): HasOneThrough{
+        return $this->throughUserCompany()->hasCompany();
+    }
+
+    public function user_notifications(): HasMany{
+        return $this->hasMany(UserNotification::class);
+    }
+
 }

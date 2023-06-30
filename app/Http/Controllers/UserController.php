@@ -4,20 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Helper\FileManager;
 use App\Models\User;
-use App\Models\UserRole;
 use App\Models\Image;
-use App\Helper\ImageManager;
 use App\Models\FileAttachment;
 use App\Models\UserExperience;
 use App\Models\UserReference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
-    use ImageManager, FileManager;
+    use FileManager;
 
     public function showJobseekerProfile($id){
         $result = User::with('references', 'files','experiences')->where('id', $id)->first();
@@ -45,7 +42,7 @@ class UserController extends Controller
 
         $attached_file = [];
 
-        if($request->filled('files')){
+        if($request->hasFile('files')){
             $filesValidator = Validator::make($request->all(),[
                 'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
             ]);
@@ -56,21 +53,19 @@ class UserController extends Controller
                     'errors' => $filesValidator->errors(),
                 ],400);
             }else{
+                $path = 'files';
+                //!is_dir($path) && mkdir($path, 0777, true);
     
-                $path = 'files/';
-                !is_dir($path) && mkdir($path, 0777, true);
-    
-                
                 foreach($request->file('files') as $file){
-                    $fileName = time() . $file->getClientOriginalName();
-                    Storage::disk('public')->put($path.$fileName, File::get($file));
-                    $file_name = $file->getClientOriginalName();
-                    $filePath   = $path . $fileName;
+                    //Storage::disk('public')->put($path.$fileName, File::get($file));
+                    $fileName = time(). $file->getClientOriginalName();
+                    $filePath = Storage::disk('s3')->put($path, $file);
+                    $filePath   = Storage::disk('s3')->url($filePath);
                     $file_type  = $file->getClientOriginalExtension();
-                    $fileSize   = $this->attachmentfileSize($file);
-        
+                    $fileSize   = $this->fileSize($file);
+
                     $x = FileAttachment::create([
-                        'name' => $file_name,
+                        'name' => $fileName,
                         'user_id' => $id,
                         'path' => $filePath,
                         'type' => $file_type,
@@ -101,7 +96,7 @@ class UserController extends Controller
         if($avatar == null){
             $fileName = $user->avatar_path;
         }else{
-            $fileName = Storage::url($avatar->path);
+            $fileName = $avatar->path;
         }
 
         $user->update([
@@ -128,28 +123,6 @@ class UserController extends Controller
         ],200);
         
     }
-
-
-    private function uploadAvatar($image){
-        $path = 'avatars/';
-        
-        !is_dir($path) && mkdir($path, 0777, true);
-
-        if($file = $image){
-            $fileData = $this->uploads($file, $path);
-            $avatar = Image::create([
-                'name' => $fileData['fileName'],
-                'type' => $fileData['fileType'],
-                'path' => $fileData['filePath'],
-                'size' => $fileData['fileSize']
-            ]);
-
-            return $avatar;
-        }else{
-            return $avatar = null;
-        }
-    }
-
 
     public function updateReferences(Request $request, $id){
         $user = User::with('references','files', 'experiences')->where('id', $id)->first();
@@ -181,6 +154,34 @@ class UserController extends Controller
             'user' => $user,
             'message' => "User experiences updated."
         ],200);
+    }
+
+
+    //Private functions
+    private function uploadAvatar($image){
+        $path = 'avatars';
+        
+        //!is_dir($path) && mkdir($path, 0777, true);
+
+        if($file = $image){
+            //Storage::disk('public')->put($path.$fileName, File::get($file));
+            $fileName = time(). $file->getClientOriginalName();
+            $filePath = Storage::disk('s3')->put($path, $file);
+            $filePath   = Storage::disk('s3')->url($filePath);
+            $file_type  = $file->getClientOriginalExtension();
+            $fileSize   = $this->fileSize($file);
+            
+            $avatar = Image::create([
+                'name' => $fileName,
+                'type' => $file_type,
+                'path' => $filePath,
+                'size' => $fileSize,
+            ]);
+
+            return $avatar;
+        }else{
+            return $avatar = null;
+        }
     }
 
 

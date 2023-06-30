@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\PasswordResetTokens;
 use App\Models\Company;
 use App\Models\UserRole;
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use App\Http\Controllers\MailerController as MailerController;
+use App\Models\UserCompany;
 use Illuminate\Http\Response;
 
 class AccountController extends Controller
@@ -467,7 +469,7 @@ class AccountController extends Controller
                 'created_at' => Carbon::now()
             ]);
         }catch(\Exception $e){
-            
+
         }
 
         $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
@@ -600,6 +602,12 @@ class AccountController extends Controller
             'designation' => $data['designation'],
         ]);
 
+        $userCompany = UserCompany::create([
+            'user_id' => $user->id,
+            'company_id' => $company->id,
+            'created_at' => Carbon::now(),
+        ]);
+
         if((new MailerController)->sendEmployerSuccessEmail($company, $user, $user_password)){
             return response([
                 'message' => "Successful"
@@ -633,6 +641,9 @@ class AccountController extends Controller
         if($account){
             $user = User::where('account_id', '=', $account->id)->first();
             $userRole = UserRole::where('user_id', "=", $user->id)->first();
+            $role = Role::where('id', $userRole->role_id)->first();
+            $userCompany = UserCompany::where('user_id', $user->id)->first();
+            $company = Company::where('id', $userCompany->company_id)->first();
 
             if($userRole->role_id == 2){
                 if(Hash::check($data['password'], $account['password'])){
@@ -641,6 +652,7 @@ class AccountController extends Controller
                     $result = [
                         'user' => $user,
                         'user_role' => $userRole,
+                        'company' => $company,
                         'token' => $token,
                         'message' => "Login Successful"
                     ];

@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 
 use Illuminate\Support\Facades\Route;
@@ -72,8 +73,14 @@ Route::middleware(['auth:api'])->group(function(){
         Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
     });
 
-    Route::prefix('/company/jobs')->controller(JobListController::class)->group(function(){
-        Route::post('/post-job', 'store');
+    Route::prefix('/company')->controller(JobListController::class)->group(function(){
+        Route::post('/{id}/jobs/post-job', 'store');
+        Route::get('/{id}/jobs/{job_list_id}', 'getJobListings');
+        Route::get('/{id}/jobs/{job_list_id}/applicants', 'getAllApplicants');
+    });
+
+    Route::prefix('/job')->controller(JobApplicationController::class)->group(function(){
+        Route::post('/{id}/apply', 'store');
     });
 
 });

@@ -7,24 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 trait FileManager{
-
-  public function file_uploads($file, $path){
-    if($file){
-      $fileName = time() . $file->getClientOriginalName();
-      Storage::disk('public')->put($path.$fileName, File::get($file));
-      $file_name = $file->getClientOriginalName();
-      $filePath   = $path . $fileName;
-      $file_type  = $file->getClientOriginalExtension();
-
-      return $file = [
-        'fileName' => $file_name,
-        'fileType' => $file_type,
-        'filePath' => $filePath,
-        'fileSize' => $this->attachmentfileSize($file)
-      ];
-    }
-  }
-  public function attachmentfileSize($file, $precision = 2)
+  public function fileSize($file, $precision = 2)
   {   
     $size = $file->getSize();
 
