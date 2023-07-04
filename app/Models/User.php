@@ -33,11 +33,11 @@ class User extends Authenticatable
         'province',
         'elementary_school',
         'high_school',
-        'collage',
+        'college',
         'description',
         'certifications',
         'skills',
-        
+        'experience_level',
     ];
 
     /**

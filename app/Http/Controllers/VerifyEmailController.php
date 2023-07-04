@@ -15,20 +15,20 @@ class VerifyEmailController extends Controller
         $account = Account::find($request->route('id'));
         
         if($account->hasVerifiedEmail()){
-            //return redirect(env('FRONT_URL'). '/email/verify/already-success');
-            return response([
-                'message' => "Email already verified."
-            ],200);
+            return redirect(env('FRONT_URL'). '?already-success');
+            // return response([
+            //     'message' => "Email already verified."
+            // ],200);
         }
 
         if($account->markEmailAsVerified()){
             event(new Verified($account));
         }
 
-        //return redirect(env('FRONT_URL').'/email/verify/success');
-        return response([
-            'message' => "Sucessful"
-        ],200);
+        return redirect(env('FRONT_URL').'?success');
+        // return response([
+        //     'message' => "Sucessful"
+        // ],200);
     }
 
 

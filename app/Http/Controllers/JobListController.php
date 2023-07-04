@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Enums\JobListStatusEnum as job_status;
 
 class JobListController extends Controller
 {
@@ -57,7 +58,8 @@ class JobListController extends Controller
 
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
-                'job_title' => $data['job_title'],               'description' => $data['description'] ?? "",
+                'job_title' => $data['job_title'],               
+                'description' => $data['description'] ?? "",
                 'job_location_id' => $job_location->id,
                 'show_pay' => $data['show_pay'] ?? null,
                 'pay_type' => $data['pay_type'],
@@ -67,6 +69,7 @@ class JobListController extends Controller
                 'experience_level_id' => $data['experience_level_id'],
                 'number_of_vacancies' => $data['number_of_vacancies'],
                 'hiring_urgency' => $data['hiring_urgency'],
+                'status' => job_status::Published
 
             ]);
 
@@ -115,7 +118,7 @@ class JobListController extends Controller
 
 
     public function showJobsByCompany(Request $request){
-        $c_jobs_list = JobList::where('company_id', $request['company_id'])->get();
+        $c_jobs_list = JobList::with('job_type')->where('company_id', $request['company_id'])->get();
 
         return response([
             'job_list' => $c_jobs_list->paginate(10),
@@ -146,20 +149,33 @@ class JobListController extends Controller
             'job_id' => $id,
             'name' => $data['name'],
             'description' => $data['description'] ?? null
+        ]);
+
+        return response([
+            'job_benefits' => $job_benefits,
+            'message' => "Success"
         ],200);
     }
 
-    public function getAllApplicants($job_list_id){
+    public function getAllApplicantsForJobList($id){
+        $company = Company::find($id);
+        $job_list_id = request()->job_list_id;
         $job_applications = JobApplication::where('job_list_id', $job_list_id)->get();
-
+        $applicants = [];
         foreach($job_applications as $job_application){
-            dd($job_application->user);
+           array_push($applicants, $job_application->user);
         }
+
+        return response([
+            'applicants' => collect($applicants)->paginate(10),
+        ]);
     }
 
-    public function getJobListings($company_id){
-        $job_lists = JobList::where('company_id', $company_id)->get();
+    public function getJobListings($id){
+        $company_id = $id;
+        $job_lists = JobList::with('job_types')->where('company_id', $company_id)->get();
         $results = [];
+        $types = [];
 
         foreach($job_lists as $job_list){
             $result = [
@@ -170,14 +186,78 @@ class JobListController extends Controller
                 'accepted' => JobApplication::where('job_list_id', $job_list->id)->where('status', "Accepted")->count(),
                 'status' => $job_list->status,
                 'date_created' => Carbon::parse($job_list->created_at)->format('d/m/Y'),
+                'job_types' => $types,
+
             ]; 
+            foreach($job_list->job_types as $jtype){
+                $type = $jtype->type;
+                array_push($types, $type);
+            }
 
             array_push($results, $result);
         }
-        //dd($results);
 
         return response([
             'job_lists' => collect($results)->paginate(10),
         ]);
+    } 
+
+    public function archiveJobList($id){
+        $company = Company::find($id);
+        $job_list_id = request()->job_list_id;
+
+        //dd($company->JobListings->find(2));
+
+        $job_list = $company->JobListings->find($job_list_id);
+        
+        $job_list->update([
+            'status' => job_status::Archived,
+        ]);
+
+        return response([
+            'message' => "Job list successfully archived"
+        ],200);
+
+    }
+
+    public function publishJobList($id){
+        $company = Company::find($id);
+        $job_list_id = request()->job_list_id;
+
+        //dd($company->JobListings->find(2));
+
+        $job_list = $company->JobListings->find($job_list_id);
+        
+        $job_list->update([
+            'status' => job_status::Published,
+        ]);
+
+        return response([
+            'message' => "Job list successfully published"
+        ],200);
+
+    }
+
+    public function getAllApplicants($id){
+        $company_id = $id;
+        $job_lists_id = JobList::where('company_id', $company_id)->pluck('id');
+        $job_applications = JobApplication::whereIn('job_list_id', $job_lists_id)->get();
+        $applicants = [];
+        
+        foreach($job_applications as $job_application){
+            $results = [
+                'applicant' => $job_application->user->first_name ." ".  $job_application->user->last_name,
+                'position_applying' => $job_application->jobList->job_title,
+                'expericence_level' => $job_application->user->experience_level,
+                'date_applied' => Carbon::parse($job_application->created_at)->format('d/m/Y h:m A'),
+            ];
+
+            array_push($applicants, $results);
+        }
+
+        return response([
+            'applicants' => collect($applicants)->paginate(10),
+            'message' => "Success"
+        ],200);
     }
 }

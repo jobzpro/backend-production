@@ -75,8 +75,11 @@ Route::middleware(['auth:api'])->group(function(){
 
     Route::prefix('/company')->controller(JobListController::class)->group(function(){
         Route::post('/{id}/jobs/post-job', 'store');
-        Route::get('/{id}/jobs/{job_list_id}', 'getJobListings');
-        Route::get('/{id}/jobs/{job_list_id}/applicants', 'getAllApplicants');
+        Route::get('/{id}/jobs', 'getJobListings');
+        Route::get('/{id}/jobs/{job_list_id}/applicants', 'getAllApplicantsForJobList');
+        Route::patch('/{id}/jobs/{job_list_id}/archived', 'archiveJobList');
+        Route::patch('/{id}/jobs/{job_list_id}/publish', 'publishJobList');
+        Route::get('/{id}/jobs/list-all-applicants', 'getAllApplicants');
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function(){
