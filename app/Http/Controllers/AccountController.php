@@ -643,9 +643,10 @@ class AccountController extends Controller
             $userRole = UserRole::where('user_id', "=", $user->id)->first();
             $role = Role::where('id', $userRole->role_id)->first();
             $userCompany = UserCompany::where('user_id', $user->id)->first();
-            $company = Company::where('id', $userCompany->company_id)->first();
-
+            //$company = Company::where('id', $userCompany->company_id)->first();
+            
             if($userRole->role_id == 2){
+                $company = Company::where('id', $userCompany->company_id)->first();
                 if(Hash::check($data['password'], $account['password'])){
                     $token = $account->createToken('API Token')->accessToken;
     

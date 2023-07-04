@@ -116,6 +116,60 @@ class JobListController extends Controller
         //
     }
 
+    public function saveJobListAsDraft(Request $request){
+        $data = $request->all();
+        $user = User::find($request->user()->id);
+        $userCompany = $user->userCompanies()->first()->companies()->first();
+
+        if($request->route('id') == $userCompany->id){
+            $validator = Validator::make($request->all(),[
+                'job_title' => 'required',
+            ]);
+
+            if($validator->fails()){
+                return response([
+                    'message' => "Job posting unsuccessful.",
+                    'errors' => $validator->errors(),
+                ],400);
+            }
+
+            $job_location = JobLocation::create([
+                'location' => $data['location'],
+                'address' => $data['address'] ?? null,
+                'description' => $data['address_description'] ?? ""
+            ]);
+
+
+            $job_list = JobList::create([
+                'company_id' => $userCompany->id,
+                'job_title' => $data['job_title'],               
+                'description' => $data['description'] ?? "",
+                'job_location_id' => $job_location->id,
+                'show_pay' => $data['show_pay'] ?? null,
+                'pay_type' => $data['pay_type'],
+                'salary' => $data['salary'] ?? null,
+                'min_salary' => $data['min_salary'] ?? null,
+                'max_salary' => $data['max_salary'] ?? null,
+                'experience_level_id' => $data['experience_level_id'],
+                'number_of_vacancies' => $data['number_of_vacancies'],
+                'hiring_urgency' => $data['hiring_urgency'],
+                'status' => job_status::Draft
+
+            ]);
+
+            return response([
+                'job_list' => $job_list,
+                'message' => "Job list is saved as draft successfully."
+            ],200);
+
+
+        }else{
+            return response([
+                'message' => "Unauthorized."
+            ],401);
+        }
+    }
+
 
     public function showJobsByCompany(Request $request){
         $c_jobs_list = JobList::with('job_type')->where('company_id', $request['company_id'])->get();
@@ -243,7 +297,7 @@ class JobListController extends Controller
         $job_lists_id = JobList::where('company_id', $company_id)->pluck('id');
         $job_applications = JobApplication::whereIn('job_list_id', $job_lists_id)->get();
         $applicants = [];
-        
+
         foreach($job_applications as $job_application){
             $results = [
                 'applicant' => $job_application->user->first_name ." ".  $job_application->user->last_name,
