@@ -300,6 +300,7 @@ class JobListController extends Controller
 
         foreach($job_applications as $job_application){
             $results = [
+                'applicant_id' => $job_application->user->id,
                 'applicant' => $job_application->user->first_name ." ".  $job_application->user->last_name,
                 'position_applying' => $job_application->jobList->job_title,
                 'expericence_level' => $job_application->user->experience_level,

@@ -5,6 +5,13 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
+use App\Nova\User;
+use App\Nova\Account;
+use Illuminate\Http\Request;
+use Laravel\Nova\Menu\MenuSection;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Dashboards\Main;
+
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -16,6 +23,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function boot()
     {
         parent::boot();
+
+        Nova::mainMenu(function (Request $request){
+            return [
+                MenuSection::dashboard(Main::class)->icon('chart-bar'),
+                MenuSection::make('Account',[
+                    MenuItem::resource(User::class),
+                ]),
+            ];
+        });
     }
 
     /**
@@ -78,5 +94,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     public function register()
     {
         //
+    }
+
+
+    public function resources(){
+        //Nova::resourcesIn(app_path('Nova'));
+
+        Nova::resources([
+            User::class,
+            Account::class,
+        ]);
     }
 }

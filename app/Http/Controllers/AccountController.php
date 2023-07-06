@@ -608,6 +608,8 @@ class AccountController extends Controller
             'created_at' => Carbon::now(),
         ]);
 
+        (new AdminMailerController)->newEmployerSignUp();
+
         if((new MailerController)->sendEmployerSuccessEmail($company, $user, $user_password)){
             return response([
                 'message' => "Successful"
@@ -647,26 +649,31 @@ class AccountController extends Controller
             
             if($userRole->role_id == 2){
                 $company = Company::where('id', $userCompany->company_id)->first();
-                if(Hash::check($data['password'], $account['password'])){
-                    $token = $account->createToken('API Token')->accessToken;
-    
-                    $result = [
-                        'user' => $user,
-                        'user_role' => $userRole,
-                        'company' => $company,
-                        'token' => $token,
-                        'message' => "Login Successful"
-                    ];
-    
-                    return response()->json($result, 200);
+                if($company->status == 'verified'){
+                    if(Hash::check($data['password'], $account['password'])){
+                        $token = $account->createToken('API Token')->accessToken;
+        
+                        $result = [
+                            'user' => $user,
+                            'user_role' => $userRole,
+                            'company' => $company,
+                            'token' => $token,
+                            'message' => "Login Successful"
+                        ];
+                        return response()->json($result, 200);
+                    }else{
+                        return response([
+                            'message' => 'username and password do not match'
+                        ],400);
+                    }
                 }else{
                     return response([
-                        'message' => 'username and password do not match'
+                        'message' => ' Account not yet active, please contact admin.'
                     ],400);
                 }
             }else{
                 return response([
-                    'message' => 'employer account not found'
+                    'message' => 'employer account not found or account not yet active'
                 ],400);
             }
 

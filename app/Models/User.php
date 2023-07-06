@@ -79,12 +79,12 @@ class User extends Authenticatable
     }
 
     public function userCompanies(): HasMany{
-        return $this->hasMany(UserCompany::class);
+        return $this->hasMany(UserCompany::class, 'user_id');
     }
 
-    public function company(): HasOneThrough{
-        return $this->throughUserCompany()->hasCompany();
-    }
+    // public function company(): HasMany{
+    //     return $this->hasMany();
+    // }
 
     public function user_notifications(): HasMany{
         return $this->hasMany(UserNotification::class);

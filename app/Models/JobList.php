@@ -42,10 +42,6 @@ class JobList extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function jobApplications(): HasMany{
-        return $this->hasMany(JobApplication::class);
-    }
-
     public function job_types(): HasMany{
         return $this->hasMany(JobType::class, 'job_id');
     }

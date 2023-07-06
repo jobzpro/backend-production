@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobApplication extends Model
@@ -25,4 +26,10 @@ class JobApplication extends Model
     public function jobList(): BelongsTo{
         return $this->belongsTo(JobList::class);
     }
+
+    public function jobInterviews(): HasMany{
+        return $this->hasMany(JobInterview::class);
+    }
+
+    
 }

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobApplication;
 use App\Models\JobInterview;
+use App\Models\JobList;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class JobInterviewController extends Controller
@@ -12,7 +15,12 @@ class JobInterviewController extends Controller
      */
     public function index()
     {
-        //
+        $user = User::find(request()->user()->id);
+        $company_id = $user->userCompanies->first()->companies->first()->id;
+        $jobLists_id = JobList::where('company_id', $company_id)->pluck('id');
+        $jobInterviews = JobInterview::where('company_id', $company_id)->get();
+
+        dd($jobInterviews);
     }
 
     /**
@@ -29,17 +37,21 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $user_id = request()->user()->id;
-        dd();
+        $employer_id = request()->user()->id;
+        //dd($employer_id);
 
         $jobInterview = JobInterview::create([
-            'user_id' => $user_id,
+            'employer_id' => $employer_id,
+            'applicant_id' => $data['applicant_id'],
             'job_application_id' => $data['job_application_id'],
+            'company_id' => $user->userCompanies->first()->companies->first()->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
         ]);
 
-
+        return response([
+            'message' => "Success",
+        ],200);
 
     }
 

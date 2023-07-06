@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
@@ -11,14 +12,14 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class User extends Resource
+class Account extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\User>
+     * @var class-string<\App\Models\Account>
      */
-    public static $model = \App\Models\User::class;
+    public static $model = \App\Models\Account::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -33,7 +34,7 @@ class User extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'first_name', 'last_name', 'account.email',
+        'id', 'first_name', 'last_name','email',
     ];
 
     /**
@@ -44,29 +45,21 @@ class User extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            ID::make()->sortable(),
+      return [
+        ID::make()->sortable(),  
 
-            Gravatar::make()->maxWidth(50),
+        Text::make('Email','email')
+        ->sortable()
+        ->rules('required', 'email' ,'max:255')
+        ->creationRules('unique:accounts,email')
+        ->updateRules('unique:accounts,email,{{resourceId}}'),
+        Password::make('Password','password')
+        ->onlyOnForms()
+        ->creationRules('required', Rules\Password::defaults())
+        ->updateRules('nullable', Rules\Password::defaults()),
 
-            HasOne::make('Account','account'),
-
-            Text::make('First Name','first_name')
-            ->sortable()
-            ->rules('required', 'max:255'),
-
-            Text::make('Middle Name','middle_name')
-            ->sortable()
-            ->rules('max:255'),
-
-            Text::make('Last Name','last_name')
-            ->sortable()
-            ->rules('required', 'max:255'),
-
-            Text::make('email', function(){
-                return $this->account->email;
-            }),
-        ];
+        BelongsTo::make('user'),
+      ];
     }
 
     /**

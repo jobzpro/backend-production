@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
-use App\Models\JobInterview;
+use App\Http\Controllers\JobInterviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -86,8 +86,9 @@ Route::middleware(['auth:api'])->group(function(){
         Route::post('/{id}/apply', 'store');
     });
 
-    Route::prefix('/interview')->controller(JobInterview::class)->group(function(){
+    Route::prefix('/interview')->controller(JobInterviewController::class)->group(function(){
         Route::post('/set-interview', 'store');
+        Route::get('/all', 'index');
     });
 
 });

@@ -81,8 +81,6 @@ class JobApplicationController extends Controller
             'message' => 'Application Successfully Submitted',
         ],200);
 
-
-    
     }
 
     /**
