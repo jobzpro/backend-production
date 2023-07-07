@@ -50,7 +50,7 @@ class AccountController extends Controller
             // 'first_name' => $data['first_name'],
             // 'middle_name' => $data['middle_name'],
             // 'last_name' => $data['last_name'],
-            'email' => $data['email'],
+            //'email' => $data['email'],
             'created_at' => Carbon::now(),
         ]);
 
@@ -649,7 +649,7 @@ class AccountController extends Controller
             
             if($userRole->role_id == 2){
                 $company = Company::where('id', $userCompany->company_id)->first();
-                if($company->status == 'verified'){
+                if($company->status == 'approved'){
                     if(Hash::check($data['password'], $account['password'])){
                         $token = $account->createToken('API Token')->accessToken;
         
@@ -668,12 +668,12 @@ class AccountController extends Controller
                     }
                 }else{
                     return response([
-                        'message' => ' Account not yet active, please contact admin.'
+                        'message' => ' Account not yet verified, please contact admin.'
                     ],400);
                 }
             }else{
                 return response([
-                    'message' => 'employer account not found or account not yet active'
+                    'message' => 'employer account not found.'
                 ],400);
             }
 

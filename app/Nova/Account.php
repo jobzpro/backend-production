@@ -4,13 +4,12 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Nova\User;
 
 class Account extends Resource
 {
@@ -26,7 +25,7 @@ class Account extends Resource
      *
      * @var string
      */
-    public static $title = 'first_name';
+    public static $title = 'email';
 
     /**
      * The columns that should be searched.
@@ -34,8 +33,10 @@ class Account extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'first_name', 'last_name','email',
+        'id', 
+        'email', 
     ];
+
 
     /**
      * Get the fields displayed by the resource.
@@ -48,17 +49,24 @@ class Account extends Resource
       return [
         ID::make()->sortable(),  
 
-        Text::make('Email','email')
+        Text::make('email')
         ->sortable()
         ->rules('required', 'email' ,'max:255')
         ->creationRules('unique:accounts,email')
         ->updateRules('unique:accounts,email,{{resourceId}}'),
+       
         Password::make('Password','password')
         ->onlyOnForms()
         ->creationRules('required', Rules\Password::defaults())
         ->updateRules('nullable', Rules\Password::defaults()),
 
-        BelongsTo::make('user'),
+        HasOne::make('User','user', User::class),
+
+        Text::make('Name', function(){
+            return ($this->user ? $this->user->first_name : '') ." ". 
+            ($this->user ? $this->user->last_name : ''); 
+        }),
+
       ];
     }
 

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\BusinessTypes;
+use App\Models\BusinessType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,7 +16,7 @@ class BusinessTypesSeeder extends Seeder
         $business_types = ["Sole Proprietorship", "Partnership", "Limited Liability Company (LLC)", "Corporation", "Cooperative", "Franchise", "Nonprofit Organization", "Social Enterprise", "Limited Partnership (LP)", "Professional Corporation (PC)"];
 
         for($i = 0; $i < sizeof($business_types); $i++){
-            BusinessTypes::create([
+            BusinessType::create([
                 'name' => $business_types[$i],
             ]);
         }

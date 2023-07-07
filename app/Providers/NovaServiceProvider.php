@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Nova\UserRole;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 use App\Nova\User;
 use App\Nova\Account;
+use App\Nova\Role;
+use App\Nova\Company;
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Menu\MenuItem;
@@ -24,14 +27,15 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
 
-        Nova::mainMenu(function (Request $request){
-            return [
-                MenuSection::dashboard(Main::class)->icon('chart-bar'),
-                MenuSection::make('Account',[
-                    MenuItem::resource(User::class),
-                ]),
-            ];
-        });
+        // Nova::mainMenu(function (Request $request){
+        //     return [
+        //         MenuSection::dashboard(Main::class)->icon('chart-bar'),
+        //         MenuSection::make('Account',[
+        //             MenuItem::resource(User::class),
+        //             MenuItem::resource(UserRole::class),
+        //         ]),
+        //     ];
+        // });
     }
 
     /**
@@ -98,11 +102,14 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
 
     public function resources(){
-        //Nova::resourcesIn(app_path('Nova'));
+        Nova::resourcesIn(app_path('Nova'));
 
-        Nova::resources([
-            User::class,
-            Account::class,
-        ]);
+        // Nova::resources([
+        //     Account::class,
+        //     Company::class,
+        //     User::class,
+        //     Role::class,
+        //     UserRole::class,
+        // ]);
     }
 }
