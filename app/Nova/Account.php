@@ -49,7 +49,7 @@ class Account extends Resource
       return [
         ID::make()->sortable(),  
 
-        Text::make('email')
+        Text::make('Email','email')
         ->sortable()
         ->rules('required', 'email' ,'max:255')
         ->creationRules('unique:accounts,email')

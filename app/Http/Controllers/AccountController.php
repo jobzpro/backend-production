@@ -89,8 +89,10 @@ class AccountController extends Controller
     
         $account = Account::where('email', '=', $data['email'])->first();
 
-        if($account){
+        if($account && $account->hasVerifiedEmail()){
             $user = User::where('account_id', $account->id)->first();
+
+            //dd($account->hasVerifiedEmail());
             $userRoles = UserRole::where('user_id', $user->id)->get();
 
             if(Hash::check($data['password'], $account['password'])){
@@ -645,7 +647,6 @@ class AccountController extends Controller
             $userRole = UserRole::where('user_id', "=", $user->id)->first();
             $role = Role::where('id', $userRole->role_id)->first();
             $userCompany = UserCompany::where('user_id', $user->id)->first();
-            //$company = Company::where('id', $userCompany->company_id)->first();
             
             if($userRole->role_id == 2){
                 $company = Company::where('id', $userCompany->company_id)->first();

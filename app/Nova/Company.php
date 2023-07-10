@@ -46,24 +46,25 @@ class Company extends Resource
     {
         return [
             ID::make()->sortable(),
-            Select::make('status')->options([
+            Select::make('Status','status')->options([
                 'pending' => 'Pending',
                 'approved' => 'Approved',
                 'rejected' => 'Rejected',
             ]),
-            Text::make('name'),
-            Text::make('company_email'),
-            Text::make('address_line'),
-            Text::make('city'),
-            Text::make('state'),
-            Text::make('zip_code'),
-            Text::make('introduction'),
-            Text::make('services'),
-            BelongsTo::make('businessType'),
-            Text::make('owner_full_name'),
+            Text::make('Name','name'),
+            Text::make('Company Email','company_email'),
+            Text::make('Address Line','address_line'),
+            Text::make('City','city'),
+            Text::make('State','state'),
+            Text::make('Zip Code','zip_code'),
+            Text::make('Introduction','introduction'),
+            Text::make('Services','services'),
+            BelongsTo::make('Business Type','businessType'),
+            Text::make('Owner Full Name','owner_full_name'),
             HasMany::make('User Company','userCompany'),
         ];
     }
+
 
     /**
      * Get the cards available for the request.

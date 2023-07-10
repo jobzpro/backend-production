@@ -45,7 +45,7 @@ class Role extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make('role_name')->sortable(),
+            Text::make('Role Name','role_name')->sortable(),
             //HasMany::make('userRole'),
         ];
     }

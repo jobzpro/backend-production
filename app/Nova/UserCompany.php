@@ -45,8 +45,6 @@ class UserCompany extends Resource
         return [
             ID::make()->sortable(),
             BelongsTo::make('user'),
-            //HasOne::ofMany('companies'),
-            //HasMany::make('companies'),
             BelongsTo::make('companies'),
         ];
     }
