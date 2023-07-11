@@ -73,7 +73,7 @@ class JobApplicationController extends Controller
             'job_application_id' => $job_application->id,
             'user_id' => $user->id,
             'title' => "Job Application Successfully submitted.",
-            'description' => "Your application to ". $job_list->company->name ." has been succesfully submitted. A company representative will reach out you if you got shortlisted.",
+            'description' => "Your application to ". $job_list->company->name ." has been successfully submitted. A company representative will reach out you if you got shortlisted.",
             'is_Read' => false,
         ]);
 
@@ -105,5 +105,37 @@ class JobApplicationController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function retractApplication(Request $request, $id){
+        $job_application = JobApplication::find($id);
+        $user_id = $request->user()->id;
+
+        $validator = Validator::make($request->all(), [
+            'reason' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        if($user_id == $job_application->user_id){
+            $job_application->update([
+                'status' => application_status::user_retracted,
+                'reason' => $request['reason'],
+            ]);
+
+            return response([
+                'message' => 'Application successfully retracted',
+            ],200);
+        }else{
+
+            return response([
+                'message' => 'Unauthorized',
+            ],400);
+        }
+
     }
 }

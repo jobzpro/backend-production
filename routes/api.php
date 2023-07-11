@@ -84,6 +84,7 @@ Route::middleware(['auth:api'])->group(function(){
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function(){
         Route::post('/{id}/apply', 'store');
+        Route::post('/{id}/retract','retractApplication');
     });
 
     Route::prefix('/interview')->controller(JobInterviewController::class)->group(function(){

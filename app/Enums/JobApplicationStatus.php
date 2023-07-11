@@ -9,4 +9,5 @@ enum JobApplicationStatus: string{
   case archived = "Archived";
   case interview = "Interview";
   case accepted = "Accepted";
+  case user_retracted = "User Retracted";
 }
