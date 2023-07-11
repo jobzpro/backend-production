@@ -9,6 +9,7 @@ use App\Models\PasswordResetTokens;
 use App\Models\Company;
 use App\Models\UserRole;
 use App\Models\Role;
+use App\Models\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -19,9 +20,13 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\MailerController as MailerController;
 use App\Models\UserCompany;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
+use App\Helper\FileManager;
 
 class AccountController extends Controller
 {
+    use FileManager;
+
     public function register(Request $request){
         $validator = Validator::make($request->all(),[
             'email' => 'required|unique:accounts',
@@ -92,7 +97,6 @@ class AccountController extends Controller
         if($account && $account->hasVerifiedEmail()){
             $user = User::where('account_id', $account->id)->first();
 
-            //dd($account->hasVerifiedEmail());
             $userRoles = UserRole::where('user_id', $user->id)->get();
 
             if(Hash::check($data['password'], $account['password'])){
@@ -210,81 +214,71 @@ class AccountController extends Controller
        // return Socialite::driver('apple')->stateless()->redirect();
     }
 
-    public function handleAppleCallback(){
+    public function handleAppleCallback(Request $request){
+        $token = $request['token'];
+        
         try{
-            $user = Socialite::driver('apple')->stateless()->user();
+            $user = Socialite::driver('google')->userFromToken($token);
         }catch(\Exception $e){
-            return redirect('/login');
+            return response([
+                "message" => "Something went wrong try again later",
+            ],400);
         }
 
-        $existingAccount = Account::where('email', '=', $user->email)->first();
-
+        $existingAccount = Account::where('email', $user->email)->first();
         if($existingAccount){
             $existingUser = User::where('account_id', $existingAccount->id)->first();
             $userRole = UserRole::create([
                 'user_id' => $existingUser->id,
                 'role_id' => 3,
             ]);
+
         }else{
             $existingAccount = Account::create([
                 'email' => $user->email,
-                'password' => Hash::make("password"),
                 'name' => $user->name,
                 'login_type' => "apple",
                 'login_type_id' => $user->id,
+                'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
             ]);
-
             $existingUser = User::where('account_id', $existingAccount->id)->first();
         }
-
+       
         if($existingUser){
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            // return response([
-            //     'user' => $existingUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'messsage' => 'Sign-in with Apple Successful'
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
+            return response([
                 'user' => $existingUser,
                 'user_role' => $userRole,
-                'token' => $token,
+                'token'=> $token,
                 'message' => "Sign-in with Apple Successful"
-            ]);
+            ],200);
+            
         }else{
 
             $full_name = explode(" ", $user->name);
             $newUser = User::create([
                 'account_id' => $existingAccount->id,
-                'first_name' => $full_name[0],
-                'last_name' => $full_name[1],
+                'first_name' => $full_name[0] ?? "",
+                'last_name' => $full_name[1] ?? "",                
                 'created_at' => Carbon::now(),
             ]);
 
             $newUser->save();
             $token = $existingAccount->createToken('API Token')->accessToken;
-            
+
             $userRole = UserRole::create([
                 'user_id' => $newUser->id,
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $newUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'message' => "Sign-in with Apple Successful"
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
-                'user' => $existingUser,
-                'user_role' => $userRole,
+            return response([
+                'user' => $newUser,
                 'token' => $token,
                 'message' => "Sign-in with Apple Successful"
-            ]);
+            ],200);
+
         }
     }
 
@@ -295,7 +289,6 @@ class AccountController extends Controller
 
     public function handleLinkedInCallback(Request $request){
         $token = $request['token'];
-        //dd($token);
 
         try{
             $user = Socialite::driver('linkedin')->userFromToken($token);
@@ -560,17 +553,35 @@ class AccountController extends Controller
     public function signUpAsAnEmployeer(Request $request){
         $data = $request->all();
 
-        $company = Company::create([
-            "name" => $data['company_name'],
-            "address_line" => $data['address_line'],
-            "city" => $data['city'],
-            "state" => $data['state'],
-            //"zip_code" => $data['zip_code'],
-            "company_email" => $data['company_email'],
-            "business_type_id" => $data['business_type_id'],
-            "owner_full_name" => $data['owner_full_name'],
+        $imageValidator = Validator::make($request->all(),[
+            'company_logo' => 'image|mimes:jpeg,png,jpg|max:500'
         ]);
 
+        if($imageValidator->fails()){
+            return response([
+                'message' => "Invalid file",
+                'errors' => $imageValidator->errors(),
+            ],400);
+        }else{
+            $company_logo = $this->uploadLogo($request['company_logo']);
+        }
+
+        $company = Company::create([
+            "name" => $data['company_name'],
+            //"address_line" => $data['address_line'],
+            //"city" => $data['city'],
+            //"state" => $data['state'],
+            //"zip_code" => $data['zip_code'],
+            "company_email" => $data['company_email'],
+            "years_of_operation" => $data["years_of_operation"],
+            "business_type_id" => $data['business_type_id'],
+            "owner_full_name" => $data['owner_full_name'],
+            "owner_contact_no" => $data["owner_contact_no"],
+            "referral_code" => $data["referral_code"],
+            'industry_id' => $data['industry_id'],
+            
+        ]);
+        
         $validator = Validator::make($request->all(),[
             'email' => 'required|unique:accounts',
         ]);
@@ -682,6 +693,32 @@ class AccountController extends Controller
             return response([
                 'message' => "Cannot find account",
             ],400);
+        }
+    }
+
+
+
+    //Private functions
+    private function uploadLogo($company_logo){
+        $path = 'company_logo';
+
+        if($file = $company_logo){
+            $fileName = time().$file->getClientOriginalName();
+            $filePath = Storage::disk('s3')->put($path,$file);
+            $filePath   = Storage::disk('s3')->url($filePath);
+            $file_type  = $file->getClientOriginalExtension();
+            $fileSize   = $this->fileSize($file);
+
+            $company_logo = Image::create([
+                'name' => $fileName,
+                'type' => $file_type,
+                'path' => $filePath,
+                'size' => $fileSize,
+            ]);
+
+            return $company_logo;
+        }else{
+            return $company_logo = null;
         }
     }
 

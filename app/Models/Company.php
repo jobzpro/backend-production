@@ -26,10 +26,14 @@ class Company extends Model
         'owner_full_name',
         'introduction',
         'services',
+        'company_logo_path',
+        'owner_contact_no',
+        'years_of_operation',
+        'industry_id',
     ];
 
     public function userCompany(): HasMany{
-        return $this->hasMany(UserCompany::class);
+        return $this->hasMany(UserCompany::class, 'company_id');
     }
 
     public function JobListings(): HasMany{
@@ -37,7 +41,11 @@ class Company extends Model
     }
 
     public function businessType():  BelongsTo{
-        return $this->belongsTo(BusinessType::class, 'id');
+        return $this->belongsTo(BusinessType::class, 'business_type_id');
+    }
+
+    public function industry(): BelongsTo{
+        return $this->belongsTo(Industry::class, 'industry_id');
     }
 
 

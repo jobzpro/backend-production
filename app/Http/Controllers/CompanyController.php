@@ -34,4 +34,9 @@ class CompanyController extends Controller
     }
 
 
+    public function inviteStaff(Request $request){
+
+    }
+
+
 }
