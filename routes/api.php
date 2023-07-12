@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
@@ -99,4 +100,5 @@ Route::apiResources([
     'company' => CompanyController::class,
     'jobs' => JobListController::class,
     'industry' => IndustryController::class,
+    'business-type' => BusinessTypeController::class,
 ],['only' => ['index', 'show']]);
