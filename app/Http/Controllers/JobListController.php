@@ -96,7 +96,7 @@ class JobListController extends Controller
     public function show(JobList $jobList)
     {
         return response([
-            'job_list' => $jobList,
+            'job_list' => $jobList->paginate(10),
         ],200);
     }
 

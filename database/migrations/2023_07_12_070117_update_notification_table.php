@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('job_applications', function(Blueprint $table){
-            $table->text('reason')->nullable();
+        Schema::table('notifications', function(Blueprint $table){
+            $table->foreignId('company_id');
+            $table->foreignId('job_list_id');
+            $table->dropColumn('job_application_id');
         });
     }
 
@@ -21,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('job_applications');
+        Schema::dropIfExists('notifications');
     }
 };
