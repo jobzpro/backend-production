@@ -61,19 +61,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewNova', function ($user) {
-            // return in_array($user->email, [
-            //     'admin@jobzpro.com',
-            // ]);
-
-            // return in_array($user->userRole, [
-            //     'Super Admin',
-            // ]);
-
-            // dd($user->userRole);
-
-            // if($user->userRole->id == 1){
-            //     return true;
-            // }
+            return in_array($user->email, [
+                'admin@jobzpro.com',
+            ]);
         });
     }
 
@@ -121,4 +111,13 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         //     UserRole::class,
         // ]);
     }
+
+    //function to test laravel nova gates
+    // protected function authorization(){
+    //     $this->gate();
+
+    //     Nova::auth(function(Request $request){
+    //         return Gate::check('viewNova', [$request->user()]);
+    //     });
+    // }
 }
