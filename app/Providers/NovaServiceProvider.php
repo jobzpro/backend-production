@@ -69,6 +69,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             //     'Super Admin',
             // ]);
 
+            dd($user->userRole);
+            
             if($user->userRole->id == 1){
                 return true;
             }
