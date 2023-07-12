@@ -9,6 +9,7 @@ use App\Models\JobList;
 use App\Models\JobLocation;
 use App\Models\JobType;
 use App\Models\User;
+use App\Models\CompanyNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -71,6 +72,13 @@ class JobListController extends Controller
                 'hiring_urgency' => $data['hiring_urgency'],
                 'status' => job_status::Published
 
+            ]);
+
+            $notification = CompanyNotification::create([
+                'title' => "Job Successfully Posted!",
+                'description' => "Job list ".$job_list->job_title." has been successfully posted.",
+                'company_id' => $userCompany->id,
+                'job_list_id' => $job_list->id,
             ]);
 
             

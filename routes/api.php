@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
+use App\Http\Controllers\IndustryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -97,4 +98,5 @@ Route::middleware(['auth:api'])->group(function(){
 Route::apiResources([
     'company' => CompanyController::class,
     'jobs' => JobListController::class,
+    'industry' => IndustryController::class,
 ],['only' => ['index', 'show']]);

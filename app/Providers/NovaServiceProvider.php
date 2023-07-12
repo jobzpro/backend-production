@@ -112,7 +112,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         // ]);
     }
 
-    //function to test laravel nova gates
+    //***function to test laravel nova gates on local env**//
+    
     // protected function authorization(){
     //     $this->gate();
 
