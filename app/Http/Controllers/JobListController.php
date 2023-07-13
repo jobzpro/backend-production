@@ -14,6 +14,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\JobListStatusEnum as job_status;
+use App\Models\JobStandardShift;
+use App\Models\JobSupplementalSchedule;
+use App\Models\JobWeeklySchedule;
 
 class JobListController extends Controller
 {
@@ -89,6 +92,37 @@ class JobListController extends Controller
                     ]);
                 }
             }
+
+            if($request->filled('standard_shift')){
+                $job_standard_shift = $data['standard_shift'];
+                for($i = 0; $i<sizeof($job_standard_shift); $i++){
+                    JobStandardShift::create([
+                        'job_list_id' => $job_list->id,
+                        'standard_shift_id' => $job_standard_shift[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('weekly_schedule')){
+                $job_weekly_schedule = $data['weekly_schedule'];
+                for($i = 0; $i<sizeof($job_weekly_schedule); $i++){
+                    JobWeeklySchedule::create([
+                        'job_list_id' => $job_list->id,
+                        'weekely_shift_id' => $job_weekly_schedule[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('supplementary_schedule')){
+                $job_supplementary_schedule = $data['supplementary_schedule'];
+                for($i = 0; $i<sizeof($job_supplementary_schedule); $i++){
+                    JobSupplementalSchedule::create([
+                        'job_list_id' => $job_list->id,
+                        'supplementary_schedule_id' => $job_supplementary_schedule[$i],
+                    ]);
+                }
+            }
+
 
             
 
@@ -196,6 +230,36 @@ class JobListController extends Controller
                     JobBenefits::create([
                         'job_list_id' => $job_list->id,
                         'benefit_id' => $job_benefits[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('standard_shift')){
+                $job_standard_shift = $data['standard_shift'];
+                for($i = 0; $i<sizeof($job_standard_shift); $i++){
+                    JobStandardShift::create([
+                        'job_list_id' => $job_list->id,
+                        'standard_shift_id' => $job_standard_shift[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('weekly_schedule')){
+                $job_weekly_schedule = $data['weekly_schedule'];
+                for($i = 0; $i<sizeof($job_weekly_schedule); $i++){
+                    JobWeeklySchedule::create([
+                        'job_list_id' => $job_list->id,
+                        'weekely_shift_id' => $job_weekly_schedule[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('supplementary_schedule')){
+                $job_supplementary_schedule = $data['supplementary_schedule'];
+                for($i = 0; $i<sizeof($job_supplementary_schedule); $i++){
+                    JobSupplementalSchedule::create([
+                        'job_list_id' => $job_list->id,
+                        'supplementary_schedule_id' => $job_supplementary_schedule[$i],
                     ]);
                 }
             }
