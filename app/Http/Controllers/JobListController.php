@@ -70,9 +70,29 @@ class JobListController extends Controller
                 'experience_level_id' => $data['experience_level_id'],
                 'number_of_vacancies' => $data['number_of_vacancies'],
                 'hiring_urgency' => $data['hiring_urgency'],
-                'status' => job_status::Published
+                'status' => job_status::Published,
+                'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'],
+                'can_start_messages' => $data['can_start_messages'],
+                'send_auto_reject_emails' => $data['send_auto_reject_emails'],
+                'auto_reject' => $data['auto_reject'],
+                'time_limit' => $data['time_limit'],
+                'other_email' => $data['other_email'],
 
             ]);
+
+            if($request->filled('benefits')){
+                $job_benefits = $data['benefits'];
+                for($i = 0; $i<sizeof($job_benefits); $i++){
+                    JobBenefits::create([
+                        'job_list_id' => $job_list->id,
+                        'benefit_id' => $job_benefits[$i],
+                    ]);
+                }
+            }
+
+            
+
+
 
             $notification = CompanyNotification::create([
                 'title' => "Job Successfully Posted!",
@@ -86,7 +106,6 @@ class JobListController extends Controller
                 'job_list' => $job_list,
                 'message' => "Job posted successfully."
             ],200);
-
 
 
 
@@ -161,9 +180,25 @@ class JobListController extends Controller
                 'experience_level_id' => $data['experience_level_id'],
                 'number_of_vacancies' => $data['number_of_vacancies'],
                 'hiring_urgency' => $data['hiring_urgency'],
-                'status' => job_status::Draft
+                'status' => job_status::Draft,
+                'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'],
+                'can_start_messages' => $data['can_start_messages'],
+                'send_auto_reject_emails' => $data['send_auto_reject_emails'],
+                'auto_reject' => $data['auto_reject'],
+                'time_limit' => $data['time_limit'],
+                'other_email' => $data['other_email'],
 
             ]);
+
+            if($request->filled('benefits')){
+                $job_benefits = explode(",",$data['benefits']);
+                for($i = 0; $i<sizeof($job_benefits); $i++){
+                    JobBenefits::create([
+                        'job_list_id' => $job_list->id,
+                        'benefit_id' => $job_benefits[$i],
+                    ]);
+                }
+            }
 
             return response([
                 'job_list' => $job_list,

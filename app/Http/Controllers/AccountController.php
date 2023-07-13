@@ -94,7 +94,7 @@ class AccountController extends Controller
     
         $account = Account::where('email', '=', $data['email'])->first();
 
-        if($account && $account->hasVerifiedEmail()){
+        if($account || $account->hasVerifiedEmail()){
             $user = User::where('account_id', $account->id)->first();
 
             $userRoles = UserRole::where('user_id', $user->id)->get();
@@ -132,7 +132,7 @@ class AccountController extends Controller
         }else{
             return response([
                 'message' => "Something went wrong. Please try again."
-            ], 500);
+            ], 400);
         }
     }
 
@@ -169,6 +169,7 @@ class AccountController extends Controller
                 'login_type_id' => $user->id,
                 'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
+                'email_verified_at' => Carbon::now(),
             ]);
             $existingUser = User::where('account_id', $existingAccount->id)->first();
         }
@@ -241,6 +242,7 @@ class AccountController extends Controller
                 'login_type_id' => $user->id,
                 'password' => Hash::make("password"),
                 'created_at' => Carbon::now(),
+                'email_verified_at' => Carbon::now(),
             ]);
             $existingUser = User::where('account_id', $existingAccount->id)->first();
         }
@@ -310,6 +312,7 @@ class AccountController extends Controller
                 'login_type' => "linkedin",
                 'login_type_id' => $user->id,
                 'created_at' => Carbon::now(),
+                'email_verified_at' => Carbon::now(),
             ]);
 
             $existingUser = User::where('account_id', $existingAccount->id)->first();
@@ -366,9 +369,11 @@ class AccountController extends Controller
         $token = $request['token'];
 
         try{
-            $user = Socialite::driver('facebook')->userFromToken($token);
+            $user = Socialite::driver('linkedin')->userFromToken($token);
         }catch(\Exception $e){
-            return redirect('/login');
+            return response([
+                "message" => "Something went wrong. Please try again",
+            ],400);
         }
 
         $existingAccount = Account::where('email', '=', $user->email)->first();
@@ -380,9 +385,10 @@ class AccountController extends Controller
                 'email' => $user->email,
                 'password' => Hash::make("password"),
                 'name' => $user->name,
-                'login_type' => "facebook",
+                'login_type' => "linkedin",
                 'login_type_id' => $user->id,
                 'created_at' => Carbon::now(),
+                'email_verified_at' => Carbon::now(),
             ]);
 
             $existingUser = User::where('account_id', $existingAccount->id)->first();
@@ -396,19 +402,13 @@ class AccountController extends Controller
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $existingUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'messsage' => 'Sign-in with Facebook Successful'
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
+            return response([
                 'user' => $existingUser,
                 'user_role' => $userRole,
                 'token' => $token,
-                'message' => "Sign-in with Facebook Successful"
-            ]);
+                'messsage' => 'Sign-in with Facebook Successful'
+            ],200);
+
         }else{
 
             $full_name = explode(" ", $user->name);
@@ -427,20 +427,13 @@ class AccountController extends Controller
                 'role_id' => 3,
             ]);
 
-            // return response([
-            //     'user' => $newUser,
-            //     'user_role' => $userRole,
-            //     'token' => $token,
-            //     'message' => "Sign-in with Facebook Successful"
-            // ],200);
-
-            return redirect('http://localhost:3000')->withCookies([
-                'user' => $existingUser,
-                'user_role' => $userRole,
+            return response([
+                'user' => $newUser,
                 'token' => $token,
                 'message' => "Sign-in with Facebook Successful"
-            ]);
-        } 
+            ],200);
+
+        }
     }
 
     public function resetPasswordRequest(Request $request){
@@ -452,8 +445,6 @@ class AccountController extends Controller
             return response([
                 'message' => "User doesn't not exist."
             ],400);
-        }else{
-            
         }
 
         //create password tokens
@@ -476,7 +467,7 @@ class AccountController extends Controller
         }else{
             return response([
                 'message' => "A network error occured. Please try again."
-            ],500);
+            ],400);
         }
     }
 
@@ -536,7 +527,7 @@ class AccountController extends Controller
        }else{
             return response([
                 'message' => "A Network Error occurred. Please try again."
-            ],500);
+            ],400);
        }
     }    
 
@@ -554,7 +545,7 @@ class AccountController extends Controller
         $data = $request->all();
 
         $imageValidator = Validator::make($request->all(),[
-            'company_logo' => 'image|mimes:jpeg,png,jpg|max:500'
+            'company_logo' => 'image|mimes:jpeg,png,jpg|max:4000'
         ]);
 
         if($imageValidator->fails()){
@@ -579,6 +570,7 @@ class AccountController extends Controller
             "owner_contact_no" => $data["owner_contact_no"],
             "referral_code" => $data["referral_code"],
             'industry_id' => $data['industry_id'],
+            'company_logo_path' => $company_logo->filePath,
             
         ]);
         
@@ -590,7 +582,7 @@ class AccountController extends Controller
             return response([
                 'message' => "Company creation Unsuccessful",
                 'errors' => $validator->errors()
-            ],500);
+            ],400);
         }
 
         $user_password = Str::random(12);
@@ -630,7 +622,7 @@ class AccountController extends Controller
        }else{
             return response([
                 'message' => "A Network Error occurred. Please try again."
-            ],500);
+            ],400);
        }
     }
 

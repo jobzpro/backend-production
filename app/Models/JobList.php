@@ -13,29 +13,38 @@ class JobList extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-       'job_title',
-       'description',
-       'salary',
-       'company_id',
-       'experience_level_id',
-       'job_location_id',
-       'min_salary',
-       'max_salary',
-       'number_of_vacancies',
-       'hiring_urgency',
-       'pay_type',
-       'resume_required',
-       'start_conversion',
-       'send_auto_rejection',
-       'reject_candidates',
-       'reject_time_limit',
-       'other_email',
-       'status',
-       'show_pay'
+        'job_title',
+        'description',
+        'salary',
+        'company_id',
+        'experience_level_id',
+        'job_location_id',
+        'min_salary',
+        'max_salary',
+        'number_of_vacancies',
+        'hiring_urgency',
+        'pay_type',
+        'resume_required',
+        'start_conversion',
+        'send_auto_rejection',
+        'reject_candidates',
+        'reject_time_limit',
+        'other_email',
+        'status',
+        'show_pay',
+        'can_applicant_with_criminal_record_apply',
+        'can_start_messages',
+        'send_auto_reject_emails',
+        'auto_reject',
+        'time_limit',
+        'other_enail',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'can_start_messages' => 'boolean',
+        'send_auto_reject_emails' => 'boolean',
+        'auto_reject' => 'boolean',
     ];
 
     public function company(): BelongsTo{
@@ -44,5 +53,9 @@ class JobList extends Model
 
     public function job_types(): HasMany{
         return $this->hasMany(JobType::class, 'job_id');
+    }
+
+    public function job_benefits(): HasMany{
+        return $this->hasMany(JobBenefits::class);
     }
 }
