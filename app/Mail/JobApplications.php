@@ -18,9 +18,10 @@ class JobApplications extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData, $attach)
+    public function __construct($mailData) //$attach
     {
         $this->mailData = $mailData;
+       // $this->attach = $attach;
     }
 
     /**
@@ -40,7 +41,7 @@ class JobApplications extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'employer.jobs.job_application_notification',
+            view: 'mail.employer.jobs.job_application_notification',
         );
     }
 
@@ -51,6 +52,6 @@ class JobApplications extends Mailable
      */
     public function attachments(): array
     {
-        return $this->attach;
+        return [];
     }
 }

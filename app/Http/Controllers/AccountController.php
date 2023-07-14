@@ -570,7 +570,7 @@ class AccountController extends Controller
             "owner_contact_no" => $data["owner_contact_no"],
             "referral_code" => $data["referral_code"],
             'industry_id' => $data['industry_id'],
-            'company_logo_path' => $company_logo->filePath,
+            'company_logo_path' => $company_logo,
             
         ]);
         
@@ -708,7 +708,7 @@ class AccountController extends Controller
                 'size' => $fileSize,
             ]);
 
-            return $company_logo;
+            return $company_logo->name;
         }else{
             return $company_logo = null;
         }

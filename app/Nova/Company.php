@@ -53,11 +53,11 @@ class Company extends Resource
             ]),
             Text::make('Name','name'),
             Text::make('Company Email','company_email'),
-            Text::make('Address Line','address_line'),
-            Text::make('City','city'),
-            Text::make('State','state'),
-            Text::make('Zip Code','zip_code'),
-            Text::make('Introduction','introduction'),
+            Text::make('Address Line','address_line')->hideFromIndex(),
+            Text::make('City','city')->hideFromIndex(),
+            Text::make('State','state')->hideFromIndex(),
+            Text::make('Zip Code','zip_code')->hideFromIndex(),
+            Text::make('Introduction','introduction')->hideFromIndex(),
             Text::make('Services','services'),
             BelongsTo::make('Business Type','businessType'),
             BelongsTo::make('Industry', 'industry'),
@@ -65,6 +65,7 @@ class Company extends Resource
             Text::make('Owner Full Name','owner_full_name'),
             Text::make('Owner Contact Number', 'owner_contact_no'),
             HasMany::make('User Company','userCompany'),
+            Text::make('Referral Code', 'referral_code')->hideFromIndex(),
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Models\JobApplication;
 use App\Models\JobInterview;
 use App\Models\JobList;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class JobInterviewController extends Controller
@@ -44,9 +45,10 @@ class JobInterviewController extends Controller
             'employer_id' => $employer_id,
             'applicant_id' => $data['applicant_id'],
             'job_application_id' => $data['job_application_id'],
-            'company_id' => $user->userCompanies->first()->companies->first()->id,
+            'company_id' => $employer_id ->userCompanies->first()->companies->first()->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
+            'interview_date' => Carbon::parse($data['interview_date'])->format("d/m/Y h:m A"),
         ]);
 
         return response([
