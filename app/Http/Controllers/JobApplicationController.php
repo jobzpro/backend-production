@@ -71,7 +71,7 @@ class JobApplicationController extends Controller
             //dd($user_companies);
             foreach($user_companies as $employer){
                 //dd($employer);
-                (new EmployerMailerController)->applicantApplied($user, $employer, $company);
+                (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
             }
         }
 
