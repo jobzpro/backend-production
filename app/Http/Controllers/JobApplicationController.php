@@ -15,8 +15,11 @@ use App\Models\UserNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\EmployerMailerController as EmployerMailerController;
+use App\Helper\FileManager;
+
 class JobApplicationController extends Controller
 {
+    use FileManager;
     /**
      * Display a listing of the resource.
      */
@@ -31,7 +34,6 @@ class JobApplicationController extends Controller
     public function store(Request $request, $id){
         $job_list = JobList::find($id);
         $user = User::find($request->user()->id);
-        $resume = null;
         $company = Company::find($job_list->company_id)->first();
 
         $user_companies = UserCompany::where('company_id', $company->id)->get();
@@ -50,8 +52,7 @@ class JobApplicationController extends Controller
             }else{
                 $path = 'files';
                 $file = $request->file('file');
-
-                $fileName = time(). $file->getClientOriginalName();
+                $fileName = time().$file->getClientOriginalName();
                 $filePath = Storage::disk('s3')->put($path, $file);
                 $filePath   = Storage::disk('s3')->url($filePath);
                 $file_type  = $file->getClientOriginalExtension();
@@ -67,6 +68,23 @@ class JobApplicationController extends Controller
             }
         }
 
+        $job_application = JobApplication::create([
+            'user_id' => $user->id,
+            'job_list_id' => $job_list->id,
+            'status' => application_status::unread,
+            'applied_at' => Carbon::now(),
+            'resume_path' => $resume->path,
+        ]);
+
+        UserNotification::create([
+            'job_application_id' => $job_application->id,
+            'user_id' => $user->id,
+            'title' => "Job Application Successfully submitted.",
+            'description' => "Your application to ". $job_list->company->name ." has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+            'is_Read' => false,
+        ]);
+
+
         if($user_companies){
             //dd($user_companies);
             foreach($user_companies as $employer){
@@ -76,26 +94,9 @@ class JobApplicationController extends Controller
         }
 
 
-        // $job_application = JobApplication::create([
-        //     'user_id' => $user->id,
-        //     'job_list_id' => $job_list->id,
-        //     'status' => application_status::unread,
-        //     'applied_at' => Carbon::now(),
-        //     'resume_path' => $resume,
-        // ]);
-
-        // UserNotification::create([
-        //     'job_application_id' => $job_application->id,
-        //     'user_id' => $user->id,
-        //     'title' => "Job Application Successfully submitted.",
-        //     'description' => "Your application to ". $job_list->company->name ." has been successfully submitted. A company representative will reach out you if you got shortlisted.",
-        //     'is_Read' => false,
-        // ]);
-
-
-        // return response([
-        //     'message' => 'Application Successfully Submitted',
-        // ],200);
+        return response([
+            'message' => 'Application Successfully Submitted',
+        ],200);
 
     }
 

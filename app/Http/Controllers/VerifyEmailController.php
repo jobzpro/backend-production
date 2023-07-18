@@ -15,7 +15,7 @@ class VerifyEmailController extends Controller
         $account = Account::find($request->route('id'));
         
         if($account->hasVerifiedEmail()){
-            return redirect(env('FRONT_URL'). '/auth/jobseeker/sign-in?already-success');
+            return redirect(env('FRONT_URL'). '/auth/jobseeker/sign-in?verification=already-verified');
             // return response([
             //     'message' => "Email already verified."
             // ],200);
@@ -25,7 +25,7 @@ class VerifyEmailController extends Controller
             event(new Verified($account));
         }
 
-        return redirect(env('FRONT_URL').'/auth/jobseeker/sign-in?success');
+        return redirect(env('FRONT_URL').'/auth/jobseeker/sign-in?verification=success');
         // return response([
         //     'message' => "Sucessful"
         // ],200);

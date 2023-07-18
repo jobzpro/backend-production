@@ -17,6 +17,7 @@ class JobApplication extends Model
         'job_list_id',
         'status',
         'applied_at',
+        'resume_path',
     ];
 
     public function user(): BelongsTo{

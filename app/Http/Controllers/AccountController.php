@@ -437,7 +437,6 @@ class AccountController extends Controller
     }
 
     public function resetPasswordRequest(Request $request){
-        
         $data = $request->all();
         $user = Account::where('email', '=', $data['email'])->first();
 
@@ -472,11 +471,16 @@ class AccountController extends Controller
     }
 
     public function sendResetEmail($email, $token){
-        $user = Account::where("email", "=", $email)->first();
-        $link = env('FRONT_URL'). '/change-password?token='. $token . '&email=' .urlencode($user->email);
+        $account = Account::where("email", "=", $email)->first();
 
+        if($account->user->userRoles->first()->role->role_name == "Jobseeker"){
+            $link = env('FRONT_URL'). '/change-password?token='. $token . '&email=' .urlencode($account->email);
+        }else{
+            $link = env('FRONT_URL'). '/auth/employer/password-change?token'. $token . '&email=' .urlencode($account->email);
+        }
+        
         try{
-           (new MailerController)->sendResetPasswordEmail($user, $link);
+           (new MailerController)->sendResetPasswordEmail($account, $link);
             return true;
         }catch(\Exception $e){
             return false;
