@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\ApproveCompany;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
@@ -111,6 +112,8 @@ class Company extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            new ApproveCompany
+        ];
     }
 }

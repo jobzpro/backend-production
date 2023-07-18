@@ -18,4 +18,16 @@ class AdminMailerController extends Controller
 
         Mail::to($email)->send(new AdminNotifications($mailData, $subject));
     }
+
+    public function sendApprovalMail($email){
+        $subject = "Welcome to Jobzpro";
+
+        $mailData = [
+            'body' => 'Hi! Thank you for signing up for jobzpro. You can now sign-in using the credentials that were sent earlier.'
+        ];
+
+        Mail::to($email)->send(new AdminNotifications($mailData, $subject));
+
+    }
+
 }
