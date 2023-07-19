@@ -31,7 +31,7 @@ class ApproveCompany extends Action
             $model->update([
                 'status' => "approved",
             ]);
-            
+
             $usersCompany = UserCompany::where('company_id', $model->id)->pluck('user_id');
 
             $employees = User::whereIn('id', $usersCompany)->get();
@@ -40,7 +40,7 @@ class ApproveCompany extends Action
                 $employee->account()->update([
                     'email_verified_at' => Carbon::now(),
                 ]);
-
+        
                 $employee_email = $employee->account->email;
                 (new AdminMailerController)->sendApprovalMail($employee_email);
             }
