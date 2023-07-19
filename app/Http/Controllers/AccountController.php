@@ -97,24 +97,31 @@ class AccountController extends Controller
         if($account || $account->hasVerifiedEmail()){
             $user = User::where('account_id', $account->id)->first();
 
-            $userRoles = UserRole::where('user_id', $user->id)->get();
+            $userRoles = UserRole::where('user_id', $user->id)->first();
 
-            if(Hash::check($data['password'], $account['password'])){
-                $token = $account->createToken('API Token')->accessToken;
-
-                $result = [
-                    'account' => $account,
-                    'user_role' => $userRoles,
-                    'token' => $token,
-                    'message' => "Login Successful"
-                ];
-
-                return response()->json($result, 200);
+            if($userRoles->role_id == 3){
+                if(Hash::check($data['password'], $account['password'])){
+                    $token = $account->createToken('API Token')->accessToken;
+    
+                    $result = [
+                        'account' => $account,
+                        'user_role' => $userRoles,
+                        'token' => $token,
+                        'message' => "Login Successful"
+                    ];
+    
+                    return response()->json($result, 200);
+                }else{
+                    return response([
+                        'message' => 'username and password do not match'
+                    ],400);
+                }
             }else{
                 return response([
-                    'message' => 'username and password do not match'
-                ],400);
+                    'message' => 'Account not found',
+                ],200);
             }
+           
         }else{
             return response([
                 'message' => "Cannot find account",
