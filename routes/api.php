@@ -9,6 +9,7 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
 use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -102,4 +103,5 @@ Route::apiResources([
     'jobs' => JobListController::class,
     'industry' => IndustryController::class,
     'business-type' => BusinessTypeController::class,
+    'types' => TypeController::class,
 ],['only' => ['index', 'show']]);
