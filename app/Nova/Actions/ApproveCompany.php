@@ -12,6 +12,7 @@ use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Http\Controllers\AdminMailerController as AdminMailerController;
+use Carbon\Carbon;
 
 class ApproveCompany extends Action
 {
@@ -30,12 +31,16 @@ class ApproveCompany extends Action
             $model->update([
                 'status' => "approved",
             ]);
-
+            
             $usersCompany = UserCompany::where('company_id', $model->id)->pluck('user_id');
 
             $employees = User::whereIn('id', $usersCompany)->get();
 
             foreach($employees as $employee){
+                $employee->account()->update([
+                    'email_verified_at' => Carbon::now(),
+                ]);
+
                 $employee_email = $employee->account->email;
                 (new AdminMailerController)->sendApprovalMail($employee_email);
             }

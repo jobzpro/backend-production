@@ -10,8 +10,8 @@ class JobWeeklySchedule extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $filable = [
+    protected $fillable = [
         'job_list_id',
-        'weekely_schedule_id',
+        'weekly_schedule_id',
     ];
 }

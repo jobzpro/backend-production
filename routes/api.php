@@ -82,6 +82,7 @@ Route::middleware(['auth:api'])->group(function(){
         Route::patch('/{id}/jobs/{job_list_id}/archived', 'archiveJobList');
         Route::patch('/{id}/jobs/{job_list_id}/publish', 'publishJobList');
         Route::get('/{id}/jobs/list-all-applicants', 'getAllApplicants');
+        Route::post('/{id}/jobs/save-as-draft', 'saveJobListAsDraft');
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function(){

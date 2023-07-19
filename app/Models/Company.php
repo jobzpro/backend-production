@@ -31,6 +31,7 @@ class Company extends Model
         'years_of_operation',
         'industry_id',
         'referral_code',
+        'status',
     ];
 
     public function userCompany(): HasMany{

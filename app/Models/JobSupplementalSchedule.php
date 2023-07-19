@@ -12,6 +12,6 @@ class JobSupplementalSchedule extends Model
 
     protected $fillable = [
         'job_list_id',
-        'supplemental_schedule_id',
+        'supplemental_schedules_id',
     ];
 }

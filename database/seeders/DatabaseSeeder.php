@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Benefits;
+use App\Models\JobShift;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,14 +22,32 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call([
-            RolesSeeder::class,
-            BusinessTypesSeeder::class,
-            ExperienceLevelsSeeder::class,
-            TypeSeeder::class,
-            IndustrySeeder::class,
-            UserSeeder::class,
-            BenefitsSeeder::class,
-        ]);
+        if(env('APP_ENV') == 'production'){
+            $this->call([
+                RolesSeeder::class,
+                BusinessTypesSeeder::class,
+                ExperienceLevelsSeeder::class,
+                TypeSeeder::class,
+                IndustrySeeder::class,
+                UserSeeder::class,
+                BenefitsSeeder::class,
+                JobShiftsSeeder::class,
+                TypeSeeder::class,
+                
+            ]);
+        }else{
+            $this->call([
+                RolesSeeder::class,
+                BusinessTypesSeeder::class,
+                ExperienceLevelsSeeder::class,
+                TypeSeeder::class,
+                IndustrySeeder::class,
+                UserSeeder::class,
+                BenefitsSeeder::class,
+                JobShiftsSeeder::class,
+                TypeSeeder::class,
+                CompanySeeder::class,
+            ]);
+        }
     }
 }
