@@ -483,7 +483,7 @@ class AccountController extends Controller
         if($account->user->userRoles->first()->role->role_name == "Jobseeker"){
             $link = env('FRONT_URL'). '/change-password?token='. $token . '&email=' .urlencode($account->email);
         }else{
-            $link = env('FRONT_URL'). '/auth/employer/password-change?token'. $token . '&email=' .urlencode($account->email);
+            $link = env('FRONT_URL'). '/auth/employer/password-change?token='. $token . '&email=' .urlencode($account->email);
         }
         
         try{
@@ -679,7 +679,7 @@ class AccountController extends Controller
                     }else{
                         return response([
                             'message' => 'username and password do not match'
-                        ],400);
+                        ],400); 
                     }
                 }else{
                     return response([
