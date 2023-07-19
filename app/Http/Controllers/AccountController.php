@@ -119,7 +119,7 @@ class AccountController extends Controller
             }else{
                 return response([
                     'message' => 'Account not found',
-                ],200);
+                ],400);
             }
            
         }else{
