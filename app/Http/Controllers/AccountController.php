@@ -661,7 +661,8 @@ class AccountController extends Controller
             $userRole = UserRole::where('user_id', "=", $user->id)->first();
             $role = Role::where('id', $userRole->role_id)->first();
             $userCompany = UserCompany::where('user_id', $user->id)->first();
-            
+            $incorrect_signin_attempts = 1;
+        
             if($userRole->role_id == 2){
                 $company = Company::where('id', $userCompany->company_id)->first();
                 if($company->status == 'approved'){
@@ -677,9 +678,22 @@ class AccountController extends Controller
                         ];
                         return response()->json($result, 200);
                     }else{
-                        return response([
-                            'message' => 'username and password do not match'
-                        ],400); 
+                       if($user->incorrect_signin_attempts == 4){
+                            $company->update([
+                                'status' => 'disabled',
+                            ]);
+
+                            return response([
+                                'message' => 'Too many incorrect login attempts. Please contact admin.',
+                            ],400);
+                       }else{
+                            $user->update([
+                                'incorrect_signin_attempts' => ($incorrect_signin_attempts++),
+                            ]);
+                            return response([
+                                'message' => 'username and password do not match'
+                            ],400); 
+                       }
                     }
                 }else{
                     return response([

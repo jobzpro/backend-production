@@ -38,6 +38,7 @@ class User extends Authenticatable
         'certifications',
         'skills',
         'experience_level',
+        'incorrect_signin_attempts',
     ];
 
     /**

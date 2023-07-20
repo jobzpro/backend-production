@@ -51,6 +51,7 @@ class Company extends Resource
                 'pending' => 'Pending',
                 'approved' => 'Approved',
                 'rejected' => 'Rejected',
+                'disabled' => 'Disabled',
             ]),
             Text::make('Name','name'),
             Text::make('Company Email','company_email'),
