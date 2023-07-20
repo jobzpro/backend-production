@@ -76,14 +76,22 @@ Route::middleware(['auth:api'])->group(function(){
         Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
     });
 
-    Route::prefix('/company')->controller(JobListController::class)->group(function(){
-        Route::post('/{id}/jobs/post-job', 'store');
-        Route::get('/{id}/jobs', 'getJobListings');
-        Route::get('/{id}/jobs/{job_list_id}/applicants', 'getAllApplicantsForJobList');
-        Route::patch('/{id}/jobs/{job_list_id}/archived', 'archiveJobList');
-        Route::patch('/{id}/jobs/{job_list_id}/publish', 'publishJobList');
-        Route::get('/{id}/jobs/list-all-applicants', 'getAllApplicants');
-        Route::post('/{id}/jobs/save-as-draft', 'saveJobListAsDraft');
+    Route::prefix('/company')->group(function(){
+        #all job listing routes
+        Route::controller(JobListController::class)->group(function(){
+            Route::post('/{id}/jobs/post-job', 'store');
+            Route::get('/{id}/jobs', 'getJobListings');
+            Route::get('/{id}/jobs/{job_list_id}/applicants', 'getAllApplicantsForJobList');
+            Route::patch('/{id}/jobs/{job_list_id}/archived', 'archiveJobList');
+            Route::patch('/{id}/jobs/{job_list_id}/publish', 'publishJobList');
+            Route::get('/{id}/jobs/list-all-applicants', 'getAllApplicants');
+            Route::post('/{id}/jobs/save-as-draft', 'saveJobListAsDraft');
+        });
+       
+        #all company settings and updates
+        Route::post('{id}/send-invite',[CompanyController::class, 'sendStaffinvite']);
+
+
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function(){

@@ -34,7 +34,9 @@ class CompanyController extends Controller
     }
 
 
-    public function inviteStaff(Request $request){
+    public function sendStaffinvite(Request $request){
+        $data = $request->all();
+
 
     }
 

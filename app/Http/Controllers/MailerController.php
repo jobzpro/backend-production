@@ -48,4 +48,9 @@ class MailerController extends Controller
 
         Mail::to($user->account->email)->send(new ApplicationSubmitted($mailData));
     }
+
+
+    public function sendEmployerStaffInvite(){
+
+    }
 }
