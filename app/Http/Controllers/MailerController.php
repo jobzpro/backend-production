@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ApplicationSubmitted;
 use App\Mail\EmployerSignUpSuccess;
+use App\Mail\InviteStaff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
@@ -50,7 +51,12 @@ class MailerController extends Controller
     }
 
 
-    public function sendEmployerStaffInvite(){
+    public function sendEmployerStaffInvite($company, $email, $user){
+        $mailData = [
+            'company_name' => $company->name,
+            'employee_name' => $user->first_name . " ". $user->last_name,
+        ];
 
+        Mail::to($email)->send(new InviteStaff($mailData));
     }
 }
