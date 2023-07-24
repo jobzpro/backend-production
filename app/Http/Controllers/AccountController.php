@@ -668,7 +668,12 @@ class AccountController extends Controller
                 if($company->status == 'approved'){
                     if(Hash::check($data['password'], $account['password'])){
                         $token = $account->createToken('API Token')->accessToken;
-        
+
+                        //reset incorrect_attempts back to 0
+                        $user->update([
+                            'incorrect_signin_attempts' => null,
+                        ]);
+                        
                         $result = [
                             'user' => $user,
                             'user_role' => $userRole,
