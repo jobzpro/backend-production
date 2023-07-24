@@ -4,6 +4,9 @@ namespace App\Nova;
 
 use App\Nova\Actions\ApproveCompany;
 use App\Nova\Actions\resetCompany;
+use App\Nova\Filters\BusinessTypesFilter;
+use App\Nova\Filters\CompanyStatusFilter;
+use App\Nova\Filters\IndustryFilter;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
@@ -92,7 +95,11 @@ class Company extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            new IndustryFilter,
+            new BusinessTypesFilter,
+            new CompanyStatusFilter,
+        ];
     }
 
     /**
