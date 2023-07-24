@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Gravatar;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
@@ -63,6 +64,12 @@ class User extends Resource
             Text::make('Last Name','last_name')
             ->sortable()
             ->rules('required', 'max:255'),
+
+            HasMany::make('User Roles', 'userRoles'),
+
+            Text::make('User Role', function(){
+                return $this->userRoles->first()->role->role_name;
+            }),
 
         ];
     }
