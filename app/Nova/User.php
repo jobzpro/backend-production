@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\UserRoleFilter;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\BelongsTo;
@@ -93,7 +94,9 @@ class User extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            //new UserRoleFilter,
+        ];
     }
 
     /**

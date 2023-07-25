@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\EmployerMailerController as EmployerMailerController;
 use App\Helper\FileManager;
+use App\Models\CompanyNotification;
+use App\Http\Controllers\MailerController as MailerController;
 
 class JobApplicationController extends Controller
 {
@@ -84,6 +86,14 @@ class JobApplicationController extends Controller
             'is_Read' => false,
         ]);
 
+        CompanyNotification::create([
+            'company_id' => $company->id,
+            'job_list_id' => $job_list->job_title,
+            'title' => "A jobseeker has applied". $job_list->job_title,
+            'description' => "You can review and see their profile to check if the applicant is qualified.",
+            'is_Read' => false,
+        ]);
+
 
         if($user_companies){
             foreach($user_companies as $employer){
@@ -91,6 +101,9 @@ class JobApplicationController extends Controller
             }
         }
 
+        if($user){
+            (new MailerController)->sendApplicationSucess($user, $company);
+        }
 
         return response([
             'message' => 'Application Successfully Submitted',

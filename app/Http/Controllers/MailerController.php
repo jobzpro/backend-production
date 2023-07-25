@@ -41,7 +41,7 @@ class MailerController extends Controller
         return true;
     }
 
-    public function sendApplicationSuccess($email, $user, $company){
+    public function sendApplicationSuccess($user, $company){
         $mailData = [
             'company_name' => $company,
             'user_name' => $user->first_name,
