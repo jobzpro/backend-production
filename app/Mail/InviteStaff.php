@@ -41,7 +41,7 @@ class InviteStaff extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'employer.invite_email',
+            view: 'mail.employer.invite_email',
         );
     }
 

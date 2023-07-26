@@ -22,6 +22,7 @@ use App\Models\UserCompany;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use App\Helper\FileManager;
+use App\Models\StaffInvite;
 
 class AccountController extends Controller
 {
@@ -509,7 +510,7 @@ class AccountController extends Controller
         }
 
         $data = $request->all();
-        $tokenData = PasswordResetTokens::where('token', '=', $data['token'])->first();
+        $tokenData = PasswordResetTokens::where('token', $data['token'])->first();
 
         if(!$tokenData){
             return response([
@@ -518,7 +519,7 @@ class AccountController extends Controller
             
         }
 
-        $user = Account::where('email', '=', $data['email'])->first();
+        $user = Account::where('email', $data['email'])->first();
 
         if(!$user){
             return response([
@@ -529,7 +530,7 @@ class AccountController extends Controller
         $user->password = Hash::make($data['password']);
         $user->update();
 
-       PasswordResetTokens::where('email', '=', $request->email)->delete();
+       PasswordResetTokens::where('email', $request->email)->delete();
 
        if((new MailerController)->sendSuccessEmail($tokenData->email)){
             return response([
@@ -716,6 +717,78 @@ class AccountController extends Controller
                 'message' => "Cannot find account",
             ],400);
         }
+    }
+
+    public function signUpAsEmployerStaffViaInvite(Request $request){
+        $validator = Validator::make($request->all(), [
+            'invite_code' => 'required|exists:staff_invites',
+            'email' =>'required|email|unique:accounts,email',
+            'password' => 'required|confirmed',
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'message' => 'Registration Unsuccessful',
+                'errors' => $validator->errors(),
+            ],400);
+        }
+
+        $data = $request->all();
+
+        $invite_code = StaffInvite::where('invite_code', $data['invite_code'])->first();
+        
+        if(!$invite_code){
+            return response([
+                'message' => 'Incorrect invite code.'
+            ],400);
+        }
+
+        if($invite_code->invite_expires_at > Carbon::now()){
+            return response([
+                'message' => 'Invite code expired. Please contact invitor for a new code.'
+            ],400);
+        }
+
+        $account = Account::create([
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            //'name' => $data['first_name'].' '.$data['last_name'],
+            'login_type' => "email",
+            'created_at' => Carbon::now(),
+        ]);
+
+        $account->user()->create([
+            'account_id' => $account->id,
+            // 'first_name' => $data['first_name'],
+            // 'middle_name' => $data['middle_name'],
+            // 'last_name' => $data['last_name'],
+            //'email' => $data['email'],
+            'created_at' => Carbon::now(),
+        ]);
+
+        $userRole = UserRole::create([
+            'user_id' => $account->user->id,
+            'role_id' => 4,
+        ]);
+
+        $userCompany = UserCompany::create([
+            'user_id' => $account->user->id,
+            'company_id' => $invite_code->company_id,
+        ]);
+
+        StaffInvite::where('email',$request->email)->delete();
+
+        event(new Registered($account));
+
+        $result = [
+            'account' => $account,
+            'user_role' => $userRole,
+            'message' => "Registration Successful"
+        ];
+
+
+        return response()->json($result, 200);
+      
     }
 
 

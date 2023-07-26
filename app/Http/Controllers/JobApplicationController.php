@@ -102,7 +102,7 @@ class JobApplicationController extends Controller
         }
 
         if($user){
-            (new MailerController)->sendApplicationSucess($user, $company);
+            (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
         }
 
         return response([

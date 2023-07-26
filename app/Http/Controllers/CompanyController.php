@@ -7,7 +7,7 @@ use App\Models\Company;
 use App\Models\StaffInvite;
 use App\Models\UserCompany;
 use Illuminate\Support\Str;
-use App\Http\Controllers\MailerController as MailerController;
+use App\Http\Controllers\EmployerMailerController as EmployerMailerController;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
@@ -68,7 +68,13 @@ class CompanyController extends Controller
                 'invite_expires_at' => Carbon::now()->addHours(72),
             ]);
 
-            (new MailerController)->sendEmployerStaffInvite($company, $data['email'], $user);
+            $link = env('FRONT_URL'). '/auth/employer/sign-up?invite_code='. $staff_invite->invite_code .'&company_id='. $company->id . '&email=' . urlencode($data['email']);
+
+            (new EmployerMailerController)->sendEmployerStaffInvite($company, $data['email'], $user, $link);
+
+            return response([
+                'message' => 'User successfully invited.',
+            ],200);
 
             
         }else{
