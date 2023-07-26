@@ -57,6 +57,7 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
     Route::prefix('/employer')->group(function(){
         Route::post('/register', 'signUpAsAnEmployeer');
         Route::post('/login', 'signInAsEmployeer');
+        Route::post('/sign-up', 'signUpAsEmployerStaffViaInvite');
 
     });
 

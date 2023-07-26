@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Mail\ApplicationSubmitted;
 use App\Mail\EmployerSignUpSuccess;
+use App\Mail\JobInterviews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Mailer;
 use App\Mail\PasswordReset;
 use App\Mail\SuccessEmail;
+use App\Models\User;
 
 class MailerController extends Controller
 {
@@ -48,6 +50,20 @@ class MailerController extends Controller
         ];
 
         Mail::to($user->account->email)->send(new ApplicationSubmitted($mailData));
+    }
+
+    public function sendInterviewInvite($company, $jobInterview){
+        $applicant = User::find($jobInterview['applicant_id']);
+        $subject = "Job Application Update";
+
+        $mailData = [
+            'applicant_name' => $applicant->first_name,
+            'company_name' => $company->name,
+            'meeting_link' => $jobInterview['meeting_link'],
+            'interview_date' => $jobInterview['interview_date'],
+        ];
+
+        Mail::to($applicant->account->email)->send(new JobInterviews($mailData, $subject));
     }
 
 }

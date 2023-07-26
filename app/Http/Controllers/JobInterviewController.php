@@ -8,6 +8,9 @@ use App\Models\JobList;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MailerController as MailerController;
+use App\Models\Company;
+use App\Enums\JobApplicationStatus as application_status;
 
 class JobInterviewController extends Controller
 {
@@ -39,17 +42,25 @@ class JobInterviewController extends Controller
     {
         $data = $request->all();
         $employer_id = request()->user()->id;
-        //dd($employer_id);
+        $company = Company::find($employer_id ->userCompanies->first()->companies->first()->id);
 
         $jobInterview = JobInterview::create([
             'employer_id' => $employer_id,
             'applicant_id' => $data['applicant_id'],
             'job_application_id' => $data['job_application_id'],
-            'company_id' => $employer_id ->userCompanies->first()->companies->first()->id,
+            'company_id' => $company->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
             'interview_date' => Carbon::parse($data['interview_date'])->format("d/m/Y h:m A"),
         ]);
+
+        JobApplication::find($data['job_application_id'])->update([
+            'status' => application_status::interview,
+        ]);
+
+
+        (new MailerController)->sendInterviewInvite($company,$jobInterview);
+
 
         return response([
             'message' => "Success",
