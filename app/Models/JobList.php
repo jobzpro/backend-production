@@ -45,6 +45,7 @@ class JobList extends Model
         'can_start_messages' => 'boolean',
         'send_auto_reject_emails' => 'boolean',
         'auto_reject' => 'boolean',
+        'can_applicant_with_criminal_record_apply' => 'boolean',
     ];
 
     public function company(): BelongsTo{

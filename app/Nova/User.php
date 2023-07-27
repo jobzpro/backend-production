@@ -68,10 +68,6 @@ class User extends Resource
 
             HasMany::make('User Roles', 'userRoles'),
 
-            Text::make('User Role', function(){
-                return $this->userRoles->first()->role->role_name;
-            }),
-
         ];
     }
 
