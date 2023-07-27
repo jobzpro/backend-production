@@ -42,7 +42,7 @@ class JobInterviewController extends Controller
     {
         $data = $request->all();
         $employer_id = request()->user()->id;
-        $company = Company::find($employer_id ->userCompanies->first()->companies->first()->id);
+        $company = Company::find($employer_id->userCompanies->first()->companies->first()->id);
 
         $jobInterview = JobInterview::create([
             'employer_id' => $employer_id,
@@ -75,7 +75,6 @@ class JobInterviewController extends Controller
     {
         //
     }
-
     /**
      * Show the form for editing the specified resource.
      */

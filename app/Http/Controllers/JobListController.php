@@ -84,7 +84,7 @@ class JobListController extends Controller
             ]);
 
             if($request->filled('benefits')){
-                $job_benefits = $data['benefits'];
+                $job_benefits = explode(',', $data['benefits']);
                 for($i = 0; $i<sizeof($job_benefits); $i++){
                     JobBenefits::create([
                         'job_list_id' => $job_list->id,
@@ -94,7 +94,7 @@ class JobListController extends Controller
             }
 
             if($request->filled('standard_shift')){
-                $job_standard_shift = $data['standard_shift'];
+                $job_standard_shift = explode(',', $data['standard_shift']);
                 for($i = 0; $i<sizeof($job_standard_shift); $i++){
                     JobStandardShift::create([
                         'job_list_id' => $job_list->id,
@@ -104,7 +104,7 @@ class JobListController extends Controller
             }
 
             if($request->filled('weekly_schedule')){
-                $job_weekly_schedule = $data['weekly_schedule'];
+                $job_weekly_schedule = explode(',', $data['weekly_schedule']);
                 for($i = 0; $i<sizeof($job_weekly_schedule); $i++){
                     JobWeeklySchedule::create([
                         'job_list_id' => $job_list->id,
@@ -114,7 +114,7 @@ class JobListController extends Controller
             }
 
             if($request->filled('supplementary_schedule')){
-                $job_supplementary_schedule = $data['supplementary_schedule'];
+                $job_supplementary_schedule = explode(",", $data['supplementary_schedule']);
                 for($i = 0; $i<sizeof($job_supplementary_schedule); $i++){
                     JobSupplementalSchedule::create([
                         'job_list_id' => $job_list->id,
