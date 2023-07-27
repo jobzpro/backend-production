@@ -17,7 +17,7 @@ class JobBenefits extends Model
     ];
 
     public function benefits():BelongsTo{
-        return $this->belongsTo(Benefits::class);
+        return $this->belongsTo(Benefits::class, 'benefit_id');
     }
 
 }
