@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\JobLocation;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
@@ -50,9 +51,9 @@ class JobList extends Resource
             Text::make("Job Title", "job_title"),
             Text::make("Description", 'description'),
             Select::make("Status", "status")->options([
-                'draft',
-                'published',
-                'archived',
+                'draft' => 'Draft',
+                'published' => 'Published',
+                'archived' => 'Archived',
             ])->sortable(),
             Text::make("Hiring Urgency", 'hiring_urgency'),
             BelongsTo::make("Company","company"),

@@ -11,6 +11,7 @@ class JobLocation extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'job_list_id',
         'location',
         'address',
         'description',

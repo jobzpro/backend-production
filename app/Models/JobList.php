@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -20,7 +19,6 @@ class JobList extends Model
         'salary',
         'company_id',
         'experience_level_id',
-        'job_location_id',
         'min_salary',
         'max_salary',
         'number_of_vacancies',
@@ -63,10 +61,10 @@ class JobList extends Model
     }
 
     public function job_location(): HasOne{
-        return $this->hasOne(JobLocation::class, 'id');
+        return $this->hasOne(JobLocation::class);
     }
 
     public function experience_level(): BelongsTo{
-        return $this->belongsTo(ExperienceLevel::class, 'id'); 
+        return $this->belongsTo(ExperienceLevel::class, 'experience_level_id'); 
     }
 }

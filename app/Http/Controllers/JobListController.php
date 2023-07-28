@@ -53,18 +53,10 @@ class JobListController extends Controller
                 ],400);
             }
 
-            $job_location = JobLocation::create([
-                'location' => $data['location'],
-                'address' => $data['address'] ?? null,
-                'description' => $data['address_description'] ?? ""
-            ]);
-
-
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],               
                 'description' => $data['description'] ?? "",
-                'job_location_id' => $job_location->id,
                 'show_pay' => $data['show_pay'] ?? null,
                 'pay_type' => $data['pay_type'],
                 'salary' => $data['salary'] ?? null,
@@ -81,6 +73,14 @@ class JobListController extends Controller
                 'time_limit' => $data['time_limit'],
                 'other_email' => $data['other_email'],
 
+            ]);
+
+            
+            $job_location = JobLocation::create([
+                'job_list_id' => $job_list->id,
+                'location' => $data['location'],
+                'address' => $data['address'] ?? null,
+                'description' => $data['address_description'] ?? ""
             ]);
 
             if($request->filled('benefits')){
@@ -190,18 +190,11 @@ class JobListController extends Controller
                 ],400);
             }
 
-            $job_location = JobLocation::create([
-                'location' => $data['location'],
-                'address' => $data['address'] ?? null,
-                'description' => $data['address_description'] ?? ""
-            ]);
-
 
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],               
                 'description' => $data['description'] ?? "",
-                'job_location_id' => $job_location->id,
                 'show_pay' => $data['show_pay'] ?? null,
                 'pay_type' => $data['pay_type'],
                 'salary' => $data['salary'] ?? null,
@@ -218,6 +211,13 @@ class JobListController extends Controller
                 'time_limit' => $data['time_limit'],
                 'other_email' => $data['other_email'],
 
+            ]);
+
+            $job_location = JobLocation::create([
+                'job_list_id' => $job_list->id,
+                'location' => $data['location'],
+                'address' => $data['address'] ?? null,
+                'description' => $data['address_description'] ?? ""
             ]);
 
             if($request->filled('benefits')){
