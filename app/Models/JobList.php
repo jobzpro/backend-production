@@ -67,4 +67,9 @@ class JobList extends Model
     public function experience_level(): BelongsTo{
         return $this->belongsTo(ExperienceLevel::class, 'experience_level_id'); 
     }
+
+
+    public function jobApplications(): HasMany{
+        return $this->hasMany(JobApplication::class);
+    }
 }

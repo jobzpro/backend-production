@@ -20,6 +20,11 @@ class JobApplication extends Model
         'resume_path',
     ];
 
+    protected $casts = [
+        'applied_at' => 'datetime',
+    ];
+
+
     public function user(): BelongsTo{
         return $this->belongsTo(User::class);
     }

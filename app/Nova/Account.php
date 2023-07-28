@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Nova\User;
+use Laravel\Nova\Fields\Email;
 
 class Account extends Resource
 {
@@ -49,7 +50,7 @@ class Account extends Resource
       return [
         ID::make()->sortable(),  
 
-        Text::make('Email','email')
+        Email::make('Email','email')
         ->sortable()
         ->rules('required', 'email' ,'max:255')
         ->creationRules('unique:accounts,email')
@@ -60,13 +61,11 @@ class Account extends Resource
         ->creationRules('required', Rules\Password::defaults())
         ->updateRules('nullable', Rules\Password::defaults()),
 
-        HasOne::make('User','user', User::class),
-
         Text::make('Name', function(){
             return ($this->user ? $this->user->first_name : '') ." ". 
             ($this->user ? $this->user->last_name : ''); 
         }),
-
+        
       ];
     }
 

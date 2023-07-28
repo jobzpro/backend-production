@@ -27,7 +27,7 @@ class JobList extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'job_title';
 
     /**
      * The columns that should be searched.
@@ -35,7 +35,7 @@ class JobList extends Resource
      * @var array
      */
     public static $search = [
-        'id','name',
+        'id','job_title',
     ];
 
     /**

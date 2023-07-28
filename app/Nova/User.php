@@ -52,7 +52,7 @@ class User extends Resource
 
             Gravatar::make()->maxWidth(50),
 
-            BelongsTo::make('Account', 'account'),
+            BelongsTo::make('Account', 'account')->showCreateRelationButton(),
 
             Text::make('First Name','first_name')
             ->sortable()
@@ -67,6 +67,8 @@ class User extends Resource
             ->rules('required', 'max:255'),
 
             HasMany::make('User Roles', 'userRoles'),
+
+            //HasOne::ofMany('User Role', 'userRoles'),
 
         ];
     }

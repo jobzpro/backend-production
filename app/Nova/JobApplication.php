@@ -2,8 +2,13 @@
 
 namespace App\Nova;
 
+use App\Enums\JobApplicationStatus;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class JobApplication extends Resource
@@ -41,6 +46,11 @@ class JobApplication extends Resource
     {
         return [
             ID::make()->sortable(),
+            Select::make('Status', 'status')->options(JobApplicationStatus::cases()),
+            DateTime::make('Applied At', 'applied_at'),
+            BelongsTo::make('User', 'user'),
+            BelongsTo::make('JobList', 'jobList'),
+            
         ];
     }
 

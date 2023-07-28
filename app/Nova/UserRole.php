@@ -47,9 +47,6 @@ class UserRole extends Resource
             BelongsTo::make('user'),
             BelongsTo::make('role'),
             Text::make('designation'),
-            // Text::make('role', function (){
-            //   return $this->role->role_name;
-            // }),
         ];
     }
 
