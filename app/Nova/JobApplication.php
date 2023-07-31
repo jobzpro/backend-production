@@ -47,7 +47,7 @@ class JobApplication extends Resource
         return [
             ID::make()->sortable(),
             Select::make('Status', 'status')->options(JobApplicationStatus::cases()),
-            DateTime::make('Applied At', 'applied_at'),
+            DateTime::make('Applied At', 'applied_at')->displayUsing(fn($value) => $value ? $value->format('d/m/Y h:m A'): ''),
             BelongsTo::make('User', 'user'),
             BelongsTo::make('JobList', 'jobList'),
             
