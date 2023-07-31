@@ -21,10 +21,22 @@ class JobInterviewController extends Controller
     {
         $user = User::find(request()->user()->id);
         $company_id = $user->userCompanies->first()->companies->first()->id;
-        $jobLists_id = JobList::where('company_id', $company_id)->pluck('id');
-        $jobInterviews = JobInterview::where('company_id', $company_id)->get();
 
-        dd($jobInterviews);
+        if($user->userRoles->first()->role->role_name == "Jobseeker"){
+            $jobInterviews =  JobInterview::where('applicant_id', $user->id)->with('jobList')->get();
+            
+        
+            return response([
+                'job_interviews' => $jobInterviews,
+                'message' => "Success",
+            ]);
+        }else{
+            $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->get();
+        return response([
+            'job_interviews' => $jobInterviews,
+            'message' => "Success",
+        ],200);
+        }
     }
 
     /**
@@ -43,24 +55,25 @@ class JobInterviewController extends Controller
         $data = $request->all();
         $employer_id = request()->user()->id;
         $company = Company::find($employer_id->userCompanies->first()->companies->first()->id);
+        $jobApplication = JobApplication::find($data['job_application_id']);
 
         $jobInterview = JobInterview::create([
             'employer_id' => $employer_id,
-            'applicant_id' => $data['applicant_id'],
-            'job_application_id' => $data['job_application_id'],
+            'applicant_id' => $jobApplication->user_id,
+            'job_application_id' => $jobApplication->id,
+            'job_list' => $jobApplication->job_list_id,
             'company_id' => $company->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
             'interview_date' => Carbon::parse($data['interview_date'])->format("d/m/Y h:m A"),
         ]);
 
-        JobApplication::find($data['job_application_id'])->update([
+        $jobApplication->update([
             'status' => application_status::interview,
         ]);
 
 
         (new MailerController)->sendInterviewInvite($company,$jobInterview);
-
 
         return response([
             'message' => "Success",
@@ -97,5 +110,10 @@ class JobInterviewController extends Controller
     public function destroy(JobInterview $jobInterview)
     {
         //
+    }
+
+
+    public function cancelInterview(Request $request, JobInterview $jobInterview){
+
     }
 }
