@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
                 BenefitsSeeder::class,
                 JobShiftsSeeder::class,
                 TypeSeeder::class,
+                IndustrySpecialitiesSeeder::class,
                 
             ]);
         }else{
@@ -47,6 +48,7 @@ class DatabaseSeeder extends Seeder
                 JobShiftsSeeder::class,
                 TypeSeeder::class,
                 CompanySeeder::class,
+                IndustrySpecialitiesSeeder::class,
             ]);
         }
     }
