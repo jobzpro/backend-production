@@ -377,7 +377,7 @@ class AccountController extends Controller
         $token = $request['token'];
 
         try{
-            $user = Socialite::driver('linkedin')->userFromToken($token);
+            $user = Socialite::driver('facebook')->userFromToken($token);
         }catch(\Exception $e){
             return response([
                 "message" => "Something went wrong. Please try again",

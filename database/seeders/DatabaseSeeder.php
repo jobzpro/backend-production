@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 BenefitsSeeder::class,
                 JobShiftsSeeder::class,
-                TypeSeeder::class,
                 IndustrySpecialitiesSeeder::class,
+                IndustryPhysicalSettingsSeeder::class,
                 
             ]);
         }else{
@@ -46,9 +46,9 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 BenefitsSeeder::class,
                 JobShiftsSeeder::class,
-                TypeSeeder::class,
                 CompanySeeder::class,
                 IndustrySpecialitiesSeeder::class,
+                IndustryPhysicalSettingsSeeder::class,
             ]);
         }
     }
