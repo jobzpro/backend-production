@@ -46,7 +46,6 @@ class CompanyController extends Controller
         $company = Company::find($request->id);
         $userCompany = UserCompany::where('user_id', $request->user()->id)->first();
         $user = User::find($request->user()->id);
-        //dd($user);
 
         if($userCompany->company_id == $request->id){
             $validator = Validator::make($request->all(),[
@@ -83,6 +82,34 @@ class CompanyController extends Controller
             ],400);
         }
 
+
+    }
+
+    public function resendInvite(Request $request){
+        $data = $request->all();
+        $staff_invite = StaffInvite::where('email', $data['email'])->first();
+        $company = Company::find($staff_invite->company_id);
+        $user = User::find($staff_invite->user_id);
+
+        if(!$staff_invite == null){
+            $staff_invite->update([
+                'invite_code' => Str::random(12),
+                'invite_expires_at' => Carbon::now()->addHours(72),
+            ]);
+
+            $link = env('FRONT_URL'). '/auth/employer/sign-up?invite_code='. $staff_invite->invite_code .'&company_id='. $company->id . '&email=' . urlencode($data['email']);
+
+            (new EmployerMailerController)->sendEmployerStaffInvite($company, $data['email'], $user, $link);
+
+            return response([
+                'message' => 'Invite resent.',
+            ],200);
+            
+        }else{
+            return response([
+                'messsage' => "Email not found",
+            ],400);
+        }
 
     }
 
