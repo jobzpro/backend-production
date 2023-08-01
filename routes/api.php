@@ -10,6 +10,7 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
 use App\Http\Controllers\IndustryController;
+use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
@@ -116,4 +117,5 @@ Route::apiResources([
     'business-type' => BusinessTypeController::class,
     'types' => TypeController::class,
     'industry-specialities' => IndustrySpecialitiesController::class,
+    'industry-physical-settings' => IndustryPhysicalSettingsController::class,
 ],['only' => ['index', 'show']]);

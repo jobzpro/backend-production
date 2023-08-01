@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IndustryPhysicalSetting;
 use Illuminate\Http\Request;
 
 class IndustryPhysicalSettingsController extends Controller
@@ -11,7 +12,12 @@ class IndustryPhysicalSettingsController extends Controller
      */
     public function index()
     {
-        //
+        $industry_physical_settings = IndustryPhysicalSetting::all();
+
+        return response([
+            'physical_settings' => $industry_physical_settings,
+            'message' => "Success",
+        ],200);
     }
 
     /**
@@ -27,7 +33,12 @@ class IndustryPhysicalSettingsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $industry_physical_settings = IndustryPhysicalSetting::where('industry_id',$id)->get();
+
+        return response([
+            'physical_settings' => $industry_physical_settings,
+            'message' => "Success",
+        ],200);
     }
 
     /**
