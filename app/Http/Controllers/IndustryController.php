@@ -15,7 +15,7 @@ class IndustryController extends Controller
         $industries = Industry::all();
 
         return response([
-            'industries' => $industries->paginate(10),
+            'industries' => $industries,
             'message' => "Success",
         ],200);
     }

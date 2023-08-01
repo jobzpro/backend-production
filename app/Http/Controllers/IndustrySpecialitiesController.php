@@ -33,7 +33,12 @@ class IndustrySpecialitiesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $industry_speciality = IndustrySpeciality::where('industry_id', $id)->get();
+
+        return response([
+            'industry_speciality' => $industry_speciality,
+            'message' => "Success",
+           ],200);
     }
 
     /**
@@ -51,4 +56,7 @@ class IndustrySpecialitiesController extends Controller
     {
         //
     }
+
+
+    
 }
