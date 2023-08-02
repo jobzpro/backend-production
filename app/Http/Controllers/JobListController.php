@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\JobListStatusEnum as job_status;
+use App\Models\JobIndustryPhysicalSetting;
+use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
@@ -56,9 +58,9 @@ class JobListController extends Controller
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],               
-                'description' => $data['description'] ?? "",
+                'description' => $data['description'] ?? null,
                 'show_pay' => $data['show_pay'] ?? null,
-                'pay_type' => $data['pay_type'],
+                'pay_type' => $data['pay_type'] ?? null,
                 'salary' => $data['salary'] ?? null,
                 'min_salary' => $data['min_salary'] ?? null,
                 'max_salary' => $data['max_salary'] ?? null,
@@ -72,7 +74,7 @@ class JobListController extends Controller
                 'auto_reject' => $data['auto_reject'],
                 'time_limit' => $data['time_limit'],
                 'other_email' => $data['other_email'],
-
+                'industry_id' => $data['industry_id'],
             ]);
 
             
@@ -82,6 +84,37 @@ class JobListController extends Controller
                 'address' => $data['address'] ?? null,
                 'description' => $data['address_description'] ?? ""
             ]);
+
+            if($request->filled('job_types')){
+                $job_types = explode(",", $data['job_types']);
+                for($i = 0; $i<sizeof($job_types); $i++){
+                    JobType::create([
+                        'job_list_id' => $job_list->id,
+                        'type_id' => $job_types[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('industry_physical_setting')){
+                $job_industry_physical_settings = explode(",", $data['industry_physical_setting']);
+                for($i = 0; $i<sizeof($job_industry_physical_settings); $i++){
+                    JobIndustryPhysicalSetting::create([
+                        'job_list_id' => $job_list->id,
+                        'industry_physical_setting_id' => $job_industry_physical_settings[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('industry_speciality')){
+                $job_industry_specialities = explode(",", $data['industry_speciality']);
+                for($i = 0; $i<sizeof($job_industry_specialities); $i++){
+                    JobIndustrySpeciality::create([
+                        'job_list_id' => $job_list->id,
+                        'industry_speciality_id' => $job_industry_specialities[$i],
+                    ]);
+                }
+            }
+
 
             if($request->filled('benefits')){
                 $job_benefits = explode(',', $data['benefits']);
@@ -190,35 +223,65 @@ class JobListController extends Controller
                 ],400);
             }
 
-
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],               
-                'description' => $data['description'] ?? "",
+                'description' => $data['description'] ?? null,
                 'show_pay' => $data['show_pay'] ?? null,
-                'pay_type' => $data['pay_type'],
+                'pay_type' => $data['pay_type'] ?? null,
                 'salary' => $data['salary'] ?? null,
                 'min_salary' => $data['min_salary'] ?? null,
                 'max_salary' => $data['max_salary'] ?? null,
                 'experience_level_id' => $data['experience_level_id'],
                 'number_of_vacancies' => $data['number_of_vacancies'],
                 'hiring_urgency' => $data['hiring_urgency'],
-                'status' => job_status::Draft,
+                'status' => job_status::Published,
                 'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'],
                 'can_start_messages' => $data['can_start_messages'],
                 'send_auto_reject_emails' => $data['send_auto_reject_emails'],
                 'auto_reject' => $data['auto_reject'],
                 'time_limit' => $data['time_limit'],
                 'other_email' => $data['other_email'],
-
+                'industry_id' => $data['industry_id'],
             ]);
 
+            
             $job_location = JobLocation::create([
                 'job_list_id' => $job_list->id,
                 'location' => $data['location'],
                 'address' => $data['address'] ?? null,
                 'description' => $data['address_description'] ?? ""
             ]);
+
+            if($request->filled('job_types')){
+                $job_types = explode(",", $data['job_types']);
+                for($i = 0; $i<sizeof($job_types); $i++){
+                    JobType::create([
+                        'job_list_id' => $job_list->id,
+                        'type_id' => $job_types[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('industry_physical_setting')){
+                $job_industry_physical_settings = explode(",", $data['industry_physical_setting']);
+                for($i = 0; $i<sizeof($job_industry_physical_settings); $i++){
+                    JobIndustryPhysicalSetting::create([
+                        'job_list_id' => $job_list->id,
+                        'industry_physical_setting_id' => $job_industry_physical_settings[$i],
+                    ]);
+                }
+            }
+
+            if($request->filled('industry_speciality')){
+                $job_industry_specialities = explode(",", $data['industry_speciality']);
+                for($i = 0; $i<sizeof($job_industry_specialities); $i++){
+                    JobIndustrySpeciality::create([
+                        'job_list_id' => $job_list->id,
+                        'industry_speciality_id' => $job_industry_specialities[$i],
+                    ]);
+                }
+            }
 
             if($request->filled('benefits')){
                 $job_benefits = explode(",", $data['benefits']);

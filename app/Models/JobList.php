@@ -38,6 +38,7 @@ class JobList extends Model
         'auto_reject',
         'time_limit',
         'other_enail',
+        'industry_id',
     ];
 
     protected $casts = [
@@ -68,8 +69,11 @@ class JobList extends Model
         return $this->belongsTo(ExperienceLevel::class, 'experience_level_id'); 
     }
 
-
     public function jobApplications(): HasMany{
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function industry(): BelongsTo{
+        return $this->belongsTo(Industry::class);
     }
 }
