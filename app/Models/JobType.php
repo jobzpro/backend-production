@@ -11,6 +11,13 @@ class JobType extends Model
 {
     use HasFactory, SoftDeletes;
 
+
+    protected $fillable = [
+        'job_list_id',
+        'type_id',
+    ];
+
+
     public function type(): HasOne{
         return $this->hasOne(Type::class, 'id');
     }
