@@ -811,7 +811,7 @@ class AccountController extends Controller
                 'size' => $fileSize,
             ]);
 
-            return $company_logo->name;
+            return $company_logo->path;
         }else{
             return $company_logo = null;
         }

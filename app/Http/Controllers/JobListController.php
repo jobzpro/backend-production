@@ -14,17 +14,22 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\JobListStatusEnum as job_status;
+use App\Helper\FileManager;
+use App\Models\FileAttachment;
 use App\Models\JobIndustryPhysicalSetting;
 use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
+use Illuminate\Support\Facades\Storage;
 
 class JobListController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    use FileManager;
+
     public function index()
     {
         $jobLists = JobList::all();
@@ -42,6 +47,19 @@ class JobListController extends Controller
         $data = $request->all();
         $user = User::find($request->user()->id);
         $userCompany = $user->userCompanies()->first()->companies()->first();
+
+        $fileValidator = Validator::make($request->all(),[
+            'files' => 'file|mimes:pdf,doc,docx,txt|max:4000',
+        ]);
+
+        if($fileValidator->fails()){
+            return response([
+                "message" => "Invalid File",
+                "errors" => $fileValidator->errors(),
+            ]);
+        }else{
+            $file_attachments = $this->uploadFile($request['files'],$request->user()->id);
+        }
 
         if($request->route('id') == $userCompany->id){
             $validator = Validator::make($request->all(),[
@@ -75,6 +93,7 @@ class JobListController extends Controller
                 'time_limit' => $data['time_limit'] ?? null,
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
+                'files' => $file_attachments,
             ]);
 
             
@@ -211,6 +230,20 @@ class JobListController extends Controller
         $user = User::find($request->user()->id);
         $userCompany = $user->userCompanies()->first()->companies()->first();
 
+        $fileValidator = Validator::make($request->all(),[
+            'files' => 'file|mimes:pdf,doc,docx,txt|max:4000',
+        ]);
+
+        if($fileValidator->fails()){
+            return response([
+                "message" => "Invalid File",
+                "errors" => $fileValidator->errors(),
+            ]);
+        }else{
+            $file_attachments = $this->uploadFile($request['files'],$request->user()->id);
+        }
+
+
         if($request->route('id') == $userCompany->id){
             $validator = Validator::make($request->all(),[
                 'job_title' => 'required',
@@ -243,6 +276,7 @@ class JobListController extends Controller
                 'time_limit' => $data['time_limit'] ?? null,
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
+                'files' => $file_attachments,
             ]);
 
             
@@ -478,5 +512,40 @@ class JobListController extends Controller
             'applicants' => collect($applicants)->paginate(10),
             'message' => "Success"
         ],200);
+    }
+
+    public function searchJobs(Request $request){
+        $location = $request->query('location');
+        $keyword = $request->query('keyword');
+        $industry = $request->query('industry');
+
+        dd($location);
+    }
+
+
+    //private functions
+    private function uploadFile($file_attachments, $user_id){
+        $path = 'files';
+
+        if($file = $file_attachments){
+            $fileName = time().$file->getClientOriginalName();
+            $filePath = Storage::disk('s3')->put($path,$file);
+            $filePath   = Storage::disk('s3')->url($filePath);
+            $file_type  = $file->getClientOriginalExtension();
+            $fileSize   = $this->fileSize($file);
+
+
+            $file_attachments = FileAttachment::create([
+                'user_id' => $user_id,
+                'name' => $fileName,
+                'type' => $file_type,
+                'path' => $filePath,
+                'size' => $fileSize,
+            ]);
+
+            return $file_attachments->path;
+        }else{
+            return $file_attachments = null;
+        }
     }
 }

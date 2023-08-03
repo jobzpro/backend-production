@@ -39,6 +39,7 @@ class JobList extends Model
         'time_limit',
         'other_enail',
         'industry_id',
+        'files',
     ];
 
     protected $casts = [

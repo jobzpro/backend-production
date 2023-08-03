@@ -12,6 +12,7 @@ use App\Http\Controllers\JobInterviewController;
 use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
+use App\Http\Controllers\JobShiftController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
@@ -119,3 +120,13 @@ Route::apiResources([
     'industry-specialities' => IndustrySpecialitiesController::class,
     'industry-physical-settings' => IndustryPhysicalSettingsController::class,
 ],['only' => ['index', 'show']]);
+
+Route::prefix('/search')->controller(JobListController::class)->group(function(){
+    Route::get('/jobs', 'searchJobs')->name('jobs.search');
+});
+
+Route::prefix('/shifts')->controller(JobShiftController::class)->group(function(){
+    Route::get('/standard', 'getStandardShifts')->name('jobs.standard');
+    Route::get('/weekly', 'getWeeklyShifts')->name('jobs.weekly');
+    Route::get('/supplemental', 'getSupplementalShifts')->name('jobs.supplemental');
+});
