@@ -16,4 +16,5 @@ class JobLocation extends Model
         'address',
         'description',
     ];
+
 }

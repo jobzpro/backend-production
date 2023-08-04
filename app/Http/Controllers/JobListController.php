@@ -521,11 +521,11 @@ class JobListController extends Controller
         $industry = $request->query('industry');
 
         if(!$keyword == null){
-            $company_ids = Company::where('name', 'LIKE', '%'.$keyword.'%')->pluck('id');
-
             $job_lists = JobList::where('job_title', 'LIKE', '%'.$keyword.'%')
-            ->orWhereIn('company_id', $company_ids)
-            ->with('company','industry', 'job_location')
+            ->orWhereHas('company', function($q) use($keyword){
+                $q->where('name', 'LIKE', '%'.$keyword.'%');
+            })
+            ->with('company', 'industry', 'job_location')
             ->get();
 
             return response([
@@ -534,37 +534,55 @@ class JobListController extends Controller
             ],200);
         }
         elseif(!$location == null){
-            $job_list_ids = JobList::all()->pluck('id');
-            $job_locations = JobLocation::whereIn('job_list_id', $job_list_ids)
-            ->where('address', 'LIKE', '%'.$location.'%')
-            ->orWhere('location', 'LIKE', '%'.$location.'%')->pluck('job_list_id');
+            $job_lists = JobList::whereHas('job_location', function($q) use($location){
+                $q->where('address', 'LIKE', '%'.$location.'%')
+                ->orWhere('location', 'LIKE', '%'.$location.'%');
+            })
+            ->with('company', 'industry', 'job_location')
+            ->get();
 
-            $job_list = JobList::whereIn('id', $job_locations)->get();
             return response([
-                'job_lists' => $job_list->paginate(10),
+                'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ],200);
 
         }elseif(!$industry == null){
-            $industry_ids = Industry::where('name', 'LIKE', '%'.$keyword.'%')->pluck('id');
-
-            $job_lists = JobList::whereIn('industry_id', $industry_ids)
-            ->with('company','industry', 'job_location')
+            $job_lists = JobList::whereHas('industry', function($q) use($industry){
+                $q->where('name', 'LIKE', '%'.$industry.'%');
+            })
+            ->with('company', 'industry', 'job_location')
             ->get();
 
             return response([
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ]);
-        }else{ 
-            $job_lists = JobList::with('company','industry', 'job_location')->get();
+        }elseif(!($keyword == null && $location == null && $industry == null)){ 
+            $job_lists = JobList::orWhereHas('name', 'LIKE', '%'.$keyword.'%')
+            ->orWhereHas('job_location', function($q) use($location){
+                $q->where('name', 'LIKE', '%'.$location.'%');
+            })
+            ->orWhereHas('industry', function($q) use($industry){
+                $q->where('name', 'LIKE', '%'.$industry.'%');
+            })
+            ->orWhereHas('company', function($q) use($keyword){
+                $q->where('name', 'LIKE', '%'.$keyword.'%');
+            })
+            ->with('company', 'industry', 'job_location')
+            ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ],200);
+        }else{
+            $job_lists = JobList::with('company', 'industry', 'job_location')->get();
 
             return response([
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ],200);
         }
-    
 
     }
 
