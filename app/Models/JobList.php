@@ -40,6 +40,7 @@ class JobList extends Model
         'other_enail',
         'industry_id',
         'files',
+        'job_excempt_from_local_laws',
     ];
 
     protected $casts = [
@@ -48,6 +49,7 @@ class JobList extends Model
         'send_auto_reject_emails' => 'boolean',
         'auto_reject' => 'boolean',
         'can_applicant_with_criminal_record_apply' => 'boolean',
+        'job_excempt_from_local_laws' => 'boolean',
     ];
 
     public function company(): BelongsTo{

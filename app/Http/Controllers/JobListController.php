@@ -532,8 +532,7 @@ class JobListController extends Controller
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ],200);
-        }
-        elseif(!$location == null){
+        }elseif(!$location == null){
             $job_lists = JobList::whereHas('job_location', function($q) use($location){
                 $q->where('address', 'LIKE', '%'.$location.'%')
                 ->orWhere('location', 'LIKE', '%'.$location.'%');
