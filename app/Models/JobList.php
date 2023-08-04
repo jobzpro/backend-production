@@ -57,7 +57,7 @@ class JobList extends Model
     }
 
     public function job_types(): HasMany{
-        return $this->hasMany(JobType::class, 'job_id');
+        return $this->hasMany(JobType::class, 'id');
     }
 
     public function job_benefits(): HasMany{
@@ -78,5 +78,9 @@ class JobList extends Model
 
     public function industry(): BelongsTo{
         return $this->belongsTo(Industry::class);
+    }
+
+    public function jobInterviews(): HasMany{
+        return $this->hasMany(JobInterview::class);
     }
 }

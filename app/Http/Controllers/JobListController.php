@@ -22,7 +22,9 @@ use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
+use App\Http\Controllers\UploadController as Uploader;
 use Illuminate\Support\Facades\Storage;
+
 
 class JobListController extends Controller
 {
@@ -59,7 +61,8 @@ class JobListController extends Controller
                 "errors" => $fileValidator->errors(),
             ]);
         }else{
-            $file_attachments = $this->uploadFile($request['files'],$request->user()->id);
+            
+            $file_attachments = (new Uploader)->uploadFile($request->file('files'), $request->user()->id);
         }
 
         if($request->route('id') == $userCompany->id){
@@ -373,7 +376,11 @@ class JobListController extends Controller
 
 
     public function showJobsByCompany(Request $request){
-        $c_jobs_list = JobList::with('job_type')->where('company_id', $request['company_id'])->get();
+        $c_jobs_list = JobList::with('job_types')
+        ->where('company_id', $request['company_id'])
+        ->withCount('jobApplications')
+        ->withCount('jobInterviews')
+        ->get();
 
         return response([
             'job_list' => $c_jobs_list->paginate(10),
@@ -591,6 +598,7 @@ class JobListController extends Controller
         $path = 'files';
 
         if($file = $file_attachments){
+            dd($file);
             $fileName = time().$file->getClientOriginalName();
             $filePath = Storage::disk('s3')->put($path,$file);
             $filePath   = Storage::disk('s3')->url($filePath);

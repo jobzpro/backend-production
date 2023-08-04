@@ -23,6 +23,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use App\Helper\FileManager;
 use App\Models\StaffInvite;
+use App\Http\Controllers\UploadController as Uploader;
 
 class AccountController extends Controller
 {
@@ -566,7 +567,8 @@ class AccountController extends Controller
                 'errors' => $imageValidator->errors(),
             ],400);
         }else{
-            $company_logo = $this->uploadLogo($request['company_logo']);
+
+            $company_logo = (new Uploader)->uploadLogo($request->file('company_logo'));
         }
 
         $company = Company::create([
@@ -789,32 +791,6 @@ class AccountController extends Controller
 
         return response()->json($result, 200);
       
-    }
-
-
-
-    //Private functions
-    private function uploadLogo($company_logo){
-        $path = 'company_logo';
-
-        if($file = $company_logo){
-            $fileName = time().$file->getClientOriginalName();
-            $filePath = Storage::disk('s3')->put($path,$file);
-            $filePath   = Storage::disk('s3')->url($filePath);
-            $file_type  = $file->getClientOriginalExtension();
-            $fileSize   = $this->fileSize($file);
-
-            $company_logo = Image::create([
-                'name' => $fileName,
-                'type' => $file_type,
-                'path' => $filePath,
-                'size' => $fileSize,
-            ]);
-
-            return $company_logo->path;
-        }else{
-            return $company_logo = null;
-        }
     }
 
 

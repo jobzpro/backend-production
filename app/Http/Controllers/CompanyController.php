@@ -16,7 +16,7 @@ class CompanyController extends Controller
 {
     
     public function index(){
-        $companies = Company::all();
+        $companies = Company::with('businessType','industry')->get();
 
         return response([
             'company' => $companies->paginate(10),
@@ -33,6 +33,11 @@ class CompanyController extends Controller
 
 
     public function update(Company $company, Request $request){
+        $data = $request->all();
+
+        // $imageValidator = Validator::make($request->all(),[
+        //     'company_logo_path' => 
+        // ]);
 
     }
 
@@ -104,7 +109,7 @@ class CompanyController extends Controller
             return response([
                 'message' => 'Invite resent.',
             ],200);
-            
+             
         }else{
             return response([
                 'messsage' => "Email not found",
@@ -112,6 +117,9 @@ class CompanyController extends Controller
         }
 
     }
+
+
+    
 
 
 }
