@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Enums\JobListStatusEnum as job_status;
 use App\Helper\FileManager;
 use App\Models\FileAttachment;
+use App\Models\Industry;
 use App\Models\JobIndustryPhysicalSetting;
 use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
@@ -519,8 +520,49 @@ class JobListController extends Controller
         $keyword = $request->query('keyword');
         $industry = $request->query('industry');
 
-        if(!$location == null){
-            $job_lists = JobList::where('job_title', 'LIKE', '%'.$location.'%')->get();
+        if(!$keyword == null){
+            $company_ids = Company::where('name', 'LIKE', '%'.$keyword.'%')->pluck('id');
+
+            $job_lists = JobList::where('job_title', 'LIKE', '%'.$keyword.'%')
+            ->orWhereIn('company_id', $company_ids)
+            ->with('company','industry', 'job_location')
+            ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ],200);
+        }
+        elseif(!$location == null){
+            $job_list_ids = JobList::all()->pluck('id');
+            $job_locations = JobLocation::whereIn('job_list_id', $job_list_ids)
+            ->where('address', 'LIKE', '%'.$location.'%')
+            ->orWhere('location', 'LIKE', '%'.$location.'%')->pluck('job_list_id');
+
+            $job_list = JobList::whereIn('id', $job_locations)->get();
+            return response([
+                'job_lists' => $job_list->paginate(10),
+                'message' => "Success",
+            ],200);
+
+        }elseif(!$industry == null){
+            $industry_ids = Industry::where('name', 'LIKE', '%'.$keyword.'%')->pluck('id');
+
+            $job_lists = JobList::whereIn('industry_id', $industry_ids)
+            ->with('company','industry', 'job_location')
+            ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ]);
+        }else{ 
+            $job_lists = JobList::all();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ],200);
         }
     
 
