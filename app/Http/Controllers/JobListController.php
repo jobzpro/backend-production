@@ -519,7 +519,11 @@ class JobListController extends Controller
         $keyword = $request->query('keyword');
         $industry = $request->query('industry');
 
-        dd($location);
+        if(!$location == null){
+            $job_lists = JobList::where('job_title', 'LIKE', '%'.$location.'%')->get();
+        }
+    
+
     }
 
 

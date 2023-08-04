@@ -12,6 +12,7 @@ use App\Http\Controllers\JobInterviewController;
 use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
+use App\Http\Controllers\JobBenefitsController;
 use App\Http\Controllers\JobShiftController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
@@ -54,7 +55,6 @@ Route::prefix('auth')->controller(AccountController::class)->group(function(){
     });
 
     Route::post('/forget-password', 'resetPasswordRequest')->middleware(['guest'])->name('password.email');
-    Route::get('/password-reset/{token}','resetPasswordView');
     Route::post('/password-reset', 'resetPassword')->middleware(['guest'])->name('password.reset');
 
     Route::prefix('/employer')->group(function(){
@@ -119,6 +119,7 @@ Route::apiResources([
     'types' => TypeController::class,
     'industry-specialities' => IndustrySpecialitiesController::class,
     'industry-physical-settings' => IndustryPhysicalSettingsController::class,
+    'benefits' => JobBenefitsController::class,
 ],['only' => ['index', 'show']]);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function(){
