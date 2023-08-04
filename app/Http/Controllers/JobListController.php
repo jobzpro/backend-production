@@ -557,7 +557,7 @@ class JobListController extends Controller
                 'message' => "Success",
             ]);
         }else{ 
-            $job_lists = JobList::all();
+            $job_lists = JobList::with('company','industry', 'job_location')->get();
 
             return response([
                 'job_lists' => $job_lists->paginate(10),
