@@ -164,7 +164,7 @@ class JobListController extends Controller
                 for($i = 0; $i<sizeof($job_weekly_schedule); $i++){
                     JobWeeklySchedule::create([
                         'job_list_id' => $job_list->id,
-                        'weekely_shift_id' => $job_weekly_schedule[$i],
+                        'weekly_schedule_id' => $job_weekly_schedule[$i],
                     ]);
                 }
             }
