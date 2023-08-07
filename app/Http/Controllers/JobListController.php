@@ -138,7 +138,6 @@ class JobListController extends Controller
                 }
             }
 
-
             if($request->filled('benefits')){
                 $job_benefits = explode(',', $data['benefits']);
                 for($i = 0; $i<sizeof($job_benefits); $i++){
@@ -174,11 +173,10 @@ class JobListController extends Controller
                 for($i = 0; $i<sizeof($job_supplementary_schedule); $i++){
                     JobSupplementalSchedule::create([
                         'job_list_id' => $job_list->id,
-                        'supplementary_schedule_id' => $job_supplementary_schedule[$i],
+                        'supplemental_schedules_id' => $job_supplementary_schedule[$i],
                     ]);
                 }
             }
-
 
             $notification = CompanyNotification::create([
                 'title' => "Job Successfully Posted!",
