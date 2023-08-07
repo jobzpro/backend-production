@@ -216,7 +216,53 @@ class JobListController extends Controller
      */
     public function update(Request $request, JobList $jobList)
     {
-        //
+        $jobList = $jobList;
+        $data = $request->all();
+        $user = User::find($request->user()->id);
+        $userCompany = $user->userCompanies->first()->companies()->first();
+
+        if($userCompany->id == $jobList->company_id){
+            $validator = Validator::make($request->all(),[
+                'job_title' => 'required',
+            ]);
+
+            if($validator->fails()){
+                return response([
+                    'message' => "Job posting unsuccessful.",
+                    'errors' => $validator->errors(),
+                ],400);
+            }
+
+            $jobList->update([
+                'company_id' => $userCompany->id,
+                'job_title' => $data['job_title'],               
+                'description' => $data['description'] ?? null,
+                'show_pay' => $data['show_pay'] ?? null,
+                'pay_type' => $data['pay_type'] ?? null,
+                'salary' => $data['salary'] ?? null,
+                'min_salary' => $data['min_salary'] ?? null,
+                'max_salary' => $data['max_salary'] ?? null,
+                'experience_level_id' => $data['experience_level_id'] ?? null,
+                'number_of_vacancies' => $data['number_of_vacancies'] ?? null,
+                'hiring_urgency' => $data['hiring_urgency'] ?? null,
+                'status' => job_status::Published,
+                'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'] ?? null,
+                'can_start_messages' => $data['can_start_messages'] ?? null,
+                'send_auto_reject_emails' => $data['send_auto_reject_emails'] ?? null,
+                'auto_reject' => $data['auto_reject'] ?? null,
+                'time_limit' => $data['time_limit'] ?? null,
+                'other_email' => $data['other_email'] ?? null,
+                'industry_id' => $data['industry_id'] ?? null,
+            ]);
+
+            return response([
+                'message' => "Success",
+            ],200);
+        }else{
+            return response([
+                'message' => "Unauthorized",
+            ],401);
+        }
     }
 
     /**
@@ -590,31 +636,4 @@ class JobListController extends Controller
 
     }
 
-
-    //private functions
-    private function uploadFile($file_attachments, $user_id){
-        $path = 'files';
-
-        if($file = $file_attachments){
-            dd($file);
-            $fileName = time().$file->getClientOriginalName();
-            $filePath = Storage::disk('s3')->put($path,$file);
-            $filePath   = Storage::disk('s3')->url($filePath);
-            $file_type  = $file->getClientOriginalExtension();
-            $fileSize   = $this->fileSize($file);
-
-
-            $file_attachments = FileAttachment::create([
-                'user_id' => $user_id,
-                'name' => $fileName,
-                'type' => $file_type,
-                'path' => $filePath,
-                'size' => $fileSize,
-            ]);
-
-            return $file_attachments->path;
-        }else{
-            return $file_attachments = null;
-        }
-    }
 }
