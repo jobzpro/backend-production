@@ -84,18 +84,18 @@ Route::middleware(['auth:api'])->group(function(){
     Route::prefix('/company/{id}')->group(function(){
         #all job listing routes
         Route::prefix('/jobs')->controller(JobListController::class)->group(function(){
+            Route::get('/','getJobListings');
             Route::post('/post-job', 'store');
-            Route::get('getJobListings');
             Route::get('/{job_list_id}/applicants', 'getAllApplicantsForJobList');
             Route::patch('/{job_list_id}/archived', 'archiveJobList');
             Route::patch('{job_list_id}/publish', 'publishJobList');
             Route::get('/list-all-applicants', 'getAllApplicants');
             Route::post('/save-as-draft', 'saveJobListAsDraft');
-            Route::patch('/{id}/update', 'update');
+            Route::patch('/{job_list_id}/update', 'update');
         });
        
         #all company settings and updates
-        Route::post('{id}/send-invite',[CompanyController::class, 'sendStaffinvite']);
+        Route::post('/send-invite',[CompanyController::class, 'sendStaffinvite']);
 
 
     });

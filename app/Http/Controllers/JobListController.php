@@ -35,7 +35,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::all();
+        $jobLists = JobList::with('company', 'industry', 'job_location')->get();
 
         return response([
             'job_list' => $jobLists->paginate(10),
@@ -286,9 +286,9 @@ class JobListController extends Controller
             return response([
                 "message" => "Invalid File",
                 "errors" => $fileValidator->errors(),
-            ]);
+            ]); 
         }else{
-            $file_attachments = $this->uploadFile($request['files'],$request->user()->id);
+            $file_attachments = (new Uploader)->uploadFile($request['files'],$request->user()->id);
         }
 
 
@@ -316,7 +316,7 @@ class JobListController extends Controller
                 'experience_level_id' => $data['experience_level_id'] ?? null,
                 'number_of_vacancies' => $data['number_of_vacancies'] ?? null,
                 'hiring_urgency' => $data['hiring_urgency'] ?? null,
-                'status' => job_status::Published,
+                'status' => job_status::Draft,
                 'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'] ?? null,
                 'can_start_messages' => $data['can_start_messages'] ?? null,
                 'send_auto_reject_emails' => $data['send_auto_reject_emails'] ?? null,
@@ -485,6 +485,7 @@ class JobListController extends Controller
 
         foreach($job_lists as $job_list){
             $result = [
+                'job_list_id' => $job_list->id,
                 'job_list_title' => $job_list->job_title,
                 'hiring' => $job_list->number_of_vacancies,
                 'applied' => JobApplication::where('job_list_id', $job_list->id)->where('status', "Unread")->count(),
@@ -511,9 +512,6 @@ class JobListController extends Controller
     public function archiveJobList($id){
         $company = Company::find($id);
         $job_list_id = request()->job_list_id;
-
-        //dd($company->JobListings->find(2));
-
         $job_list = $company->JobListings->find($job_list_id);
         
         $job_list->update([
