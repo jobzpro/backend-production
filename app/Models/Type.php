@@ -17,4 +17,8 @@ class Type extends Model
         'description',
     ];
 
+    public function job_type() :BelongsTo{
+        return $this->belongsTo(JobType::class);
+    }
+
 }
