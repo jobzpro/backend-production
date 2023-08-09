@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Benefits extends Model
@@ -15,4 +16,8 @@ class Benefits extends Model
         'name',
         'description',
     ];
+
+    public function job_benfit() :BelongsTo{
+        return $this->belongsTo(JobBenefits::class);
+    }
 }

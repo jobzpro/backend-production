@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobBenefits extends Model
@@ -16,8 +17,8 @@ class JobBenefits extends Model
         'benefit_id',
     ];
 
-    public function benefits():BelongsTo{
-        return $this->belongsTo(Benefits::class, 'benefit_id');
+    public function benefits(): HasOne{
+        return $this->hasOne(Benefits::class, 'id','benefit_id');
     }
 
 }
