@@ -35,7 +35,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::with('company', 'industry', 'job_location')->get();
+        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type')->get();
 
         return response([
             'job_list' => $jobLists->paginate(10),
@@ -94,7 +94,7 @@ class JobListController extends Controller
                 'can_start_messages' => $data['can_start_messages'] ?? null,
                 'send_auto_reject_emails' => $data['send_auto_reject_emails'] ?? null,
                 'auto_reject' => $data['auto_reject'] ?? null,
-                'time_limit' => $data['time_limit'] ?? null,
+                'time_limit' => Carbon::parse($data['time_limit']) ?? null,
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
                 'files' => $file_attachments,
@@ -206,7 +206,8 @@ class JobListController extends Controller
      */
     public function show($id)
     {
-        $jobList = JobList::where('id',$id)->with('company', 'industry', 'job_location','job_types.type')->get();
+        $jobList = JobList::where('id', $id)
+        ->with('company', 'industry', 'job_location','job_types.type')->get();
 
         return response([
             'job_list' => $jobList,
@@ -216,8 +217,9 @@ class JobListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, JobList $jobList)
+    public function update(Request $request, $id)
     {
+        $jobList = JobList::find($id);
         $data = $request->all();
         $user = User::find($request->user()->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
@@ -322,7 +324,7 @@ class JobListController extends Controller
                 'can_start_messages' => $data['can_start_messages'] ?? null,
                 'send_auto_reject_emails' => $data['send_auto_reject_emails'] ?? null,
                 'auto_reject' => $data['auto_reject'] ?? null,
-                'time_limit' => $data['time_limit'] ?? null,
+                'time_limit' => Carbon::parse($data['time_limit']) ?? null,
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
                 'files' => $file_attachments,
