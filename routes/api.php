@@ -14,6 +14,7 @@ use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
 use App\Http\Controllers\JobBenefitsController;
 use App\Http\Controllers\JobShiftController;
+use App\Http\Controllers\QualificationsController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
@@ -121,6 +122,7 @@ Route::apiResources([
     'industry-specialities' => IndustrySpecialitiesController::class,
     'industry-physical-settings' => IndustryPhysicalSettingsController::class,
     'benefits' => JobBenefitsController::class,
+    'qualifications' => QualificationsController::class,
 ],['only' => ['index', 'show']]);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function(){

@@ -41,6 +41,10 @@ class JobList extends Model
         'industry_id',
         'files',
         'job_excempt_from_local_laws',
+        'authorized_to_work_in_us',
+        'is_vaccinated',
+        'can_commute',
+        'qualification_id',
     ];
 
     protected $casts = [
@@ -82,5 +86,9 @@ class JobList extends Model
 
     public function jobInterviews(): HasMany{
         return $this->hasMany(JobInterview::class);
+    }
+
+    public function qualifications(): BelongsTo{
+        return $this->belongsTo(Qualification::class, 'qualification_id');
     }
 }

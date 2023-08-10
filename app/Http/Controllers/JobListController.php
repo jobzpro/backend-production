@@ -15,15 +15,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Enums\JobListStatusEnum as job_status;
 use App\Helper\FileManager;
-use App\Models\FileAttachment;
-use App\Models\Industry;
 use App\Models\JobIndustryPhysicalSetting;
 use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
 use App\Http\Controllers\UploadController as Uploader;
-use Illuminate\Support\Facades\Storage;
 
 
 class JobListController extends Controller
@@ -35,7 +32,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')->get();
+        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications')->get();
 
         return response([
             'job_list' => $jobLists->paginate(10),
@@ -98,6 +95,10 @@ class JobListController extends Controller
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
                 'files' => $file_attachments,
+                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'],
+                'is_vaccinated' => $data['is_vaccinated'],
+                'can_commute' => $data['can_commute'],
+                'qualification_id' => $data['qualification_id'],
             ]);
 
             
@@ -204,10 +205,10 @@ class JobListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-        ->with('company', 'industry', 'job_location','job_types.type', 'job_benefits.benefits')->get();
+        ->with('company', 'industry', 'job_location','job_types.type', 'job_benefits.benefits', 'qualifications')->get();
 
         return response([
             'job_list' => $jobList,
@@ -217,7 +218,7 @@ class JobListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
         $jobList = JobList::find($id);
         $data = $request->all();
@@ -231,7 +232,7 @@ class JobListController extends Controller
 
             if($validator->fails()){
                 return response([
-                    'message' => "Job posting unsuccessful.",
+                    'message' => "Updating the Job was unsuccessful.",
                     'errors' => $validator->errors(),
                 ],400);
             }
@@ -256,6 +257,10 @@ class JobListController extends Controller
                 'time_limit' => $data['time_limit'] ?? null,
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
+                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'],
+                'is_vaccinated' => $data['is_vaccinated'],
+                'can_commute' => $data['can_commute'],
+                'qualification_id' => $data['qualification_id'],
             ]);
 
             return response([
@@ -271,7 +276,7 @@ class JobListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(JobList $jobList)
+    public function destroy(string $id)
     {
         //
     }
@@ -328,9 +333,11 @@ class JobListController extends Controller
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
                 'files' => $file_attachments,
+                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'],
+                'is_vaccinated' => $data['is_vaccinated'],
+                'can_commute' => $data['can_commute'],
             ]);
 
-            
             $job_location = JobLocation::create([
                 'job_list_id' => $job_list->id,
                 'location' => $data['location'],
@@ -434,7 +441,7 @@ class JobListController extends Controller
         ],200);
     }
 
-    public function createJobType($id, Request $request){
+    public function createJobType(string $id, Request $request){
         $data = $request->all();
 
 
@@ -451,7 +458,7 @@ class JobListController extends Controller
 
     }
 
-    public function createJobBenefits($id, Request $request){
+    public function createJobBenefits(string $id, Request $request){
         $data = $request->all();
 
         $job_benefits = JobBenefits::create([
@@ -466,7 +473,7 @@ class JobListController extends Controller
         ],200);
     }
 
-    public function getAllApplicantsForJobList($id){
+    public function getAllApplicantsForJobList(string $id){
         $company = Company::find($id);
         $job_list_id = request()->job_list_id;
         $job_applications = JobApplication::where('job_list_id', $job_list_id)->get();
@@ -480,7 +487,7 @@ class JobListController extends Controller
         ]);
     }
 
-    public function getJobListings($id){
+    public function getJobListings(string $id){
         $company_id = $id;
         $job_lists = JobList::with('job_types')->where('company_id', $company_id)->get();
         $results = [];
@@ -512,7 +519,7 @@ class JobListController extends Controller
         ]);
     } 
 
-    public function archiveJobList($id){
+    public function archiveJobList(string $id){
         $company = Company::find($id);
         $job_list_id = request()->job_list_id;
         $job_list = $company->JobListings->find($job_list_id);
@@ -527,7 +534,7 @@ class JobListController extends Controller
 
     }
 
-    public function publishJobList($id){
+    public function publishJobList(string $id){
         $company = Company::find($id);
         $job_list_id = request()->job_list_id;
 
@@ -543,7 +550,7 @@ class JobListController extends Controller
 
     }
 
-    public function getAllApplicants($id){
+    public function getAllApplicants(string $id){
         $company_id = $id;
         $job_lists_id = JobList::where('company_id', $company_id)->pluck('id');
         $job_applications = JobApplication::whereIn('job_list_id', $job_lists_id)->get();
@@ -607,7 +614,8 @@ class JobListController extends Controller
             return response([
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
-            ]);
+            ],200);
+
         }elseif(!($keyword == null && $location == null && $industry == null)){ 
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%'.$keyword.'%')
             ->orWhereHas('job_location', function($q) use($location){
@@ -626,6 +634,7 @@ class JobListController extends Controller
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ],200);
+            
         }else{
             $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')->get();
 

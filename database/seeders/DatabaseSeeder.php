@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
                 JobShiftsSeeder::class,
                 IndustrySpecialitiesSeeder::class,
                 IndustryPhysicalSettingsSeeder::class,
+                QualificationSeeder::class,
                 
             ]);
         }else{
@@ -49,6 +50,7 @@ class DatabaseSeeder extends Seeder
                 CompanySeeder::class,
                 IndustrySpecialitiesSeeder::class,
                 IndustryPhysicalSettingsSeeder::class,
+                QualificationSeeder::class,
             ]);
         }
     }
