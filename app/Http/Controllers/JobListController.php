@@ -32,7 +32,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications')->get();
+        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->get();
 
         return response([
             'job_list' => $jobLists->paginate(10),
@@ -208,7 +208,7 @@ class JobListController extends Controller
     public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-        ->with('company', 'industry', 'job_location','job_types.type', 'job_benefits.benefits', 'qualifications')->get();
+        ->with('company', 'industry', 'job_location','job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->get();
 
         return response([
             'job_list' => $jobList,
@@ -584,7 +584,7 @@ class JobListController extends Controller
             ->orWhereHas('company', function($q) use($keyword){
                 $q->where('name', 'LIKE', '%'.$keyword.'%');
             })
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality')
             ->get();
 
             return response([
@@ -596,7 +596,7 @@ class JobListController extends Controller
                 $q->where('address', 'LIKE', '%'.$location.'%')
                 ->orWhere('location', 'LIKE', '%'.$location.'%');
             })
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits','job_specialities.industrySpeciality')
             ->get();
 
             return response([
@@ -608,7 +608,7 @@ class JobListController extends Controller
             $job_lists = JobList::whereHas('industry', function($q) use($industry){
                 $q->where('name', 'LIKE', '%'.$industry.'%');
             })
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality')
             ->get();
 
             return response([
@@ -627,7 +627,7 @@ class JobListController extends Controller
             ->orWhereHas('company', function($q) use($keyword){
                 $q->where('name', 'LIKE', '%'.$keyword.'%');
             })
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality')
             ->get();
 
             return response([
@@ -636,7 +636,7 @@ class JobListController extends Controller
             ],200);
             
         }else{
-            $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits')->get();
+            $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality')->get();
 
             return response([
                 'job_lists' => $job_lists->paginate(10),

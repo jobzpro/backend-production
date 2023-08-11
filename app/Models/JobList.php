@@ -94,4 +94,8 @@ class JobList extends Model
     public function qualifications(): BelongsTo{
         return $this->belongsTo(Qualification::class, 'qualification_id');
     }
+
+    public function job_specialities(): HasMany{
+        return $this->hasMany(JobIndustrySpeciality::class);
+    }
 }

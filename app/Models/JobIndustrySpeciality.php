@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobIndustrySpeciality extends Model
@@ -14,4 +15,8 @@ class JobIndustrySpeciality extends Model
         'job_list_id',
         'industry_speciality_id',
     ];
+
+    public function industrySpeciality() :BelongsTo{
+        return $this->belongsTo(IndustrySpeciality::class);
+    }
 }
