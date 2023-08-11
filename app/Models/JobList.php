@@ -54,6 +54,9 @@ class JobList extends Model
         'auto_reject' => 'boolean',
         'can_applicant_with_criminal_record_apply' => 'boolean',
         'job_excempt_from_local_laws' => 'boolean',
+        'authorized_to_work_in_us' => 'boolean',
+        'is_vaccinated' => 'boolean',
+        'can_commute' => 'boolean',
     ];
 
     public function company(): BelongsTo{

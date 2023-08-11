@@ -13,7 +13,7 @@ class IndustrySpecialitiesSeeder extends Seeder
      */
     public function run(): void
     {
-        $medical_specialities = ["Home Health", "Geriatics", "Pediatrics", "Medical Surgical", "Wound Care", "Primary Care", "Hospice & Pallative Medicine", "Psychiatry", "Surgery", "Cardiology", "Critical & Intensive Care", "Urgent Care", "Addiction Medicine", "Ob/Gyn", "Dialysis", "Neurolgy", "Pain Medicine", "Hollistic Medicine", "Internal Medicine", "Infectious Disease", "Home Care", "Caregiving", "Other"
+        $medical_specialities = ["Home Health", "Geriatics", "Pediatrics", "Medical Surgical", "Wound Care", "Primary Care", "Hospice & Pallative Medicine", "Psychiatry", "Surgery", "Cardiology", "Critical & Intensive Care", "Urgent Care", "Addiction Medicine", "Ob/Gyn", "Dialysis", "Neurolgy", "Pain Medicine", "Hollistic Medicine", "Internal Medicine", "Infectious Disease", "Home Care/Caregiving", "Other"
         ];
 
         $technical_specialities = ["Application Development", "Software Developer / Engineer (Programming)", "Website Design and or / Developer", "Database Adminstrator", "IT Support / Helpdesk", "IT Project Manager", "Product Manager", "Information Security / Cybersecurity Analyst", "Information Technology Auditor", "Data Scientist", "Network and Computer Systems Administrators", "Configuration / QA Testing", "User Experience Testing", "Scrum Master"
