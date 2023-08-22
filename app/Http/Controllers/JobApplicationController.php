@@ -34,9 +34,10 @@ class JobApplicationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $id){
-        $job_list = JobList::find($id)->first();
-        $user = User::find($request->user()->id)->first();
-        $company = Company::find($job_list->company_id)->first();
+        $job_list = JobList::find($id);
+       // $user = User::find($request->user()->id)->first();
+        $user = User::find($request->user_id);
+        $company = Company::find($job_list->company_id);
         $user_companies = UserCompany::where('company_id', $company->id)->get();
 
 
