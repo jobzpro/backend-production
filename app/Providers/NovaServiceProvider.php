@@ -38,7 +38,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             return [
                 MenuSection::dashboard(Main::class)->icon('chart-bar'),
                 MenuSection::make('Account',[
-                    //MenuItem::resource(Account::class),
+                    MenuItem::resource(Account::class),
                     MenuItem::resource(User::class),
                     MenuItem::resource(UserRole::class),
                     MenuItem::resource(Role::class),
