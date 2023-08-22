@@ -34,11 +34,9 @@ class JobApplicationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $id){
-        $data = $request->all();
-        $job_list = JobList::find($id);
+        $job_list = JobList::find($id)->first();
         $user = User::find($request->user()->id)->first();
         $company = Company::find($job_list->company_id)->first();
-
         $user_companies = UserCompany::where('company_id', $company->id)->get();
 
 
@@ -81,9 +79,9 @@ class JobApplicationController extends Controller
             'status' => application_status::unread,
             'applied_at' => Carbon::now(),
             'resume_path' => $resume,
-            'authorized_to_work_in_us' => $data['authorized_to_work_in_us'] ?? null,
-            'vaccinated_with_booster' => $data['vaccinated_with_booster'] ?? null,
-            'able_to_commute' => $data['able_to_commute'] ?? null
+            'authorized_to_work_in_us' => $request->authorized_to_work_in_us ?? null,
+            'vaccinated_with_booster' => $request->vaccinated_with_booster ?? null,
+            'able_to_commute' => $request->able_to_commute ?? null
         ]);
 
         UserNotification::create([
