@@ -35,9 +35,8 @@ class JobApplicationController extends Controller
      */
     public function store(Request $request, $id){
         $job_list = JobList::find($id);
-        dd($request->user()->id);
-       // $user = User::where('id',$request->user()->id)->first();
-        $user = User::where('id', $request->user_id)->first();
+        $user = User::where('id',$request->user()->id)->first();
+        // $user = User::where('id', $request->user_id)->first();
         $company = Company::find($job_list->company_id);
         $user_companies = UserCompany::where('company_id', $company->id)->get();
 
