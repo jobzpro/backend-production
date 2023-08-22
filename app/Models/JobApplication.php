@@ -18,6 +18,9 @@ class JobApplication extends Model
         'status',
         'applied_at',
         'resume_path',
+        'authorized_to_work_in_us',
+        'vaccinated_with_booster',
+        'able_to_commute'
     ];
 
     protected $casts = [

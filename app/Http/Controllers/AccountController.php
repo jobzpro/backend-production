@@ -96,7 +96,7 @@ class AccountController extends Controller
     
         $account = Account::where('email', '=', $data['email'])->first();
 
-        if($account || $account->hasVerifiedEmail()){
+        if($account){
             $user = User::where('account_id', $account->id)->first();
 
             $userRoles = UserRole::where('user_id', $user->id)->first();

@@ -34,6 +34,7 @@ class JobApplicationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request, $id){
+        $data = $request->all();
         $job_list = JobList::find($id);
         $user = User::find($request->user()->id);
         $company = Company::find($job_list->company_id)->first();
@@ -60,14 +61,18 @@ class JobApplicationController extends Controller
                 $file_type  = $file->getClientOriginalExtension();
                 $fileSize   = $this->fileSize($file);
 
-                $resume = FileAttachment::create([
+                $r = FileAttachment::create([
                     'name' => $fileName,
                     'user_id' => $user->id,
                     'path' => $filePath,
                     'type' => $file_type,
                     'size' => $fileSize 
                 ]);
+
+                $resume = $r->path;
             }
+        }else{
+            $resume = null;
         }
 
         $job_application = JobApplication::create([
@@ -75,7 +80,10 @@ class JobApplicationController extends Controller
             'job_list_id' => $job_list->id,
             'status' => application_status::unread,
             'applied_at' => Carbon::now(),
-            'resume_path' => $resume->path,
+            'resume_path' => $resume,
+            'authorized_to_work_in_us' => $data['authorized_to_work_in_us'] ?? null,
+            'vaccinated_with_booster' => $data['vaccinated_with_booster'] ?? null,
+            'able_to_commute' => $data['able_to_commute'] ?? null
         ]);
 
         UserNotification::create([
@@ -88,8 +96,8 @@ class JobApplicationController extends Controller
 
         CompanyNotification::create([
             'company_id' => $company->id,
-            'job_list_id' => $job_list->job_title,
-            'title' => "A jobseeker has applied". $job_list->job_title,
+            'job_list_id' => $job_list->id,
+            'title' => "A jobseeker has applied for ". $job_list->job_title,
             'description' => "You can review and see their profile to check if the applicant is qualified.",
             'is_Read' => false,
         ]);
