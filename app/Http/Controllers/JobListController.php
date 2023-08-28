@@ -21,7 +21,7 @@ use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
 use App\Http\Controllers\UploadController as Uploader;
-
+use Illuminate\Support\Facades\Auth;
 
 class JobListController extends Controller
 {
@@ -45,7 +45,8 @@ class JobListController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
         $userCompany = $user->userCompanies()->first()->companies()->first();
 
         $fileValidator = Validator::make($request->all(),[
@@ -59,7 +60,7 @@ class JobListController extends Controller
             ]);
         }else{
             
-            $file_attachments = (new Uploader)->uploadFile($request->file('files'), $request->user()->id);
+            $file_attachments = (new Uploader)->uploadFile($request->file('files'), $user->id);
         }
 
         if($request->route('id') == $userCompany->id){
@@ -222,7 +223,8 @@ class JobListController extends Controller
     {
         $jobList = JobList::find($id);
         $data = $request->all();
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
 
         if($userCompany->id == $jobList->company_id){
@@ -283,7 +285,8 @@ class JobListController extends Controller
 
     public function saveJobListAsDraft(Request $request){
         $data = $request->all();
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
         $userCompany = $user->userCompanies()->first()->companies()->first();
 
         $fileValidator = Validator::make($request->all(),[
@@ -296,7 +299,7 @@ class JobListController extends Controller
                 "errors" => $fileValidator->errors(),
             ]); 
         }else{
-            $file_attachments = (new Uploader)->uploadFile($request['files'],$request->user()->id);
+            $file_attachments = (new Uploader)->uploadFile($request['files'], $user->id);
         }
 
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\EmployerMailerController as EmployerMailerController;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -49,8 +50,10 @@ class CompanyController extends Controller
     public function sendStaffinvite(Request $request){
         $data = $request->all();
         $company = Company::find($request->id);
-        $userCompany = UserCompany::where('user_id', $request->user()->id)->first();
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
+        $userCompany = UserCompany::where('user_id', $user->id)->first();
+
 
         if($userCompany->company_id == $request->id){
             $validator = Validator::make($request->all(),[

@@ -18,6 +18,7 @@ use App\Http\Controllers\EmployerMailerController as EmployerMailerController;
 use App\Helper\FileManager;
 use App\Models\CompanyNotification;
 use App\Http\Controllers\MailerController as MailerController;
+use Illuminate\Support\Facades\Auth;
 
 class JobApplicationController extends Controller
 {
@@ -35,7 +36,8 @@ class JobApplicationController extends Controller
      */
     public function store(Request $request, $id){
         $job_list = JobList::find($id);
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
         $user_companies = UserCompany::where('company_id', $company->id)->get();
 
@@ -142,7 +144,8 @@ class JobApplicationController extends Controller
     }
 
     public function retractApplication(Request $request, $id){
-        $user = User::find($request->user()->id);
+        $account = Auth::user();
+        $user = User::find($account->user->id);
         
         if($user->userRole->first()->role->role_name == "Jobseeker"){
             $job_application = JobApplication::find($id);
