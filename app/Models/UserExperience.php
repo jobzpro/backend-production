@@ -21,6 +21,10 @@ class UserExperience extends Model
         'current',
     ];
 
+    protected $casts = [
+        'current' => 'boolean',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
