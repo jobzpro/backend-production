@@ -149,6 +149,7 @@ class UserController extends Controller
             'user_id' => $user->id,
             'company_name' => $request['company_name'],
             'years_worked' => $request['years_worked'],
+            'position' => $request['position'],
             'current' => $request['current'],
         ]);
 
