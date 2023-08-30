@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasFactory, HasApiTokens, SoftDeletes;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,6 +40,7 @@ class User extends Authenticatable
         'skills',
         'experience_level',
         'incorrect_signin_attempts',
+        'gender',
     ];
 
     /**
@@ -59,27 +61,33 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function account(): BelongsTo{
+    public function account(): BelongsTo
+    {
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    public function references(): HasMany{
+    public function references(): HasMany
+    {
         return $this->hasMany(UserReference::class);
     }
 
-    public function userRoles(): HasMany{
+    public function userRoles(): HasMany
+    {
         return $this->hasMany(UserRole::class);
     }
 
-    public function files(): HasMany{
+    public function files(): HasMany
+    {
         return $this->hasMany(FileAttachment::class);
     }
 
-    public function experiences(): HasMany{
+    public function experiences(): HasMany
+    {
         return $this->hasMany(UserExperience::class);
     }
 
-    public function userCompanies(): HasMany{
+    public function userCompanies(): HasMany
+    {
         return $this->hasMany(UserCompany::class, 'user_id');
     }
 
@@ -87,8 +95,8 @@ class User extends Authenticatable
     //     return $this->hasMany();
     // }
 
-    public function user_notifications(): HasMany{
+    public function user_notifications(): HasMany
+    {
         return $this->hasMany(UserNotification::class);
     }
-
 }

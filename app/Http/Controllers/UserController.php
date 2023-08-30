@@ -116,6 +116,7 @@ class UserController extends Controller
             'description' => $request['description'],
             'certifications' => $request['certifications'],
             'skills' => $request['skills'],
+            'gender' => $request['gender'],
         ]);
 
         return response([
