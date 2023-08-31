@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper\FileManager;
+use App\Models\EducationalAttainment;
 use App\Models\User;
 use App\Models\Image;
 use App\Models\FileAttachment;
@@ -18,7 +19,7 @@ class UserController extends Controller
 
     public function showJobseekerProfile($id)
     {
-        $result = User::with('references', 'files', 'experiences')->where('id', $id)->first();
+        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
         return response([
             'user' => $result,
@@ -93,7 +94,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::with('references', 'files', 'experiences')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
         if ($avatar == null) {
             $fileName = $user->avatar_path;
@@ -115,7 +116,7 @@ class UserController extends Controller
             'high_school' => $request['high_school'],
             'college' => $request['college'],
             'description' => $request['description'],
-            'certifications' => $request['certifications'],
+            // 'certifications' => $request['certifications'],
             'skills' => $request['skills'],
             'gender' => $request['gender'],
         ]);
@@ -128,7 +129,7 @@ class UserController extends Controller
 
     public function updateReferences(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
         $reference = UserReference::create([
             'user_id' => $user->id,
@@ -145,7 +146,7 @@ class UserController extends Controller
 
     public function updateExperiences(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
         if ($request->has('current')) {
             UserExperience::where('current', true)->where('user_id', $id)->update(['current', false]);
@@ -165,6 +166,22 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function updateEducationalAttainments(Request $request, $id)
+    {
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+
+        $experience = EducationalAttainment::create([
+            'user_id' => $user->id,
+            'attainment_level' => $request['attainment_level'],
+            'school' => $request['school'],
+            'year' => $request['year'],
+        ]);
+
+        return response([
+            'user' => $user,
+            'message' => "Educational Attainments updated."
+        ], 200);
+    }
 
     //Private functions
     private function uploadAvatar($image)
