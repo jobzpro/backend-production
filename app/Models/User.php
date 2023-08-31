@@ -107,6 +107,6 @@ class User extends Authenticatable
 
     public function educational_attainments(): HasMany
     {
-        return $this->hasMany(educational_attainments::class);
+        return $this->hasMany(EducationalAttainment::class);
     }
 }
