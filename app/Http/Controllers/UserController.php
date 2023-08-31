@@ -149,7 +149,7 @@ class UserController extends Controller
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
         if ($request->has('current')) {
-            UserExperience::where('current', true)->where('user_id', $id)->update(['current', false]);
+            UserExperience::where('current', true)->where('user_id', $id)->update(['current' => false]);
         }
 
         $experience = UserExperience::create([
