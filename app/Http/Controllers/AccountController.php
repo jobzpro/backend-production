@@ -793,5 +793,26 @@ class AccountController extends Controller
       
     }
 
+    public function checkifCompanyExists(Request $request){
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|unique:companies',
+            'company_email' => 'required|unique:companies',
+        ]);
+
+        if($validator->fails()){
+            return response([
+                'message' => "Company creation Unsuccessful",
+                'errors' => $validator->errors(),
+            ],400);
+        }else{
+            return response([
+                'message' => "Company creation successful",
+
+            ],200);
+        }
+
+        
+    }
+
 
 }
