@@ -81,6 +81,11 @@ class User extends Authenticatable
         return $this->hasMany(FileAttachment::class);
     }
 
+    public function certifications()
+    {
+        return $this->files()->where('is_certification', true);
+    }
+
     public function experiences(): HasMany
     {
         return $this->hasMany(UserExperience::class);
@@ -98,5 +103,10 @@ class User extends Authenticatable
     public function user_notifications(): HasMany
     {
         return $this->hasMany(UserNotification::class);
+    }
+
+    public function educational_attainments(): HasMany
+    {
+        return $this->hasMany(educational_attainments::class);
     }
 }

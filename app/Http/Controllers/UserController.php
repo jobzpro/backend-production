@@ -70,7 +70,8 @@ class UserController extends Controller
                         'user_id' => $id,
                         'path' => $filePath,
                         'type' => $file_type,
-                        'size' => $fileSize
+                        'size' => $fileSize,
+                        'is_certification' => true,
                     ]);
 
                     array_push($attached_file, $x);
@@ -145,6 +146,10 @@ class UserController extends Controller
     public function updateExperiences(Request $request, $id)
     {
         $user = User::with('references', 'files', 'experiences')->where('id', $id)->first();
+
+        if ($request->has('current')) {
+            UserExperience::where('current', true)->where('user_id', $id)->update(['current', false]);
+        }
 
         $experience = UserExperience::create([
             'user_id' => $user->id,
