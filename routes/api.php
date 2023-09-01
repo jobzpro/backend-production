@@ -80,7 +80,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::patch('/{id}/profile/references/update', 'updateReferences');
         Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
         Route::patch('/{id}/profile/educational_attainments/update', 'updateEducationalAttainments');
-        Route::path('/{id}/profile/certifications/update', 'updateCertifications');
+        Route::patch('/{id}/profile/certifications/update', 'updateCertifications');
     });
 
     Route::prefix('/company/{id}')->group(function () {
