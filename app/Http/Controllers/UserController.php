@@ -183,6 +183,53 @@ class UserController extends Controller
         ], 200);
     }
 
+    public function updateCertifications(Request $request, $id)
+    {
+        $attached_file = [];
+
+        $filesValidator = Validator::make($request->all(), [
+            'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
+        ]);
+
+        if ($filesValidator->fails()) {
+            return response([
+                'message' => "Invalid file.",
+                'errors' => $filesValidator->errors(),
+            ], 400);
+        } else {
+            $path = 'files';
+            //!is_dir($path) && mkdir($path, 0777, true);
+
+            foreach ($request->file('files') as $file) {
+                //Storage::disk('public')->put($path.$fileName, File::get($file));
+                $fileName = time() . $file->getClientOriginalName();
+                $filePath = Storage::disk('s3')->put($path, $file);
+                $filePath   = Storage::disk('s3')->url($filePath);
+                $file_type  = $file->getClientOriginalExtension();
+                $fileSize   = $this->fileSize($file);
+
+                $x = FileAttachment::create([
+                    'name' => $fileName,
+                    'user_id' => $id,
+                    'path' => $filePath,
+                    'type' => $file_type,
+                    'size' => $fileSize,
+                    'is_certification' => true,
+                ]);
+
+                array_push($attached_file, $x);
+            }
+        }
+
+
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+
+        return response([
+            'user' => $user,
+            'message' => 'Certifications successfully updated'
+        ], 200);
+    }
+
     //Private functions
     private function uploadAvatar($image)
     {

@@ -18,10 +18,15 @@ class FileAttachment extends Model
         'type',
         'size',
         'user_id',
+        'is_certification',
     ];
 
-    public function user(): BelongsTo{
+    protected $casts = [
+        'is_certification' => 'boolean',
+    ];
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
-}      
-
+}
