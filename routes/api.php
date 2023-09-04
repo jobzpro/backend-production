@@ -94,6 +94,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/list-all-applicants', 'getAllApplicants');
             Route::post('/save-as-draft', 'saveJobListAsDraft');
             Route::patch('/{job_list_id}/update', 'update');
+            Route::delete('/{job_list_id}/destroy', 'destroy');
         });
 
         #all company settings and updates
