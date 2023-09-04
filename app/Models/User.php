@@ -61,6 +61,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'profile_completion'
+    ];
+
+
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'account_id');
@@ -108,5 +113,39 @@ class User extends Authenticatable
     public function educational_attainments(): HasMany
     {
         return $this->hasMany(EducationalAttainment::class);
+    }
+
+    public function getProfileCompletionAttribute()
+    {
+        $headline = $this->description;
+        $certifications = $this->certifications();
+        $skills = $this->skills;
+        $experiences = $this->experiences();
+        $references = $this->references();
+
+        $ctr = 0;
+
+        if ($headline !== null && $headline !== "") {
+            $ctr += 1;
+        }
+
+        if ($certifications->count() > 0) {
+            $ctr += 1;
+        }
+
+        if ($skills !== null && $skills !== "") {
+            $ctr += 1;
+        }
+
+        if ($experiences->count() > 0) {
+            $ctr += 1;
+        }
+
+        if ($references->count() > 0) {
+            $ctr += 1;
+        }
+
+        $avg = ($ctr / 5) * 100;
+        return round($avg, 0);
     }
 }
