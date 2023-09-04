@@ -146,6 +146,6 @@ class User extends Authenticatable
         }
 
         $avg = ($ctr / 5) * 100;
-        return round($avg, 0);
+        return $avg;
     }
 }
