@@ -188,7 +188,7 @@ class UserController extends Controller
         $attached_file = [];
 
         $filesValidator = Validator::make($request->all(), [
-            'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
+            'files.*' => 'mimes:pdf,doc,docx,txt,jpg,jpeg,png|max:2048',
         ]);
 
         if ($filesValidator->fails()) {
