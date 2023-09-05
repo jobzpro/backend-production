@@ -99,6 +99,9 @@ Route::middleware(['auth:api'])->group(function () {
 
         #all company settings and updates
         Route::post('/send-invite', [CompanyController::class, 'sendStaffinvite']);
+        Route::patch('/updateBasic', [CompanyController::class, 'updateBasicDetails']);
+        Route::post('/updateAdmin', [CompanyController::class, 'updateAdminDetails']);
+        Route::patch('/update', [CompanyController::class, 'updateCompanyDetails']);
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
