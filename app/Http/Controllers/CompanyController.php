@@ -13,7 +13,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UploadController as Uploader;
+use App\Models\Account;
+use App\Models\UserRole;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class CompanyController extends Controller
 {
@@ -103,6 +108,55 @@ class CompanyController extends Controller
         return response([
             'message' => "Successful"
         ], 200);
+    }
+
+    public function addEmployerStaff(Request $request, $id)
+    {
+        $company = Company::with('userCompany', 'businessType', 'industry')->where('id', $id)->first();
+
+        $staffs = $request['staffs'];
+
+        try {
+            foreach ($staffs as $staff => $data) {
+                if ($data) {
+                    $account = Account::create([
+                        'email' => $data['email'],
+                        'password' => Hash::make(Str::random(12)),
+                        'login_type' => "email",
+                        'created_at' => Carbon::now(),
+                    ]);
+
+                    $account->user()->create([
+                        'account_id' => $account->id,
+                        'first_name' => $data['first_name'],
+                        // 'middle_name' => $data['middle_name'],
+                        'last_name' => $data['last_name'],
+                        //'email' => $data['email'],
+                        'created_at' => Carbon::now(),
+                    ]);
+
+                    $userRole = UserRole::create([
+                        'user_id' => $account->user->id,
+                        'role_id' => 4,
+                    ]);
+
+                    $userCompany = UserCompany::create([
+                        'user_id' => $account->user->id,
+                        'company_id' => $company->id,
+                    ]);
+
+                    event(new Registered($account));
+                }
+            }
+
+            return response([
+                'message' => "Successful"
+            ], 200);
+        } catch (Exception $e) {
+            return response([
+                'message' => 'Something went wrong.',
+            ], 400);
+        }
     }
 
     public function destroy(Company $company)

@@ -102,6 +102,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::patch('/updateBasic', [CompanyController::class, 'updateBasicDetails']);
         Route::post('/updateAdmin', [CompanyController::class, 'updateAdminDetails']);
         Route::patch('/update', [CompanyController::class, 'updateCompanyDetails']);
+        Route::post('/staffs/add', [CompanyController::class, 'addEmployerStaff']);
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
