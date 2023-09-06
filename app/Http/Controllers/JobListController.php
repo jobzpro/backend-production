@@ -274,9 +274,9 @@ class JobListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, $job_list_id)
     {
-        $jobList = JobList::find($id);
+        $jobList = JobList::find($job_list_id);
 
         if ($jobList) {
             $jobList->delete();
