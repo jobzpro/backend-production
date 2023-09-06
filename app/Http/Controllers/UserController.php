@@ -131,103 +131,169 @@ class UserController extends Controller
     {
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
-        $reference = UserReference::create([
-            'user_id' => $user->id,
-            'name' => $request['name'],
-            'phone_number' => $request['phone_number'],
-        ]);
+        if ($request['reference_id']) {
+            $reference = $user->references()->where('id', '=', $request["reference_id"]);
 
+            if ($reference) {
+                $reference->delete();
 
-        return response([
-            'user' => $user,
-            'message' => "User references updated."
-        ], 200);
+                return response([
+                    'user' => $user,
+                    'message' => "User references updated."
+                ], 200);
+            } else {
+                return response([
+                    'message' => "Reference not found.",
+                ], 400);
+            }
+        } else {
+            $reference = UserReference::create([
+                'user_id' => $user->id,
+                'name' => $request['name'],
+                'phone_number' => $request['phone_number'],
+            ]);
+
+            return response([
+                'user' => $user,
+                'message' => "User references updated."
+            ], 200);
+        }
     }
 
     public function updateExperiences(Request $request, $id)
     {
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
-        if ($request->get('current', 0) === "1") {
-            UserExperience::where('current', true)->where('user_id', $id)->update(['current' => false]);
+        if ($request['experience_id']) {
+            $experience = $user->experiences()->where('id', '=', $request["experience_id"]);
+
+            if ($experience) {
+                $experience->delete();
+
+                return response([
+                    'user' => $user,
+                    'message' => "User experiences updated."
+                ], 200);
+            } else {
+                return response([
+                    'message' => "Experience not found.",
+                ], 400);
+            }
+        } else {
+            if ($request->get('current', 0) === "1") {
+                UserExperience::where('current', true)->where('user_id', $id)->update(['current' => false]);
+            }
+
+            $experience = UserExperience::create([
+                'user_id' => $user->id,
+                'company_name' => $request['company_name'],
+                'years_worked' => $request['years_worked'],
+                'position' => $request['position'],
+                'current' => $request['current'],
+            ]);
+
+            return response([
+                'user' => $user,
+                'message' => "User experiences updated."
+            ], 200);
         }
-
-        $experience = UserExperience::create([
-            'user_id' => $user->id,
-            'company_name' => $request['company_name'],
-            'years_worked' => $request['years_worked'],
-            'position' => $request['position'],
-            'current' => $request['current'],
-        ]);
-
-        return response([
-            'user' => $user,
-            'message' => "User experiences updated."
-        ], 200);
     }
 
     public function updateEducationalAttainments(Request $request, $id)
     {
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
-        $experience = EducationalAttainment::create([
-            'user_id' => $user->id,
-            'attainment_level' => $request['attainment_level'],
-            'school' => $request['school'],
-            'year' => $request['year'],
-        ]);
+        if ($request['educational_attainment_id']) {
+            $attainment = $user->educational_attainments()->where('id', '=', $request["educational_attainment_id"]);
 
-        return response([
-            'user' => $user,
-            'message' => "Educational Attainments updated."
-        ], 200);
+            if ($attainment) {
+                $attainment->delete();
+
+                return response([
+                    'user' => $user,
+                    'message' => "Educational Attainments updated."
+                ], 200);
+            } else {
+                return response([
+                    'message' => "Educational Attainment not found.",
+                ], 400);
+            }
+        } else {
+            $experience = EducationalAttainment::create([
+                'user_id' => $user->id,
+                'attainment_level' => $request['attainment_level'],
+                'school' => $request['school'],
+                'year' => $request['year'],
+            ]);
+
+            return response([
+                'user' => $user,
+                'message' => "Educational Attainments updated."
+            ], 200);
+        }
     }
 
     public function updateCertifications(Request $request, $id)
     {
-        $attached_file = [];
-
-        $filesValidator = Validator::make($request->all(), [
-            'files.*' => 'mimes:pdf,doc,docx,txt,jpg,jpeg,png|max:2048',
-        ]);
-
-        if ($filesValidator->fails()) {
-            return response([
-                'message' => "Invalid file.",
-                'errors' => $filesValidator->errors(),
-            ], 400);
-        } else {
-            $path = 'files';
-            //!is_dir($path) && mkdir($path, 0777, true);
-
-            foreach ($request->file('files') as $file) {
-                //Storage::disk('public')->put($path.$fileName, File::get($file));
-                $fileName = time() . $file->getClientOriginalName();
-                $filePath = Storage::disk('s3')->put($path, $file);
-                $filePath   = Storage::disk('s3')->url($filePath);
-                $file_type  = $file->getClientOriginalExtension();
-                $fileSize   = $this->fileSize($file);
-
-                $x = FileAttachment::create([
-                    'name' => $fileName,
-                    'user_id' => $id,
-                    'path' => $filePath,
-                    'type' => $file_type,
-                    'size' => $fileSize,
-                    'is_certification' => true,
-                ]);
-
-                array_push($attached_file, $x);
-            }
-        }
-
-
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
 
-        return response([
-            'user' => $user,
-            'message' => 'Certifications successfully updated'
-        ], 200);
+        if ($request['certification_id']) {
+            $certification = $user->certifications()->where('id', '=', $request["certification_id"]);
+
+            if ($certification) {
+                $certification->delete();
+
+                return response([
+                    'user' => $user,
+                    'message' => "Certifications updated."
+                ], 200);
+            } else {
+                return response([
+                    'message' => "Certifications not found.",
+                ], 400);
+            }
+        } else {
+            $attached_file = [];
+
+            $filesValidator = Validator::make($request->all(), [
+                'files.*' => 'mimes:pdf,doc,docx,txt,jpg,jpeg,png|max:2048',
+            ]);
+
+            if ($filesValidator->fails()) {
+                return response([
+                    'message' => "Invalid file.",
+                    'errors' => $filesValidator->errors(),
+                ], 400);
+            } else {
+                $path = 'files';
+                //!is_dir($path) && mkdir($path, 0777, true);
+
+                foreach ($request->file('files') as $file) {
+                    //Storage::disk('public')->put($path.$fileName, File::get($file));
+                    $fileName = time() . $file->getClientOriginalName();
+                    $filePath = Storage::disk('s3')->put($path, $file);
+                    $filePath   = Storage::disk('s3')->url($filePath);
+                    $file_type  = $file->getClientOriginalExtension();
+                    $fileSize   = $this->fileSize($file);
+
+                    $x = FileAttachment::create([
+                        'name' => $fileName,
+                        'user_id' => $id,
+                        'path' => $filePath,
+                        'type' => $file_type,
+                        'size' => $fileSize,
+                        'is_certification' => true,
+                    ]);
+
+                    array_push($attached_file, $x);
+                }
+            }
+
+            return response([
+                'user' => $user,
+                'message' => 'Certifications successfully updated'
+            ], 200);
+        }
     }
 
     //Private functions
