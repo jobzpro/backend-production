@@ -26,15 +26,46 @@ class JobApplicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $keyword = $request->query('keyword');
+        $sortFilter = $request->query('sort');
+
+        $applications = JobApplication::with('jobList', 'jobInterviews');
+
+        if (!$keyword == null) {
+            $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
+                $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+            })
+                ->orWhereHas('user', function ($q) use ($keyword) {
+                    $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                });
+        }
+
+        if (!$sortFilter == null) {
+            if ($sortFilter == "Recent to Oldest") {
+                $applications = $applications->latest()->get();
+            } else if ($sortFilter == "Alphabetical") {
+                $applications = $applications->with(['user' => function ($q) {
+                    $q->orderBy('first_name');
+                }])->get();
+            }
+        } else {
+            $applications = $applications->with('user')->get();
+        }
+
+        return response([
+            'applications' => $applications->paginate(10),
+            'message' => "Success",
+        ], 200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id){
+    public function store(Request $request, $id)
+    {
         $job_list = JobList::find($id);
         $account = Auth::user();
         $user = User::find($account->user->id);
@@ -42,20 +73,20 @@ class JobApplicationController extends Controller
         $user_companies = UserCompany::where('company_id', $company->id)->get();
 
 
-        if($request->has('file')){
-            $filesValidator = Validator::make($request->all(),[
+        if ($request->has('file')) {
+            $filesValidator = Validator::make($request->all(), [
                 'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
             ]);
 
-            if($filesValidator->fails()){
+            if ($filesValidator->fails()) {
                 return response([
                     'message' => "Invalid file.",
                     'errors' => $filesValidator->errors(),
-                ],400);
-            }else{
+                ], 400);
+            } else {
                 $path = 'files';
                 $file = $request->file('file');
-                $fileName = time().$file->getClientOriginalName();
+                $fileName = time() . $file->getClientOriginalName();
                 $filePath = Storage::disk('s3')->put($path, $file);
                 $filePath   = Storage::disk('s3')->url($filePath);
                 $file_type  = $file->getClientOriginalExtension();
@@ -66,12 +97,12 @@ class JobApplicationController extends Controller
                     'user_id' => $user->id,
                     'path' => $filePath,
                     'type' => $file_type,
-                    'size' => $fileSize 
+                    'size' => $fileSize
                 ]);
 
                 $resume = $r->path;
             }
-        }else{
+        } else {
             $resume = null;
         }
 
@@ -90,48 +121,58 @@ class JobApplicationController extends Controller
             'job_application_id' => $job_application->id,
             'user_id' => $user->id,
             'title' => "Job Application Successfully submitted.",
-            'description' => "Your application to ". $job_list->company->name ." has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+            'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
             'is_Read' => false,
         ]);
 
         CompanyNotification::create([
             'company_id' => $company->id,
             'job_list_id' => $job_list->id,
-            'title' => "A jobseeker has applied for ". $job_list->job_title,
+            'title' => "A jobseeker has applied for " . $job_list->job_title,
             'description' => "You can review and see their profile to check if the applicant is qualified.",
             'is_Read' => false,
         ]);
 
 
-        if($user_companies){
-            foreach($user_companies as $employer){
+        if ($user_companies) {
+            foreach ($user_companies as $employer) {
                 (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
             }
         }
 
-        if($user){
+        if ($user) {
             (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
         }
 
         return response([
             'message' => 'Application Successfully Submitted',
-        ],200);
-
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, string $job_application_id)
     {
-        //
+        $application = JobApplication::with('jobList', 'user', 'jobInterviews')->find($job_application_id);
+
+        if ($application) {
+            return response([
+                'application' => $application,
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    { 
+    {
         //
     }
 
@@ -143,24 +184,25 @@ class JobApplicationController extends Controller
         //
     }
 
-    public function retractApplication(Request $request, $id){
+    public function retractApplication(Request $request, $id)
+    {
         $account = Auth::user();
         $user = User::find($account->user->id);
-        
-        if($user->userRole->first()->role->role_name == "Jobseeker"){
+
+        if ($user->userRole->first()->role->role_name == "Jobseeker") {
             $job_application = JobApplication::find($id);
-            
+
             $validator = Validator::make($request->all(), [
                 'reason' => 'required',
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 return response([
                     'errors' => $validator->errors(),
-                ],400);
+                ], 400);
             }
 
-            if($user->id == $job_application->user_id){
+            if ($user->id == $job_application->user_id) {
                 $job_application->update([
                     'status' => application_status::user_retracted,
                     'reason' => $request['reason'],
@@ -168,19 +210,22 @@ class JobApplicationController extends Controller
 
                 return response([
                     'message' => 'Application successfully retracted',
-                ],200);
-            }else{
+                ], 200);
+            } else {
 
                 return response([
                     'message' => 'Unauthorized',
-                ],400);
+                ], 400);
             }
-        }else{
+        } else {
 
             return response([
                 'messsage' => 'Unauthorized',
             ]);
         }
+    }
 
+    public function searchApplicantion(Request $request, $id)
+    {
     }
 }

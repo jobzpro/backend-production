@@ -103,6 +103,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/updateAdmin', [CompanyController::class, 'updateAdminDetails']);
         Route::patch('/update', [CompanyController::class, 'updateCompanyDetails']);
         Route::post('/staffs/add', [CompanyController::class, 'addEmployerStaff']);
+
+        Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{job_application_id}', 'show');
+        });
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
