@@ -202,9 +202,9 @@ class JobListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        $jobList = JobList::where('id', $id)
+        $jobList = JobList::where('id', $request->input('id'))
             ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->get();
 
         return response([
