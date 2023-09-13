@@ -21,6 +21,7 @@ use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
 use App\Http\Controllers\UploadController as Uploader;
+use App\Models\JobListDealbreaker;
 use Illuminate\Support\Facades\Auth;
 
 class JobListController extends Controller
@@ -32,7 +33,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->get();
+        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers')->get();
 
         return response([
             'job_list' => $jobLists->paginate(10),
@@ -176,6 +177,18 @@ class JobListController extends Controller
                     JobSupplementalSchedule::create([
                         'job_list_id' => $job_list->id,
                         'supplemental_schedules_id' => $job_supplementary_schedule[$i],
+                    ]);
+                }
+            }
+
+            if ($request->filled('dealbreakers')) {
+                // $dealbreakers = explode(',', $data['dealbreakers']);
+                foreach ($request['dealbreakers'] as $dealbreaker) {
+                    // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
+                    JobListDealbreaker::create([
+                        'job_list_id' => $job_list->id,
+                        'dealbreaker_id' => $dealbreaker['id'],
+                        'required' => $dealbreaker['required'],
                     ]);
                 }
             }
@@ -503,9 +516,11 @@ class JobListController extends Controller
     public function getJobListings(string $id)
     {
         $company_id = $id;
-        $job_lists = JobList::with('job_types')->where('company_id', $company_id)->get();
+        $job_lists = JobList::with('job_types', 'jobListDealbreakers')->where('company_id', $company_id)->get();
         $results = [];
         $types = [];
+        $dealbreakers = [];
+
 
         foreach ($job_lists as $job_list) {
             $result = [
@@ -518,12 +533,18 @@ class JobListController extends Controller
                 'status' => $job_list->status,
                 'date_created' => Carbon::parse($job_list->created_at)->format('d/m/Y'),
                 'job_types' => $types,
+                'dealbreakers' => $job_list->jobListDealbreakers,
+                // 'dealbreakers' => $job_list->jobListDealbreakers->with('dealbreakers')->get(),
 
             ];
             foreach ($job_list->job_types as $jtype) {
                 $type = $jtype->type;
                 array_push($types, $type);
             }
+            // foreach ($job_list->jobListDealbreakers as $jdealbreaker) {
+            //     $dealbreaker = $jdealbreaker->dealbreaker;
+            //     array_push($dealbreakers, $dealbreaker);
+            // }
 
             array_push($results, $result);
         }
