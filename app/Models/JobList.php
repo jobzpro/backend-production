@@ -59,43 +59,58 @@ class JobList extends Model
         'can_commute' => 'boolean',
     ];
 
-    public function company(): BelongsTo{
+    public function company(): BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 
-    public function job_types(): HasMany{
+    public function job_types(): HasMany
+    {
         return $this->hasMany(JobType::class);
     }
 
-    public function job_benefits(): HasMany{
+    public function job_benefits(): HasMany
+    {
         return $this->hasMany(JobBenefits::class);
     }
 
-    public function job_location(): HasOne{
+    public function job_location(): HasOne
+    {
         return $this->hasOne(JobLocation::class);
     }
 
-    public function experience_level(): BelongsTo{
-        return $this->belongsTo(ExperienceLevel::class, 'experience_level_id'); 
+    public function experience_level(): BelongsTo
+    {
+        return $this->belongsTo(ExperienceLevel::class, 'experience_level_id');
     }
 
-    public function jobApplications(): HasMany{
+    public function jobApplications(): HasMany
+    {
         return $this->hasMany(JobApplication::class);
     }
 
-    public function industry(): BelongsTo{
+    public function industry(): BelongsTo
+    {
         return $this->belongsTo(Industry::class);
     }
 
-    public function jobInterviews(): HasMany{
+    public function jobInterviews(): HasMany
+    {
         return $this->hasMany(JobInterview::class);
     }
 
-    public function qualifications(): BelongsTo{
+    public function qualifications(): BelongsTo
+    {
         return $this->belongsTo(Qualification::class, 'qualification_id');
     }
 
-    public function job_specialities(): HasMany{
+    public function job_specialities(): HasMany
+    {
         return $this->hasMany(JobIndustrySpeciality::class);
+    }
+
+    public function jobListDealbreakers(): HasMany
+    {
+        return $this->hasMany(JobListDealbreaker::class);
     }
 }

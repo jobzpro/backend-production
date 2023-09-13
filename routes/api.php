@@ -6,6 +6,7 @@ use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DealbreakerController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
@@ -107,6 +108,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{job_application_id}', 'show');
+        });
+
+        Route::prefix('/dealbreakers')->controller(DealbreakerController::class)->group(function () {
+            Route::post('/add', 'store');
         });
     });
 
