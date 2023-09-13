@@ -102,10 +102,17 @@ class CompanyController extends Controller
     {
         $company = Company::with('userCompany', 'businessType', 'industry')->where('id', $id)->first();
 
-        $company->update([
-            "introduction" => $request['introduction'],
-            "services" => $request["services"],
-        ]);
+        if ($request->filled('introduction')) {
+            $company->update([
+                "introduction" => $request['introduction'],
+            ]);
+        }
+
+        if ($request->filled('services')) {
+            $company->update([
+                "services" => $request["services"],
+            ]);
+        }
 
         return response([
             'company' => $company,
