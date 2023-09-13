@@ -11,7 +11,7 @@ class DealbreakerController extends Controller
 {
     public function index($id)
     {
-        $dealbreakers = Dealbreaker::with('choices')->get();
+        $dealbreakers = Dealbreaker::with('choices')->where('company_id', $id)->get();
 
         return response([
             'dealbreaker' => $dealbreakers->paginate(10),

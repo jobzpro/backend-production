@@ -69,6 +69,7 @@ class CompanyController extends Controller
         ]);
 
         return response([
+            'company' => $company,
             'message' => "Successful"
         ], 200);
     }
@@ -87,6 +88,7 @@ class CompanyController extends Controller
             ]);
 
             return response([
+                'company' => $company,
                 'message' => "Successful"
             ], 200);
         } else {
@@ -106,6 +108,7 @@ class CompanyController extends Controller
         ]);
 
         return response([
+            'company' => $company,
             'message' => "Successful"
         ], 200);
     }
@@ -150,6 +153,7 @@ class CompanyController extends Controller
             }
 
             return response([
+                'company' => $company,
                 'message' => "Successful"
             ], 200);
         } catch (Exception $e) {
