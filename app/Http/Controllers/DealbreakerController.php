@@ -31,12 +31,12 @@ class DealbreakerController extends Controller
         ]);
 
         if ($request->filled('choices')) {
-            $dealbreakers = explode(',', $request['choices']);
-            // foreach ($request['choices'] as $choices) {
-            for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
+            // $dealbreakers = explode(',', $request['choices']);
+            foreach ($request['choices'] as $choice) {
+                // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
                 DealbreakerChoice::create([
                     'dealbreaker_id' => $dealbreaker->id,
-                    'choice' => $i,
+                    'choice' => $choice,
                 ]);
             }
         }
