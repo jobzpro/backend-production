@@ -218,7 +218,7 @@ class JobListController extends Controller
     public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->get();
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->first();
 
         return response([
             'job_list' => $jobList,
