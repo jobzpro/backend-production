@@ -111,6 +111,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         Route::prefix('/dealbreakers')->controller(DealbreakerController::class)->group(function () {
+            Route::get('/', 'index');
             Route::post('/add', 'store');
         });
     });

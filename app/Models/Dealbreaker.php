@@ -25,7 +25,7 @@ class Dealbreaker extends Model
 
     public function choices(): HasMany
     {
-        return $this->hasMany(DealbreakerChoices::class);
+        return $this->hasMany(DealbreakerChoice::class);
     }
 
     public function company(): BelongsTo

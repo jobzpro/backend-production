@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 
 class DealbreakerController extends Controller
 {
+    public function index($id)
+    {
+        $dealbreakers = Dealbreaker::with('choices')->get();
+
+        return response([
+            'dealbreaker' => $dealbreakers->paginate(10),
+            'message' => "Successful."
+        ], 200);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -40,6 +50,8 @@ class DealbreakerController extends Controller
                 ]);
             }
         }
+
+        $dealbreaker = Dealbreaker::with('choices')->find($dealbreaker->id);
 
         return response([
             'dealbreaker' => $dealbreaker,
