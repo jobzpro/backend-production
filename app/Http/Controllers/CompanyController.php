@@ -62,10 +62,16 @@ class CompanyController extends Controller
             $company_logo = (new Uploader)->uploadLogo($request->file('company_logo_path'));
         }
 
+        if ($company_logo == null) {
+            $fileName = $company->company_logo_path;
+        } else {
+            $fileName = $company_logo;
+        }
+
         $company->update([
             "business_capacity" => $data['business_capacity'],
             "owner_contact_no" => $data["owner_contact_no"],
-            'company_logo_path' => $company_logo,
+            "company_logo_path" => $fileName,
         ]);
 
         return response([
