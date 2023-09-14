@@ -128,7 +128,7 @@ class CompanyController extends Controller
 
     public function addEmployerStaff(Request $request, $id)
     {
-        $company = Company::with('userCompany', 'businessType', 'industry')->where('id', $id)->first();
+        $company = Company::with('userCompany.user', 'businessType', 'industry')->where('id', $id)->first();
 
         $staffs = $request['staffs'];
 
