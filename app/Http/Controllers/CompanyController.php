@@ -128,6 +128,17 @@ class CompanyController extends Controller
 
     public function addEmployerStaff(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|unique:accounts',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Add Staff Unsuccessful",
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
         $data = $request->all();
