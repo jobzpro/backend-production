@@ -173,6 +173,7 @@ class CompanyController extends Controller
             ], 200);
         } catch (Exception $e) {
             return response([
+                'error' => $e,
                 'message' => 'Something went wrong.',
             ], 400);
         }
