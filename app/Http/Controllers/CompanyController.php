@@ -130,40 +130,40 @@ class CompanyController extends Controller
     {
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
-        $staffs = $request['staffs'];
+        $data = $request->all();
 
         try {
-            foreach ($staffs as $staff => $data) {
-                if ($data) {
-                    $account = Account::create([
-                        'email' => $data['email'],
-                        'password' => Hash::make(Str::random(12)),
-                        'login_type' => "email",
-                        'created_at' => Carbon::now(),
-                    ]);
+            // foreach ($staffs as $staff => $data) {
+            // if ($data) {
+            $account = Account::create([
+                'email' => $data['email'],
+                'password' => Hash::make(Str::random(12)),
+                'login_type' => "email",
+                'created_at' => Carbon::now(),
+            ]);
 
-                    $account->user()->create([
-                        'account_id' => $account->id,
-                        'first_name' => $data['first_name'],
-                        // 'middle_name' => $data['middle_name'],
-                        'last_name' => $data['last_name'],
-                        //'email' => $data['email'],
-                        'created_at' => Carbon::now(),
-                    ]);
+            $account->user()->create([
+                'account_id' => $account->id,
+                'first_name' => $data['first_name'],
+                // 'middle_name' => $data['middle_name'],
+                'last_name' => $data['last_name'],
+                //'email' => $data['email'],
+                'created_at' => Carbon::now(),
+            ]);
 
-                    $userRole = UserRole::create([
-                        'user_id' => $account->user->id,
-                        'role_id' => 4,
-                    ]);
+            $userRole = UserRole::create([
+                'user_id' => $account->user->id,
+                'role_id' => 4,
+            ]);
 
-                    $userCompany = UserCompany::create([
-                        'user_id' => $account->user->id,
-                        'company_id' => $company->id,
-                    ]);
+            $userCompany = UserCompany::create([
+                'user_id' => $account->user->id,
+                'company_id' => $company->id,
+            ]);
 
-                    event(new Registered($account));
-                }
-            }
+            event(new Registered($account));
+            // }
+            // }
 
             $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
