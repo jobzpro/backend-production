@@ -35,7 +35,7 @@ class CompanyController extends Controller
 
     public function show($id)
     {
-        $company = Company::with('userCompany', 'businessType', 'industry')->where('id', $id)->first();
+        $company = Company::with('userCompany.user', 'businessType', 'industry')->where('id', $id)->first();
 
         return response([
             'company' => $company,
@@ -164,6 +164,8 @@ class CompanyController extends Controller
                     event(new Registered($account));
                 }
             }
+
+            $company = Company::with('userCompany.user', 'businessType', 'industry')->where('id', $id)->first();
 
             return response([
                 'company' => $company,
