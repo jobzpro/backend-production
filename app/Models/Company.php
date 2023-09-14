@@ -17,7 +17,7 @@ class Company extends Model
     protected $fillable = [
         'name',
         'address_line',
-        'city', 
+        'city',
         'state',
         'zip_code',
         'email',
@@ -32,24 +32,31 @@ class Company extends Model
         'industry_id',
         'referral_code',
         'status',
+        'business_capacity',
     ];
 
-    public function userCompany(): HasMany{
+    public function userCompany(): HasMany
+    {
         return $this->hasMany(UserCompany::class, 'company_id');
     }
 
-    public function JobListings(): HasMany{
+    public function JobListings(): HasMany
+    {
         return $this->hasMany(JobList::class);
     }
 
-    public function businessType():  BelongsTo{
+    public function businessType(): BelongsTo
+    {
         return $this->belongsTo(BusinessType::class, 'business_type_id');
     }
 
-    public function industry(): BelongsTo{
+    public function industry(): BelongsTo
+    {
         return $this->belongsTo(Industry::class, 'industry_id');
     }
 
-
-
+    public function dealbreakers(): HasMany
+    {
+        return $this->hasMany(Dealbreaker::class);
+    }
 }
