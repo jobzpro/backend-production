@@ -231,11 +231,9 @@ class JobListController extends Controller
     public function update(Request $request, string $id,  string $job_list_id)
     {
         $jobList = JobList::find($job_list_id);
-        $data = $request->all();
         $account = Auth::user();
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
-        return response()->json(['request' => $data]);
         if ($userCompany->id == $jobList->company_id) {
             $validator = Validator::make($request->all(), [
                 'job_title' => 'required',
@@ -250,28 +248,28 @@ class JobListController extends Controller
 
             $jobList->update([
                 'company_id' => $userCompany->id,
-                'job_title' => $data['job_title'],
-                'description' => $data['description'] ?? null,
-                'show_pay' => $data['show_pay'] ?? null,
-                'pay_type' => $data['pay_type'] ?? null,
-                'salary' => $data['salary'] ?? null,
-                'min_salary' => $data['min_salary'] ?? null,
-                'max_salary' => $data['max_salary'] ?? null,
-                'experience_level_id' => $data['experience_level_id'] ?? null,
-                'number_of_vacancies' => $data['number_of_vacancies'] ?? null,
-                'hiring_urgency' => $data['hiring_urgency'] ?? null,
+                'job_title' => $request->input('job_title'),
+                'description' => $request->input('description') ?? null,
+                'show_pay' => $request->input('show_pay') ?? null,
+                'pay_type' => $request->input('pay_type') ?? null,
+                'salary' => $request->input('salary') ?? null,
+                'min_salary' => $request->input('min_salary') ?? null,
+                'max_salary' => $request->input('max_salary') ?? null,
+                'experience_level_id' => $request->input('experience_level_id') ?? null,
+                'number_of_vacancies' => $request->input('number_of_vacancies') ?? null,
+                'hiring_urgency' => $request->input('hiring_urgency') ?? null,
                 'status' => job_status::Published,
-                'can_applicant_with_criminal_record_apply' => $data['can_applicant_with_criminal_record_apply'] ?? null,
-                'can_start_messages' => $data['can_start_messages'] ?? null,
-                'send_auto_reject_emails' => $data['send_auto_reject_emails'] ?? null,
-                'auto_reject' => $data['auto_reject'] ?? null,
-                'time_limit' => $data['time_limit'] ?? null,
-                'other_email' => $data['other_email'] ?? null,
-                'industry_id' => $data['industry_id'] ?? null,
-                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'],
-                'is_vaccinated' => $data['is_vaccinated'],
-                'can_commute' => $data['can_commute'],
-                'qualification_id' => $data['qualification_id'],
+                'can_applicant_with_criminal_record_apply' => $request->input('can_applicant_with_criminal_record_apply') ?? null,
+                'can_start_messages' => $request->input('can_start_messages') ?? null,
+                'send_auto_reject_emails' => $request->input('send_auto_reject_emails') ?? null,
+                'auto_reject' => $request->input('auto_reject') ?? null,
+                'time_limit' => $request->input('time_limit') ?? null,
+                'other_email' => $request->input('other_email') ?? null,
+                'industry_id' => $request->input('industry_id') ?? null,
+                'authorized_to_work_in_us' => $request->input('authorized_to_work_in_us'),
+                'is_vaccinated' => $request->input('is_vaccinated'),
+                'can_commute' => $request->input('can_commute'),
+                'qualification_id' => $request->input('qualification_id'),
             ]);
 
             return response([
