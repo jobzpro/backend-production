@@ -228,9 +228,9 @@ class JobListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $job_list_id)
+    public function update(Request $request, string $job_list_id, string $id)
     {
-        $jobList = JobList::where('id',$job_list_id)->first();
+        $jobList = JobList::find($job_list_id);
         $data = $request->all();
         $account = Auth::user();
         $user = User::find($account->user->id);
