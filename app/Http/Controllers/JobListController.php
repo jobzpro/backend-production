@@ -236,17 +236,6 @@ class JobListController extends Controller
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
         if ($userCompany->id == $jobList->company_id) {
-            $validator = Validator::make($request->all(), [
-                'job_title' => 'required',
-            ]);
-
-            if ($validator->fails()) {
-                return response([
-                    'message' => "Updating the Job was unsuccessful.",
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
-
             $jobList->update([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],
