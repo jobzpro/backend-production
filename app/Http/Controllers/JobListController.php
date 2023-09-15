@@ -228,15 +228,14 @@ class JobListController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $job_list_id)
     {
-        $jobList = JobList::find($id);
+        $jobList = JobList::find($job_list_id);
         $data = $request->all();
         $account = Auth::user();
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
-
-        if ($userCompany->id == $jobList->company_id) {
+        if ($userCompany->company_id == $jobList->company_id) {
             $validator = Validator::make($request->all(), [
                 'job_title' => 'required',
             ]);
