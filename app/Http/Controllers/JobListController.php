@@ -230,7 +230,7 @@ class JobListController extends Controller
      */
     public function update(Request $request, string $job_list_id)
     {
-        $jobList = JobList::find($job_list_id);
+        $jobList = JobList::where('id',$job_list_id)->first();
         $data = $request->all();
         $account = Auth::user();
         $user = User::find($account->user->id);
