@@ -235,6 +235,7 @@ class JobListController extends Controller
         $account = Auth::user();
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
+        return response()->json(['joblist' => $jobList, 'usercompany' => $userCompany]);
         if ($userCompany->company_id == $jobList->company_id) {
             $validator = Validator::make($request->all(), [
                 'job_title' => 'required',
