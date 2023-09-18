@@ -113,4 +113,16 @@ class JobList extends Model
     {
         return $this->hasMany(JobListDealbreaker::class);
     }
+    public function jobStandardShifts(): HasMany
+    {
+        return $this->hasMany(JobStandardShift::class);
+    }
+    public function jobWeeklySchedules(): HasMany
+    {
+        return $this->hasMany(JobWeeklySchedule::class);
+    }
+    public function jobSupplementalSchedules(): HasMany
+    {
+        return $this->hasMany(JobSupplementalSchedule::class);
+    }
 }
