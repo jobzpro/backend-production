@@ -218,8 +218,7 @@ class JobListController extends Controller
     public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality')->first();
-
+            ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
         return response([
             'job_list' => $jobList,
         ], 200);
@@ -232,6 +231,7 @@ class JobListController extends Controller
     {
         $jobList = JobList::find($job_list_id);
         $account = Auth::user();
+        $data = $request->all();
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
         if ($userCompany->id == $jobList->company_id) {
@@ -248,32 +248,220 @@ class JobListController extends Controller
 
             $jobList->update([
                 'company_id' => $userCompany->id,
-                'job_title' => $request->input('job_title'),
-                'description' => $request->input('description') ?? null,
-                'show_pay' => $request->input('show_pay') ?? null,
-                'pay_type' => $request->input('pay_type') ?? null,
-                'salary' => $request->input('salary') ?? null,
-                'min_salary' => $request->input('min_salary') ?? null,
-                'max_salary' => $request->input('max_salary') ?? null,
-                'experience_level_id' => $request->input('experience_level_id') ?? null,
-                'number_of_vacancies' => $request->input('number_of_vacancies') ?? null,
-                'hiring_urgency' => $request->input('hiring_urgency') ?? null,
+                'job_title' => $request->input('job_title') ?? $jobList->job_title,
+                'description' => $request->input('description') ?? $jobList->description,
+                'show_pay' => $request->input('show_pay') ?? $jobList->show_pay,
+                'pay_type' => $request->input('pay_type') ?? $jobList->pay_type,
+                'salary' => $request->input('salary') ?? $jobList->salary,
+                'min_salary' => $request->input('min_salary') ?? $jobList->min_salary,
+                'max_salary' => $request->input('max_salary') ?? $jobList->max_salary,
+                'experience_level_id' => $request->input('experience_level_id') ?? $jobList->experience_level_id,
+                'number_of_vacancies' => $request->input('number_of_vacancies') ?? $jobList->number_of_vacancies,
+                'hiring_urgency' => $request->input('hiring_urgency') ?? $jobList->hiring_urgency,
                 'status' => job_status::Published,
-                'can_applicant_with_criminal_record_apply' => $request->input('can_applicant_with_criminal_record_apply') ?? null,
-                'can_start_messages' => $request->input('can_start_messages') ?? null,
-                'send_auto_reject_emails' => $request->input('send_auto_reject_emails') ?? null,
-                'auto_reject' => $request->input('auto_reject') ?? null,
-                'time_limit' => $request->input('time_limit') ?? null,
-                'other_email' => $request->input('other_email') ?? null,
-                'industry_id' => $request->input('industry_id') ?? null,
-                'authorized_to_work_in_us' => $request->input('authorized_to_work_in_us'),
-                'is_vaccinated' => $request->input('is_vaccinated'),
-                'can_commute' => $request->input('can_commute'),
-                'qualification_id' => $request->input('qualification_id'),
+                'can_applicant_with_criminal_record_apply' => $request->input('can_applicant_with_criminal_record_apply') ?? $jobList->can_applicant_with_criminal_record_apply,
+                'can_start_messages' => $request->input('can_start_messages') ?? $jobList->can_start_messages,
+                'send_auto_reject_emails' => $request->input('send_auto_reject_emails') ?? $jobList->send_auto_reject_emails,
+                'auto_reject' => $request->input('auto_reject') ?? $jobList->auto_reject,
+                'time_limit' => $request->input('time_limit') ?? $jobList->time_limit,
+                'other_email' => $request->input('other_email') ?? $jobList->other_email,
+                'industry_id' => $request->input('industry_id') ?? $jobList->industry_id,
+                'authorized_to_work_in_us' => $request->input('authorized_to_work_in_us') ?? $jobList->authorized_to_work_in_us,
+                'is_vaccinated' => $request->input('is_vaccinated') ?? $jobList->is_vaccinated,
+                'can_commute' => $request->input('can_commute') ?? $jobList->can_commute,
+                'qualification_id' => $request->input('qualification_id') ?? $jobList->qualification_id,
             ]);
 
+            $job_location = JobLocation::where('job_list_id', $job_list_id)->first();
+            $job_location->update([
+                'location' => $data['location'],
+                'address' => $data['address'] ?? null,
+                'description' => $data['address_description'] ?? ""
+            ]);
+
+            if ($request->filled('job_types')) {
+                $job_types_request = explode(",", $request->input('job_types'));
+                $existingJobTypes = JobType::where('job_list_id', $job_list_id)->pluck('type_id')->toArray();
+                foreach ($job_types_request as $type_id) {
+                    if (in_array($type_id, $existingJobTypes)) {
+                        JobType::where('job_list_id', $job_list_id)
+                            ->where('type_id', $type_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'type_id' => $type_id,
+                            ]);
+                    } else {
+                        JobType::create([
+                            'job_list_id' => $job_list_id,
+                            'type_id' => $type_id,
+                        ]);
+                    }
+                }
+                JobType::where('job_list_id', $job_list_id)
+                    ->whereNotIn('type_id', $job_types_request)
+                    ->delete();
+            }
+            if ($request->filled('industry_physical_setting')) {
+                $industry_physical_settings_request = explode(",", $request->input('industry_physical_setting'));
+                $existingSettings = JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
+                    ->pluck('industry_physical_setting_id')
+                    ->toArray();
+                foreach ($industry_physical_settings_request as $setting_id) {
+                    if (in_array($setting_id, $existingSettings)) {
+                        JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
+                            ->where('industry_physical_setting_id', $setting_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'industry_physical_setting_id' => $setting_id,
+                            ]);
+                    } else {
+                        JobIndustryPhysicalSetting::create([
+                            'job_list_id' => $job_list_id,
+                            'industry_physical_setting_id' => $setting_id,
+                        ]);
+                    }
+                }
+                JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
+                    ->whereNotIn('industry_physical_setting_id', $industry_physical_settings_request)
+                    ->delete();
+            }
+            if ($request->filled('industry_speciality')) {
+                $industry_specialities_request = explode(",", $request->input('industry_speciality'));
+
+                $existingSpecialities = JobIndustrySpeciality::where('job_list_id', $job_list_id)
+                    ->pluck('industry_speciality_id')
+                    ->toArray();
+                foreach ($industry_specialities_request as $speciality_id) {
+                    if (!in_array($speciality_id, $existingSpecialities)) {
+                        JobIndustrySpeciality::create([
+                            'job_list_id' => $job_list_id,
+                            'industry_speciality_id' => $speciality_id,
+                        ]);
+                    }
+                }
+
+                JobIndustrySpeciality::where('job_list_id', $job_list_id)
+                    ->whereNotIn('industry_speciality_id', $industry_specialities_request)
+                    ->delete();
+            }
+            if ($request->filled('benefits')) {
+                $job_benefits_request = explode(',', $request->input('benefits'));
+                $existingBenefits = JobBenefits::where('job_list_id', $job_list_id)
+                    ->pluck('benefit_id')
+                    ->toArray();
+                foreach ($job_benefits_request as $benefit_id) {
+                    if (in_array($benefit_id, $existingBenefits)) {
+                        JobBenefits::where('job_list_id', $job_list_id)
+                            ->where('benefit_id', $benefit_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'benefit_id' => $benefit_id,
+                            ]);
+                    } else {
+                        JobBenefits::create([
+                            'job_list_id' => $job_list_id,
+                            'benefit_id' => $benefit_id,
+                        ]);
+                    }
+                }
+                JobBenefits::where('job_list_id', $job_list_id)
+                    ->whereNotIn('benefit_id', $job_benefits_request)
+                    ->delete();
+            }
+
+            if ($request->filled('standard_shift')) {
+                $job_standard_shift_request = explode(',', $request->input('standard_shift'));
+                $existingShifts = JobStandardShift::where('job_list_id', $job_list_id)
+                    ->pluck('standard_shift_id')
+                    ->toArray();
+                foreach ($job_standard_shift_request as $shift_id) {
+                    if (in_array($shift_id, $existingShifts)) {
+                        JobStandardShift::where('job_list_id', $job_list_id)
+                            ->where('standard_shift_id', $shift_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'standard_shift_id' => $shift_id,
+                            ]);
+                    } else {
+                        JobStandardShift::create([
+                            'job_list_id' => $job_list_id,
+                            'standard_shift_id' => $shift_id,
+                        ]);
+                    }
+                }
+                JobStandardShift::where('job_list_id', $job_list_id)
+                    ->whereNotIn('standard_shift_id', $job_standard_shift_request)
+                    ->delete();
+            }
+
+            if ($request->filled('weekly_schedule')) {
+                $job_weekly_schedule_request = explode(',', $request->input('weekly_schedule'));
+                $existingSchedules = JobWeeklySchedule::where('job_list_id', $job_list_id)
+                    ->pluck('weekly_schedule_id')
+                    ->toArray();
+                foreach ($job_weekly_schedule_request as $schedule_id) {
+                    if (in_array($schedule_id, $existingSchedules)) {
+                        JobWeeklySchedule::where('job_list_id', $job_list_id)
+                            ->where('weekly_schedule_id', $schedule_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'weekly_schedule_id' => $schedule_id,
+                            ]);
+                    } else {
+                        JobWeeklySchedule::create([
+                            'job_list_id' => $job_list_id,
+                            'weekly_schedule_id' => $schedule_id,
+                        ]);
+                    }
+                }
+                JobWeeklySchedule::where('job_list_id', $job_list_id)
+                    ->whereNotIn('weekly_schedule_id', $job_weekly_schedule_request)
+                    ->delete();
+            }
+
+            if ($request->filled('supplementary_schedule')) {
+                $job_supplementary_schedule_request = explode(",", $request->input('supplementary_schedule'));
+                $existingSchedules = JobSupplementalSchedule::where('job_list_id', $job_list_id)
+                    ->pluck('supplemental_schedules_id')
+                    ->toArray();
+                foreach ($job_supplementary_schedule_request as $schedule_id) {
+                    if (in_array($schedule_id, $existingSchedules)) {
+                        JobSupplementalSchedule::where('job_list_id', $job_list_id)
+                            ->where('supplemental_schedules_id', $schedule_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'supplemental_schedules_id' => $schedule_id,
+                            ]);
+                    } else {
+                        JobSupplementalSchedule::create([
+                            'job_list_id' => $job_list_id,
+                            'supplemental_schedules_id' => $schedule_id,
+                        ]);
+                    }
+                }
+                JobSupplementalSchedule::where('job_list_id', $job_list_id)
+                    ->whereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request)
+                    ->delete();
+            }
+
+
+            if ($request->filled('dealbreakers')) {
+                foreach ($request->input('dealbreakers') as $dealbreaker) {
+                    $dealbreakerId = $dealbreaker['id'];
+                    JobListDealbreaker::updateOrInsert(
+                        [
+                            'job_list_id' => $job_list_id,
+                            'dealbreaker_id' => $dealbreakerId,
+                            'required' => $dealbreaker['required'],
+                        ],
+                    );
+                }
+            }
+
+            $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
             return response([
                 'message' => "Success",
+                'data' => $joblist
             ], 200);
         } else {
             return response([
