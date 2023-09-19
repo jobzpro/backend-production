@@ -118,4 +118,16 @@ class JobList extends Model
     {
         return $this->morphMany(Report::class, 'reportable');
     }
+    public function jobStandardShifts(): HasMany
+    {
+        return $this->hasMany(JobStandardShift::class);
+    }
+    public function jobWeeklySchedules(): HasMany
+    {
+        return $this->hasMany(JobWeeklySchedule::class);
+    }
+    public function jobSupplementalSchedules(): HasMany
+    {
+        return $this->hasMany(JobSupplementalSchedule::class);
+    }
 }
