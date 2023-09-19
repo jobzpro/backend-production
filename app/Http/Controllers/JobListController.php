@@ -291,10 +291,12 @@ class JobListController extends Controller
                                 'type_id' => $type_id,
                             ]);
                     } else {
-                        JobType::create([
-                            'job_list_id' => $job_list_id,
-                            'type_id' => $type_id,
-                        ]);
+                        if (in_array($type_id, ['1,','2','3','4','5'])) {
+                            JobType::create([
+                                'job_list_id' => $job_list_id,
+                                'type_id' => $type_id,
+                            ]);
+                        }
                     }
                 }
                 JobType::where('job_list_id', $job_list_id)
