@@ -351,6 +351,7 @@ class JobListController extends Controller
                 $existingBenefits = JobBenefits::where('job_list_id', $job_list_id)
                     ->pluck('benefit_id')
                     ->toArray();
+                $availableBenefits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
                 foreach ($job_benefits_request as $benefit_id) {
                     if (in_array($benefit_id, $existingBenefits)) {
                         JobBenefits::where('job_list_id', $job_list_id)
@@ -360,14 +361,16 @@ class JobListController extends Controller
                                 'benefit_id' => $benefit_id,
                             ]);
                     } else {
-                        JobBenefits::create([
-                            'job_list_id' => $job_list_id,
-                            'benefit_id' => $benefit_id,
-                        ]);
+                        if (in_array($benefit_id, $availableBenefits)) {
+                            JobBenefits::create([
+                                'job_list_id' => $job_list_id,
+                                'benefit_id' => $benefit_id,
+                            ]);
+                        }
                     }
                 }
                 JobBenefits::where('job_list_id', $job_list_id)
-                    ->whereNotIn('benefit_id', $job_benefits_request)
+                    ->whereNotIn('benefit_id', $availableBenefits)
                     ->delete();
             }
 
@@ -449,7 +452,7 @@ class JobListController extends Controller
                     ->whereNotIn('supplemental_schedules_id', ['1,', '2', '3', '4', '5'])
                     ->delete();
             }
-            
+
             if ($request->filled('dealbreakers')) {
                 foreach ($request->input('dealbreakers') as $dealbreaker) {
                     $dealbreakerId = $dealbreaker['id'];
