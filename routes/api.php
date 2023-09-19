@@ -7,6 +7,7 @@ use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DealbreakerController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
@@ -86,7 +87,12 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'userReports');
-            Route::post('/', 'reportCompanyOrJobList');
+            Route::post('/', 'addUserFavorites');
+        });
+
+        Route::prefix('/{id}/favorites')->controller(FavoriteController::class)->group(function () {
+            Route::get('/', 'userFavorites');
+            Route::post('/', 'addUserFavorites');
         });
     });
 
@@ -125,6 +131,11 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'companyReports');
             Route::post('/', 'reportJobSeeker');
         });
+
+        Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
+            Route::get('/', 'companyFavorites');
+            Route::post('/', 'addCompanyFavorites');
+        });
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
@@ -138,6 +149,11 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::prefix('/reports')->controller(ReportController::class)->group(function () {
+        Route::delete('/{id}', 'delete');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
         Route::delete('/{id}', 'delete');
         Route::get('/{id}', 'show');
     });

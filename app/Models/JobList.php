@@ -130,4 +130,14 @@ class JobList extends Model
     {
         return $this->hasMany(JobSupplementalSchedule::class);
     }
+
+    public function favorites()
+    {
+        return $this->morphMany('App\Favorite', 'favoritable');
+    }
+
+    public function favoritedByJobseekers()
+    {
+        return $this->morphToMany('App\Jobseeker', 'favoritable', 'favorites', 'favoritable_id', 'favoriter_id');
+    }
 }
