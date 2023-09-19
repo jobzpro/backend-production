@@ -291,7 +291,7 @@ class JobListController extends Controller
                                 'type_id' => $type_id,
                             ]);
                     } else {
-                        if (in_array($type_id, ['1,','2','3','4','5'])) {
+                        if (in_array($type_id, ['1,', '2', '3', '4', '5'])) {
                             JobType::create([
                                 'job_list_id' => $job_list_id,
                                 'type_id' => $type_id,
@@ -410,14 +410,16 @@ class JobListController extends Controller
                                 'weekly_schedule_id' => $schedule_id,
                             ]);
                     } else {
-                        JobWeeklySchedule::create([
-                            'job_list_id' => $job_list_id,
-                            'weekly_schedule_id' => $schedule_id,
-                        ]);
+                        if (in_array($schedule_id, ['1,', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])) {
+                            JobWeeklySchedule::create([
+                                'job_list_id' => $job_list_id,
+                                'weekly_schedule_id' => $schedule_id,
+                            ]);
+                        }
                     }
                 }
                 JobWeeklySchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('weekly_schedule_id', $job_weekly_schedule_request)
+                    ->whereNotIn('weekly_schedule_id',  ['1,', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
                     ->delete();
             }
 
@@ -435,18 +437,19 @@ class JobListController extends Controller
                                 'supplemental_schedules_id' => $schedule_id,
                             ]);
                     } else {
-                        JobSupplementalSchedule::create([
-                            'job_list_id' => $job_list_id,
-                            'supplemental_schedules_id' => $schedule_id,
-                        ]);
+                        if (in_array($schedule_id, ['1,', '2', '3', '4', '5'])) {
+                            JobSupplementalSchedule::create([
+                                'job_list_id' => $job_list_id,
+                                'supplemental_schedules_id' => $schedule_id,
+                            ]);
+                        }
                     }
                 }
                 JobSupplementalSchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request)
+                    ->whereNotIn('supplemental_schedules_id', ['1,', '2', '3', '4', '5'])
                     ->delete();
             }
-
-
+            
             if ($request->filled('dealbreakers')) {
                 foreach ($request->input('dealbreakers') as $dealbreaker) {
                     $dealbreakerId = $dealbreaker['id'];
