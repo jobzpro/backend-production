@@ -300,7 +300,7 @@ class JobListController extends Controller
                     }
                 }
                 JobType::where('job_list_id', $job_list_id)
-                    ->whereNotIn('type_id', $job_types_request)
+                    ->whereNotIn('type_id', ['1', '2', '3', '4', '5'])
                     ->delete();
             }
             if ($request->filled('industry_physical_setting')) {
