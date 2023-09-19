@@ -113,4 +113,9 @@ class JobList extends Model
     {
         return $this->hasMany(JobListDealbreaker::class);
     }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
 }

@@ -148,4 +148,14 @@ class User extends Authenticatable
         $avg = ($ctr / 5) * 100;
         return $avg;
     }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function reportedEntities()
+    {
+        return Report::with('reportable')->where('reporter_id', $this->id)->get();
+    }
 }

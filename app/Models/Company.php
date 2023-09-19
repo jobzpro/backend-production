@@ -59,4 +59,20 @@ class Company extends Model
     {
         return $this->hasMany(Dealbreaker::class);
     }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function reportedEntities()
+    {
+        return Report::with('reportable')->where('reporter_id', $this->id)->get();
+    }
+
+    // public function createReportForJobSeeker(User $user)
+    // {
+    //     $report = new Report(['reportable_id' => $user->id, 'reportable_type' => 'App\Models\User']);
+    //     $this->reports()->save($report);
+    // }
 }
