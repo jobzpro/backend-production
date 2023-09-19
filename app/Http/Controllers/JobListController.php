@@ -301,6 +301,7 @@ class JobListController extends Controller
                 }
                 JobType::where('job_list_id', $job_list_id)
                     ->whereNotIn('type_id', ['1', '2', '3', '4', '5'])
+                    ->whereNotIn('type_id', $job_types_request)
                     ->delete();
             }
             if ($request->filled('industry_physical_setting')) {
@@ -423,6 +424,7 @@ class JobListController extends Controller
                 }
                 JobWeeklySchedule::where('job_list_id', $job_list_id)
                     ->whereNotIn('weekly_schedule_id',  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+                    ->whereNotIn('weekly_schedule_id', $job_weekly_schedule_request)
                     ->delete();
             }
 
@@ -450,6 +452,7 @@ class JobListController extends Controller
                 }
                 JobSupplementalSchedule::where('job_list_id', $job_list_id)
                     ->whereNotIn('supplemental_schedules_id', ['1', '2', '3', '4', '5'])
+                    ->whereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request)
                     ->delete();
             }
 
