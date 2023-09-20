@@ -253,6 +253,7 @@ class JobListController extends Controller
                 'show_pay' => $request->input('show_pay') ?? $jobList->show_pay,
                 'pay_type' => $request->input('pay_type') ?? $jobList->pay_type,
                 'salary' => $request->input('salary') ?? $jobList->salary,
+                'require_resume' => $request->input('require_resume') ?? $jobList->require_resume,
                 'min_salary' => $request->input('min_salary') ?? $jobList->min_salary,
                 'max_salary' => $request->input('max_salary') ?? $jobList->max_salary,
                 'experience_level_id' => $request->input('experience_level_id') ?? $jobList->experience_level_id,
