@@ -299,10 +299,10 @@ class JobListController extends Controller
                         }
                     }
                 }
-                JobType::where('job_list_id', $job_list_id)
-                    ->whereNotIn('type_id', ['1', '2', '3', '4', '5'])
+                JobType::Where('job_list_id', $job_list_id)
                     ->where(function ($query) use ($job_types_request) {
-                        $query->whereNotIn('type_id', $job_types_request);
+                        $query->whereNotIn('type_id', ['1', '2', '3', '4', '5']);
+                        $query->orwhereNotIn('type_id', $job_types_request);
                     })
                     ->delete();
             }
@@ -424,10 +424,10 @@ class JobListController extends Controller
                         }
                     }
                 }
-                JobWeeklySchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('weekly_schedule_id',  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+                JobWeeklySchedule::Where('job_list_id', $job_list_id)
                     ->where(function ($query) use ($job_weekly_schedule_request) {
-                        $query->whereNotIn('weekly_schedule_id', $job_weekly_schedule_request);
+                        $query->whereNotIn('weekly_schedule_id',  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']);
+                        $query->orwhereNotIn('weekly_schedule_id', $job_weekly_schedule_request);
                     })
                     ->delete();
             }
@@ -454,10 +454,10 @@ class JobListController extends Controller
                         }
                     }
                 }
-                JobSupplementalSchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('supplemental_schedules_id', ['1', '2', '3', '4', '5'])
+                JobSupplementalSchedule::Where('job_list_id', $job_list_id)
                     ->where(function ($query) use ($job_supplementary_schedule_request) {
-                        $query->whereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request);
+                        $query->whereNotIn('supplemental_schedules_id',  ['1', '2', '3', '4', '5']);
+                        $query->orwhereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request);
                     })
                     ->delete();
             }
