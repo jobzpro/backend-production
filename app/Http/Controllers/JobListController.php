@@ -266,7 +266,7 @@ class JobListController extends Controller
                 'send_auto_reject_emails' => $request->input('send_auto_reject_emails') ?? $jobList->send_auto_reject_emails,
                 'auto_reject' => $request->input('auto_reject') ?? $jobList->auto_reject,
                 'time_limit' => $request->input('time_limit') ?? $jobList->time_limit,
-                'other_email' => $request->input('other_email') ?? $jobList->other_email,
+                'other_email' => $request->input('other_email') ?? '',
                 'industry_id' => $request->input('industry_id') ?? $jobList->industry_id,
                 'authorized_to_work_in_us' => $request->input('authorized_to_work_in_us') ?? $jobList->authorized_to_work_in_us,
                 'is_vaccinated' => $request->input('is_vaccinated') ?? $jobList->is_vaccinated,

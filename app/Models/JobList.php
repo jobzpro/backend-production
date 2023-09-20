@@ -24,7 +24,7 @@ class JobList extends Model
         'number_of_vacancies',
         'hiring_urgency',
         'pay_type',
-        'resume_required',
+        'require_resume',
         'start_conversion',
         'send_auto_rejection',
         'reject_candidates',
