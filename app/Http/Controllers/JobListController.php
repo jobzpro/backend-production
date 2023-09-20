@@ -373,8 +373,11 @@ class JobListController extends Controller
                         }
                     }
                 }
-                JobBenefits::where('job_list_id', $job_list_id)
-                    ->whereNotIn('benefit_id', $availableBenefits)
+                JobBenefits::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($job_benefits_request) {
+                        $query->whereNotIn('benefit_id', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']);
+                        $query->orwhereNotIn('benefit_id', $job_benefits_request);
+                    })
                     ->delete();
             }
 
