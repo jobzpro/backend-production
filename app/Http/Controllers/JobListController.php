@@ -470,13 +470,16 @@ class JobListController extends Controller
             if ($request->filled('dealbreakers')) {
                 foreach ($request->input('dealbreakers') as $dealbreaker) {
                     $dealbreakerId = $dealbreaker['id'];
-                    JobListDealbreaker::updateOrInsert(
-                        [
+                    $dealbreakerData = JobListDealBreaker::Where('dealbreaker_id', $dealbreakerId)->Where('job_list_id', $job_list_id)->first();
+                    if ($dealbreakerData) {
+                        $dealbreakerData->update(['dealbreaker_id' => $dealbreakerId, 'required' => $dealbreaker['required']]);
+                    } else {
+                        JobListDealBreaker::create([
                             'job_list_id' => $job_list_id,
                             'dealbreaker_id' => $dealbreakerId,
-                            'required' => $dealbreaker['required'],
-                        ],
-                    );
+                            'required' => $dealbreaker['required']
+                        ]);
+                    }
                 }
             }
 
