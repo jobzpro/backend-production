@@ -120,6 +120,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{job_application_id}', 'show');
+            Route::post('/{job_application_id}', 'setStatus');
             Route::delete('/{job_application_id}', 'delete');
         });
 

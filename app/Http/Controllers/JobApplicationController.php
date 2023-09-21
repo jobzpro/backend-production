@@ -228,4 +228,26 @@ class JobApplicationController extends Controller
     public function searchApplicantion(Request $request, $id)
     {
     }
+
+    public function setStatus(Request $request, string $id)
+    {
+        $job_application = JobApplication::find($id);
+
+        if ($job_application) {
+            $job_application->update(['status' => $request['status']]);
+
+            return response([
+                'application' => $job_application,
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
+    }
+
+    public function delete()
+    {
+    }
 }
