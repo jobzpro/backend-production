@@ -87,7 +87,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'userReports');
-            Route::post('/', 'addUserFavorites');
+            Route::post('/', 'reportCompanyOrJobList');
         });
 
         Route::prefix('/{id}/favorites')->controller(FavoriteController::class)->group(function () {
@@ -155,6 +155,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('/reports')->controller(ReportController::class)->group(function () {
         Route::delete('/{id}', 'delete');
         Route::get('/{id}', 'show');
+        Route::post('/{id}/set-status', 'setStatus');
     });
 
     Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
