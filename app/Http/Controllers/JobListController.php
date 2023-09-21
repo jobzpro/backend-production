@@ -342,7 +342,7 @@ class JobListController extends Controller
             if ($request->filled('industry_speciality')) {
                 $industry_specialities_request = explode(",", $request->input('industry_speciality'));
                 $technologySpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14'];
-                $medicalSpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
+                $medicalSpecialties = ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
                 $existingSpecialities = JobIndustrySpeciality::where('job_list_id', $job_list_id)
                     ->pluck('industry_speciality_id')
                     ->toArray();
@@ -366,7 +366,7 @@ class JobListController extends Controller
                 JobIndustrySpeciality::Where('job_list_id', $job_list_id)
                     ->where(function ($query) use ($industry_specialities_request) {
                         $technologySpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14'];
-                        $medicalSpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
+                        $medicalSpecialties = ['15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
                         $query->whereNotIn('industry_specialty_id', $technologySpecialties);
                         $query->orWhereNotIn('industry_specialty_id', $medicalSpecialties);
                         $query->orwhereNotIn('industry_specialty_id', $industry_specialities_request);
