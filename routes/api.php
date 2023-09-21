@@ -120,6 +120,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{job_application_id}', 'show');
+            Route::delete('/{job_application_id}', 'delete');
         });
 
         Route::prefix('/dealbreakers')->controller(DealbreakerController::class)->group(function () {
@@ -146,6 +147,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('/interview')->controller(JobInterviewController::class)->group(function () {
         Route::post('/set-interview', 'store');
         Route::get('/all', 'index');
+        Route::post('/set-status', 'setStatus');
+        Route::post('/reschedule', 'reschedule');
     });
 
     Route::prefix('/reports')->controller(ReportController::class)->group(function () {
