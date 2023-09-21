@@ -218,7 +218,7 @@ class JobListController extends Controller
     public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
+            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialties', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
         return response([
             'job_list' => $jobList,
         ], 200);
@@ -506,7 +506,7 @@ class JobListController extends Controller
                 }
             }
 
-            $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
+            $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
             return response([
                 'message' => "Success",
                 'data' => $joblist
