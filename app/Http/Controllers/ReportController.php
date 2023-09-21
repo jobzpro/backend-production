@@ -49,6 +49,8 @@ class ReportController extends Controller
         $validator = Validator::make($request->all(), [
             'company_id' => 'required_without:job_listing_id',
             'job_listing_id' => 'required_without:company_id',
+            'reason' => 'required',
+            'type' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -65,8 +67,13 @@ class ReportController extends Controller
                 $company = Company::find($request['company_id']);
 
                 if ($company) {
-                    $report = new Report(['reporter_id' => $user->id]);
-                    $company->reports()->save($report);
+                    $company->reports()->create([
+                        'reportable_id' => $company->id,
+                        'reportable_type' => get_class($company),
+                        'reporter_id' => $user->id,
+                        'reason' => $request['reason'],
+                        'type' => $request['type'],
+                    ]);
 
                     return response([
                         'reports' => $user->reportedEntities(),
@@ -81,7 +88,11 @@ class ReportController extends Controller
                 $jobListing = JobList::find($request['job_listing_id']);
 
                 if ($jobListing) {
-                    $report = new Report(['reporter_id' => $user->id]);
+                    $report = new Report([
+                        'reporter_id' => $user->id,
+                        'reason' => $request['reason'],
+                        'type' => $request['type'],
+                    ]);
                     $jobListing->reports()->save($report);
 
                     return response([
@@ -106,6 +117,8 @@ class ReportController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
+            'reason' => 'required',
+            'type' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +134,11 @@ class ReportController extends Controller
             $user = User::find($request['user_id']);
 
             if ($user) {
-                $report = new Report(['reporter_id' => $company->id]);
+                $report = new Report([
+                    'reporter_id' => $company->id,
+                    'reason' => $request['reason'],
+                    'type' => $request['type'],
+                ]);
                 $user->reports()->save($report);
 
                 return response([
@@ -165,6 +182,37 @@ class ReportController extends Controller
 
             return response([
                 'report' => $report,
+                'message' => "Successful",
+            ], 200);
+        } else {
+            return response([
+                'message' => "Report not found",
+            ], 400);
+        }
+    }
+
+    public function setStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Parameters not found.",
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $report = Report::with('reportable', 'reporter')->find($id);
+
+        if ($report) {
+
+            $report->update([
+                'status' => $request['status'],
+            ]);
+
+            return response([
                 'message' => "Successful",
             ], 200);
         } else {
