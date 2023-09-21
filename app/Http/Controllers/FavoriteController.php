@@ -48,7 +48,8 @@ class FavoriteController extends Controller
     public function addUserFavorites(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'job_list_id' => 'required',
+            'company_id' => 'required_without:job_list_id',
+            'job_list_id' => 'required_without:company_id',
         ]);
 
         if ($validator->fails()) {
@@ -61,28 +62,50 @@ class FavoriteController extends Controller
         $user = User::find($id);
 
         if ($user) {
-            $jobList = JobList::find($request['job_list_id']);
+            if ($request->filled('company_id')) {
+                $company = Company::find($request['company_id']);
 
-            if ($jobList) {
-                $user->favorites()->create([
-                    'favoritable_id' => $jobList->id,
-                    'favoritable_type' => get_class($jobList),
-                    'favoriter_id' => $user->id,
-                    'favoriter_type' => get_class($user),
-                ]);
-                // $user->favorites()->create([
-                //     'favoritable_id' => $jobList->id,
-                //     'favorite_type' => 'App\Models\JobList'
-                // ]);
+                if ($company) {
+                    $user->favorites()->create([
+                        'favoritable_id' => $company->id,
+                        'favoritable_type' => get_class($company),
+                        'favoriter_id' => $user->id,
+                        'favoriter_type' => get_class($user),
+                    ]);
 
-                return response([
-                    'favorites' => $user->favoritedJobListings(),
-                    'message' => "Successfully added Favorite",
-                ], 200);
-            } else {
-                return response([
-                    'message' => "Job List not found.",
-                ], 400);
+                    return response([
+                        'favorites' => $user->favoritedJobListings(),
+                        'message' => "Successfully added Favorite",
+                    ], 200);
+                } else {
+                    return response([
+                        'message' => "Company not found.",
+                    ], 400);
+                }
+            } else if ($request->filled('job_list_id')) {
+                $jobList = JobList::find($request['job_list_id']);
+
+                if ($jobList) {
+                    $user->favorites()->create([
+                        'favoritable_id' => $jobList->id,
+                        'favoritable_type' => get_class($jobList),
+                        'favoriter_id' => $user->id,
+                        'favoriter_type' => get_class($user),
+                    ]);
+                    // $user->favorites()->create([
+                    //     'favoritable_id' => $jobList->id,
+                    //     'favorite_type' => 'App\Models\JobList'
+                    // ]);
+
+                    return response([
+                        'favorites' => $user->favoritedJobListings(),
+                        'message' => "Successfully added Favorite",
+                    ], 200);
+                } else {
+                    return response([
+                        'message' => "Job List not found.",
+                    ], 400);
+                }
             }
         } else {
             return response([
