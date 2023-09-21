@@ -18,18 +18,24 @@ class JobInterview extends Model
         'job_application_id',
         'notes',
         'meeting_link',
+        'company_id',
+        'job_list_id',
+        'status',
+        'interview_date',
     ];
 
-    public function jobList(): BelongsTo{
+    public function jobList(): BelongsTo
+    {
         return $this->belongsTo(JobList::class);
     }
 
-    public function jobApplications(): HasMany{
+    public function jobApplications(): HasMany
+    {
         return $this->hasMany(JobApplication::class, 'id');
     }
 
-    public function applicant(): BelongsTo{
+    public function applicant(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'applicant_id', 'id');
     }
-
 }
