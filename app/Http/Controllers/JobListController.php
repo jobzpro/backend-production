@@ -310,6 +310,7 @@ class JobListController extends Controller
             }
             if ($request->filled('industry_physical_setting')) {
                 $industry_physical_settings_request = explode(",", $request->input('industry_physical_setting'));
+                $medical_physical_settings = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
                 $existingSettings = JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
                     ->pluck('industry_physical_setting_id')
                     ->toArray();
@@ -322,35 +323,57 @@ class JobListController extends Controller
                                 'industry_physical_setting_id' => $setting_id,
                             ]);
                     } else {
-                        JobIndustryPhysicalSetting::create([
-                            'job_list_id' => $job_list_id,
-                            'industry_physical_setting_id' => $setting_id,
-                        ]);
+                        if (in_array($setting_id, $medical_physical_settings)) {
+                            JobIndustryPhysicalSetting::create([
+                                'job_list_id' => $job_list_id,
+                                'industry_physical_setting_id' => $setting_id,
+                            ]);
+                        }
                     }
                 }
-                JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
-                    ->whereNotIn('industry_physical_setting_id', $industry_physical_settings_request)
+                JobIndustryPhysicalSetting::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($industry_physical_settings_request) {
+                        $medical_physical_settings = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                        $query->whereNotIn('industry_specialty_id', $medical_physical_settings);
+                        $query->orwhereNotIn('industry_specialty_id', $industry_physical_settings_request);
+                    })
                     ->delete();
             }
             if ($request->filled('industry_speciality')) {
                 $industry_specialities_request = explode(",", $request->input('industry_speciality'));
-
+                $technologySpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14'];
+                $medicalSpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
                 $existingSpecialities = JobIndustrySpeciality::where('job_list_id', $job_list_id)
                     ->pluck('industry_speciality_id')
                     ->toArray();
                 foreach ($industry_specialities_request as $speciality_id) {
                     if (!in_array($speciality_id, $existingSpecialities)) {
-                        JobIndustrySpeciality::create([
-                            'job_list_id' => $job_list_id,
-                            'industry_speciality_id' => $speciality_id,
-                        ]);
+                        JobIndustrySpeciality::where('job_list_id', $job_list_id)
+                            ->where('industry_specialty_id', $speciality_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'industry_specialty_id' => $speciality_id
+                            ]);
+                    } else {
+                        if (in_array($speciality_id, $technologySpecialties) || in_array($speciality_id, $medicalSpecialties)) {
+                            JobIndustrySpeciality::create([
+                                'job_list_id' => $job_list_id,
+                                'industry_specialty_id' => $speciality_id,
+                            ]);
+                        }
                     }
                 }
-
-                JobIndustrySpeciality::where('job_list_id', $job_list_id)
-                    ->whereNotIn('industry_speciality_id', $industry_specialities_request)
+                JobIndustrySpeciality::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($industry_specialities_request) {
+                        $technologySpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14'];
+                        $medicalSpecialties = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
+                        $query->whereNotIn('industry_specialty_id', $technologySpecialties);
+                        $query->orWhereNotIn('industry_specialty_id', $medicalSpecialties);
+                        $query->orwhereNotIn('industry_specialty_id', $industry_specialities_request);
+                    })
                     ->delete();
             }
+
             if ($request->filled('benefits')) {
                 $job_benefits_request = explode(',', $request->input('benefits'));
                 $existingBenefits = JobBenefits::where('job_list_id', $job_list_id)
