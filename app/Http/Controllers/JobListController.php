@@ -334,8 +334,8 @@ class JobListController extends Controller
                 JobIndustryPhysicalSetting::Where('job_list_id', $job_list_id)
                     ->where(function ($query) use ($industry_physical_settings_request) {
                         $medical_physical_settings = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                        $query->whereNotIn('industry_specialty_id', $medical_physical_settings);
-                        $query->orwhereNotIn('industry_specialty_id', $industry_physical_settings_request);
+                        $query->whereNotIn('industry_physical_setting_id', $medical_physical_settings);
+                        $query->orwhereNotIn('industry_physical_setting_id', $industry_physical_settings_request);
                     })
                     ->delete();
             }
