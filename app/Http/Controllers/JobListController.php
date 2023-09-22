@@ -375,7 +375,7 @@ class JobListController extends Controller
                 $existingBenefits = JobBenefits::where('job_list_id', $job_list_id)
                     ->pluck('benefit_id')
                     ->toArray();
-                $availableBenefits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+                $availableBenefits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
                 foreach ($job_benefits_request as $benefit_id) {
                     if (in_array($benefit_id, $existingBenefits)) {
                         JobBenefits::where('job_list_id', $job_list_id)
