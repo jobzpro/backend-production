@@ -341,12 +341,12 @@ class JobListController extends Controller
             }
             if ($request->filled('industry_speciality')) {
                 $industry_specialities_request = explode(",", $request->input('industry_speciality'));
-                // $availableSpecialities = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
+                $availableSpecialities = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
                 $existingSpecialities = JobIndustrySpeciality::where('job_list_id', $job_list_id)
                     ->pluck('industry_speciality_id')
                     ->toArray();
                 foreach ($industry_specialities_request as $speciality_id) {
-                    if (!in_array($speciality_id, $existingSpecialities)) {
+                    if (in_array($speciality_id, $existingSpecialities)) {
                         JobIndustrySpeciality::where('job_list_id', $job_list_id)
                             ->where('industry_speciality_id', $speciality_id)
                             ->update([
@@ -354,7 +354,7 @@ class JobListController extends Controller
                                 'industry_speciality_id' => $speciality_id
                             ]);
                     } else {
-                        if (in_array($speciality_id, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'])) {
+                        if (in_array($speciality_id, $availableSpecialities)) {
                             JobIndustrySpeciality::create([
                                 'job_list_id' => $job_list_id,
                                 'industry_speciality_id' => $speciality_id,
