@@ -163,6 +163,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/{id}', 'delete');
         Route::get('/{id}', 'show');
     });
+
+    Route::prefix('/resumes')->controller(UserController::class)->group(function () {
+        Route::get('/search', 'searchResumes');
+    });
 });
 
 Route::apiResources([

@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->files()->where('is_certification', true);
     }
 
+    public function currentExperience()
+    {
+        return $this->hasMany(UserExperience::class)->where('current', 'true');
+    }
+
     public function experiences(): HasMany
     {
         return $this->hasMany(UserExperience::class);
