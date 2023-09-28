@@ -84,9 +84,22 @@ class JobInterviewController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(JobInterview $jobInterview)
+    public function show($id)
     {
         //
+        $jobInterview = JobInterview::find($id);
+
+        if ($jobInterview) {
+
+            return response([
+                'interview' => $jobInterview,
+                'message' => 'Successful'
+            ]);
+        } else {
+            return response([
+                'message' => "Interview not found",
+            ], 400);
+        }
     }
     /**
      * Show the form for editing the specified resource.

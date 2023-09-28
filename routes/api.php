@@ -151,6 +151,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/set-status', 'setStatus');
         Route::post('/reschedule', 'reschedule');
         Route::get('/search', 'search');
+        Route::get('/{id}', 'show');
     });
 
     Route::prefix('/reports')->controller(ReportController::class)->group(function () {
