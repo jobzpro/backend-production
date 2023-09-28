@@ -178,4 +178,39 @@ class JobInterviewController extends Controller
             ], 400);
         }
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('keyword');
+        $sortFilter = $request->query('sort');
+
+        $jobInterviews = JobInterview::with('jobList');
+
+        if (!$keyword == null) {
+            $jobInterviews = $jobInterviews->whereHas('jobList', function ($q) use ($keyword) {
+                $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+            })
+                ->orWhereHas('applicant', function ($q) use ($keyword) {
+                    $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                });
+        }
+
+        if (!$sortFilter == null) {
+            if ($sortFilter == "Recent to Oldest") {
+                $jobInterviews = $jobInterviews->latest()->get();
+            } else if ($sortFilter == "Alphabetical") {
+                $jobInterviews = $jobInterviews->with(['applicant' => function ($q) {
+                    $q->orderBy('first_name');
+                }])->get();
+            }
+        } else {
+            $jobInterviews = $jobInterviews->with('applicant')->get();
+        }
+
+        return response([
+            'interviews' => $jobInterviews->paginate(10),
+            'message' => "Success",
+        ], 200);
+    }
 }
