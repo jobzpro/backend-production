@@ -7,6 +7,7 @@ use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DealbreakerController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
 use App\Http\Controllers\JobInterviewController;
@@ -88,6 +89,11 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'userReports');
             Route::post('/', 'reportCompanyOrJobList');
         });
+
+        Route::prefix('/{id}/favorites')->controller(FavoriteController::class)->group(function () {
+            Route::get('/', 'userFavorites');
+            Route::post('/', 'addUserFavorites');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -114,6 +120,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
             Route::get('/', 'index');
             Route::get('/{job_application_id}', 'show');
+            Route::post('/{job_application_id}', 'setStatus');
+            Route::delete('/{job_application_id}', 'delete');
         });
 
         Route::prefix('/dealbreakers')->controller(DealbreakerController::class)->group(function () {
@@ -125,6 +133,11 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'companyReports');
             Route::post('/', 'reportJobSeeker');
         });
+
+        Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
+            Route::get('/', 'companyFavorites');
+            Route::post('/', 'addCompanyFavorites');
+        });
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
@@ -135,11 +148,25 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('/interview')->controller(JobInterviewController::class)->group(function () {
         Route::post('/set-interview', 'store');
         Route::get('/all', 'index');
+        Route::post('/set-status', 'setStatus');
+        Route::post('/reschedule', 'reschedule');
+        Route::get('/search', 'search');
+        Route::get('/{id}', 'show');
     });
 
     Route::prefix('/reports')->controller(ReportController::class)->group(function () {
         Route::delete('/{id}', 'delete');
         Route::get('/{id}', 'show');
+        Route::post('/{id}/set-status', 'setStatus');
+    });
+
+    Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
+        Route::delete('/{id}', 'delete');
+        Route::get('/{id}', 'show');
+    });
+
+    Route::prefix('/resumes')->controller(UserController::class)->group(function () {
+        Route::get('/search', 'searchResumes');
     });
 });
 

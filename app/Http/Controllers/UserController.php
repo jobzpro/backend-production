@@ -296,6 +296,41 @@ class UserController extends Controller
         }
     }
 
+    public function searchResumes(Request $request)
+    {
+        $keyword = $request->query('keyword');
+        $sortFilter = $request->query('sort');
+
+        $users = User::with('currentExperience');
+
+        if (!$keyword == null) {
+            $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
+                $q->where('position', 'LIKE', '%' . $keyword . '%');
+            })
+                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
+                ->orderBy('profile_completion', 'DESC');
+        }
+
+        // dd(!$keyword == null);
+        if (!$sortFilter == null) {
+            // dd("sort");
+            if ($sortFilter == "Recent to Oldest") {
+                $users = $users->latest()->orderBy('profile_completion', 'DESC')->get();
+            } else if ($sortFilter == "Alphabetical") {
+                // dd("alpha");
+                $users = $users->orderBy('first_name', 'ASC')->orderBy('profile_completion', 'DESC')->get();
+            }
+        } else {
+            $users = $users->orderBy('profile_completion', 'DESC')->get();
+        }
+
+        return response([
+            'users' => $users->paginate(10),
+            'message' => "Success",
+        ], 200);
+    }
+
     //Private functions
     private function uploadAvatar($image)
     {

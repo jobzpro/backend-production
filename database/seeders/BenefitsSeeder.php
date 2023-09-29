@@ -13,10 +13,10 @@ class BenefitsSeeder extends Seeder
      */
     public function run(): void
     {
-        $benefits = ["Health Insurance", "401(k)", "Dental Insurance","Vision Insurance", "Paid Time Off", "Life Insurance", "401(k) matching", "Flexible Schedule", "Tuition Reimbursement", "Disability Insurance", "Continuing Education Credits", "Flexible Schedule", "Referral Program", "Employee Assitance", "Flexible Spending Account", "Free Parking", "Travel Reimbursement", "Malpractice Insurance", "Paid Sick Time", "Employee Discount", "Health Savings Account", "Paid Training", "Other"];
+        $benefits = ["Health Insurance", "401(k)", "Dental Insurance", "Vision Insurance", "Paid Time Off", "Life Insurance", "401(k) matching", "Flexible Schedule", "Tuition Reimbursement", "Disability Insurance", "Continuing Education Credits", "Flexible Schedule", "Referral Program", "Employee Assistance", "Flexible Spending Account", "Free Parking", "Travel Reimbursement", "Malpractice Insurance", "Paid Sick Time", "Employee Discount", "Health Savings Account", "Paid Training", "Other"];
 
 
-        for($i=0; $i < sizeof($benefits); $i++){
+        for ($i = 0; $i < sizeof($benefits); $i++) {
             Benefits::create([
                 'name' => $benefits[$i],
             ]);

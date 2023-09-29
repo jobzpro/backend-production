@@ -75,4 +75,28 @@ class Company extends Model
     //     $report = new Report(['reportable_id' => $user->id, 'reportable_type' => 'App\Models\User']);
     //     $this->reports()->save($report);
     // }
+
+    // public function favorites()
+    // {
+    //     return $this->morphMany('App\Models\Favorite', 'favoritable');
+    // }
+
+    public function favoritedBy()
+    {
+        return $this->morphedByMany(User::class, 'favorites', 'favoritable', 'favoritable_id', 'favoritable_id');
+    }
+    // public function favoritedBy()
+    // {
+    //     return $this->morphToMany(User::class, 'favoritable')->wherePivot('favoritable_type', User::class);
+    // }
+    public function favorites()
+    {
+        return $this->morphMany('App\Models\Favorite', 'favoriter');
+    }
+
+    public function favoritedJobseekers()
+    {
+        return Favorite::with('favoriter', 'favoritable')->where('favoritable_id', $this->id)->get();
+        // return $this->morphedByMany('App\Models\User', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
+    }
 }

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\MailerController as MailerController;
 use App\Models\Company;
 use App\Enums\JobApplicationStatus as application_status;
+use Illuminate\Support\Facades\Validator;
 
 class JobInterviewController extends Controller
 {
@@ -22,20 +23,20 @@ class JobInterviewController extends Controller
         $user = User::find(request()->user()->id);
         $company_id = $user->userCompanies->first()->companies->first()->id;
 
-        if($user->userRoles->first()->role->role_name == "Jobseeker"){
+        if ($user->userRoles->first()->role->role_name == "Jobseeker") {
             $jobInterviews =  JobInterview::where('applicant_id', $user->id)->with('jobList')->get();
-            
-        
+
+
             return response([
                 'job_interviews' => $jobInterviews,
                 'message' => "Success",
             ]);
-        }else{
+        } else {
             $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->get();
-        return response([
-            'job_interviews' => $jobInterviews,
-            'message' => "Success",
-        ],200);
+            return response([
+                'job_interviews' => $jobInterviews,
+                'message' => "Success",
+            ], 200);
         }
     }
 
@@ -73,20 +74,32 @@ class JobInterviewController extends Controller
         ]);
 
 
-        (new MailerController)->sendInterviewInvite($company,$jobInterview);
+        (new MailerController)->sendInterviewInvite($company, $jobInterview);
 
         return response([
             'message' => "Success",
-        ],200);
-
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(JobInterview $jobInterview)
+    public function show($id)
     {
         //
+        $jobInterview = JobInterview::find($id);
+
+        if ($jobInterview) {
+
+            return response([
+                'interview' => $jobInterview,
+                'message' => 'Successful'
+            ]);
+        } else {
+            return response([
+                'message' => "Interview not found",
+            ], 400);
+        }
     }
     /**
      * Show the form for editing the specified resource.
@@ -113,7 +126,104 @@ class JobInterviewController extends Controller
     }
 
 
-    public function cancelInterview(Request $request, JobInterview $jobInterview){
+    public function cancelInterview(Request $request, JobInterview $jobInterview)
+    {
+    }
 
+    public function setStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Something went wrong",
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $jobInterview = JobInterview::find($id);
+
+        if ($jobInterview) {
+            $jobInterview->update(['status' => $request['status']]);
+
+            return response([
+                'interview' => $jobInterview,
+                'message' => 'Successful'
+            ]);
+        } else {
+            return response([
+                'message' => "Interview not found",
+            ], 400);
+        }
+    }
+
+    public function reschedule(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'interview_date' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Something went wrong",
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $jobInterview = JobInterview::find($id);
+
+        if ($jobInterview) {
+            $jobInterview->update([
+                'interview_date' => $request['interview_date'],
+                'meeting_link' => $request['meeting_link'],
+                'notes' => $request['notes'],
+            ]);
+
+            return response([
+                'interview' => $jobInterview,
+                'message' => 'Successful'
+            ]);
+        } else {
+            return response([
+                'message' => "Interview not found",
+            ], 400);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('keyword');
+        $sortFilter = $request->query('sort');
+
+        $jobInterviews = JobInterview::with('jobList');
+
+        if (!$keyword == null) {
+            $jobInterviews = $jobInterviews->whereHas('jobList', function ($q) use ($keyword) {
+                $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+            })
+                ->orWhereHas('applicant', function ($q) use ($keyword) {
+                    $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                });
+        }
+
+        if (!$sortFilter == null) {
+            if ($sortFilter == "Recent to Oldest") {
+                $jobInterviews = $jobInterviews->latest()->get();
+            } else if ($sortFilter == "Alphabetical") {
+                $jobInterviews = $jobInterviews->with(['applicant' => function ($q) {
+                    $q->orderBy('first_name');
+                }])->get();
+            }
+        } else {
+            $jobInterviews = $jobInterviews->with('applicant')->get();
+        }
+
+        return response([
+            'interviews' => $jobInterviews->paginate(10),
+            'message' => "Success",
+        ], 200);
     }
 }

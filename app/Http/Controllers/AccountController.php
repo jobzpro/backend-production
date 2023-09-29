@@ -168,10 +168,10 @@ class AccountController extends Controller
         $existingAccount = Account::where('email', $user->email)->first();
         if ($existingAccount) {
             $existingUser = User::where('account_id', $existingAccount->id)->first();
-            $userRole = UserRole::create([
-                'user_id' => $existingUser->id,
-                'role_id' => 3,
-            ]);
+            // $userRole = UserRole::create([
+            //     'user_id' => $existingUser->id,
+            //     'role_id' => 3,
+            // ]);
         } else {
             $existingAccount = Account::create([
                 'email' => $user->email,
@@ -190,7 +190,7 @@ class AccountController extends Controller
 
             return response([
                 'user' => $existingUser,
-                'user_role' => $userRole,
+                'user_role' => $existingUser->userRoles()->first(),
                 'token' => $token,
                 'message' => "Sign-in with Google Successful"
             ], 200);
@@ -240,10 +240,10 @@ class AccountController extends Controller
         $existingAccount = Account::where('email', $user->email)->first();
         if ($existingAccount) {
             $existingUser = User::where('account_id', $existingAccount->id)->first();
-            $userRole = UserRole::create([
-                'user_id' => $existingUser->id,
-                'role_id' => 3,
-            ]);
+            // $userRole = UserRole::create([
+            //     'user_id' => $existingUser->id,
+            //     'role_id' => 3,
+            // ]);
         } else {
             $existingAccount = Account::create([
                 'email' => $user->email,
@@ -262,7 +262,7 @@ class AccountController extends Controller
 
             return response([
                 'user' => $existingUser,
-                'user_role' => $userRole,
+                'user_role' => $existingUser->userRoles()->first(),
                 'token' => $token,
                 'message' => "Sign-in with Apple Successful"
             ], 200);
@@ -331,14 +331,14 @@ class AccountController extends Controller
         if ($existingUser) {
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            $userRole = UserRole::create([
-                'user_id' => $existingUser->id,
-                'role_id' => 3,
-            ]);
+            // $userRole = UserRole::create([
+            //     'user_id' => $existingUser->id,
+            //     'role_id' => 3,
+            // ]);
 
             return response([
                 'user' => $existingUser,
-                'user_role' => $userRole,
+                'user_role' => $existingUser->userRoles()->first(),
                 'token' => $token,
                 'messsage' => 'Sign-in with LinkedIn Successful'
             ], 200);
@@ -406,14 +406,14 @@ class AccountController extends Controller
         if ($existingUser) {
             $token = $existingAccount->createToken('API Token')->accessToken;
 
-            $userRole = UserRole::create([
-                'user_id' => $existingUser->id,
-                'role_id' => 3,
-            ]);
+            // $userRole = UserRole::create([
+            //     'user_id' => $existingUser->id,
+            //     'role_id' => 3,
+            // ]);
 
             return response([
                 'user' => $existingUser,
-                'user_role' => $userRole,
+                'user_role' => $existingUser->userRoles()->first(),
                 'token' => $token,
                 'messsage' => 'Sign-in with Facebook Successful'
             ], 200);

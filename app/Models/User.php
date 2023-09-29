@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->files()->where('is_certification', true);
     }
 
+    public function currentExperience()
+    {
+        return $this->hasMany(UserExperience::class)->where('current', 'true');
+    }
+
     public function experiences(): HasMany
     {
         return $this->hasMany(UserExperience::class);
@@ -157,5 +162,25 @@ class User extends Authenticatable
     public function reportedEntities()
     {
         return Report::with('reportable')->where('reporter_id', $this->id)->get();
+    }
+
+    // public function favorites()
+    // {
+    //     return $this->morphMany('App\Models\Favorite', 'favoritable');
+    // }
+
+    // public function favoritedBy()
+    // {
+    //     return $this->morphToMany('App\Models\Company', 'favoritable');
+    // }
+    public function favorites()
+    {
+        return $this->morphMany('App\Models\Favorite', 'favoriter');
+    }
+
+    public function favoritedJobListings()
+    {
+        return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
+        // return $this->morphedByMany('App\Models\JobList', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
 }
