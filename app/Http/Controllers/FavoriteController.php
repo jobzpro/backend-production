@@ -139,10 +139,6 @@ class FavoriteController extends Controller
                     'favoriter_id' => $company->id,
                     'favoriter_type' => get_class($company),
                 ]);
-                // $company->favorites()->create([
-                //     'favoritable_id' => $user->id,
-                //     'favorite_type' => 'App\Models\User'
-                // ]);
 
                 return response([
                     'favorites' => $company->favoritedJobseekers(),
