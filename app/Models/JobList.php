@@ -24,7 +24,7 @@ class JobList extends Model
         'number_of_vacancies',
         'hiring_urgency',
         'pay_type',
-        'resume_required',
+        'require_resume',
         'start_conversion',
         'send_auto_rejection',
         'reject_candidates',
@@ -108,7 +108,10 @@ class JobList extends Model
     {
         return $this->hasMany(JobIndustrySpeciality::class);
     }
-
+    public function job_physical_settings():HasMany
+    {
+        return $this->hasMany(JobIndustryPhysicalSetting::class);
+    }
     public function jobListDealbreakers(): HasMany
     {
         return $this->hasMany(JobListDealbreaker::class);

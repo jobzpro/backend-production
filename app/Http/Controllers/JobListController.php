@@ -218,7 +218,7 @@ class JobListController extends Controller
     public function show(string $id)
     {
         $jobList = JobList::where('id', $id)
-            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
+            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
         return response([
             'job_list' => $jobList,
         ], 200);
@@ -253,18 +253,20 @@ class JobListController extends Controller
                 'show_pay' => $request->input('show_pay') ?? $jobList->show_pay,
                 'pay_type' => $request->input('pay_type') ?? $jobList->pay_type,
                 'salary' => $request->input('salary') ?? $jobList->salary,
+                'require_resume' => $request->input('require_resume') ?? $jobList->require_resume,
                 'min_salary' => $request->input('min_salary') ?? $jobList->min_salary,
                 'max_salary' => $request->input('max_salary') ?? $jobList->max_salary,
                 'experience_level_id' => $request->input('experience_level_id') ?? $jobList->experience_level_id,
                 'number_of_vacancies' => $request->input('number_of_vacancies') ?? $jobList->number_of_vacancies,
                 'hiring_urgency' => $request->input('hiring_urgency') ?? $jobList->hiring_urgency,
+                'job_excempt_from_local_laws' => $request->input('job_excempt_from_local_laws') ?? $jobList->job_excempt_from_locaa_laws,
                 'status' => job_status::Published,
                 'can_applicant_with_criminal_record_apply' => $request->input('can_applicant_with_criminal_record_apply') ?? $jobList->can_applicant_with_criminal_record_apply,
                 'can_start_messages' => $request->input('can_start_messages') ?? $jobList->can_start_messages,
                 'send_auto_reject_emails' => $request->input('send_auto_reject_emails') ?? $jobList->send_auto_reject_emails,
                 'auto_reject' => $request->input('auto_reject') ?? $jobList->auto_reject,
                 'time_limit' => $request->input('time_limit') ?? $jobList->time_limit,
-                'other_email' => $request->input('other_email') ?? $jobList->other_email,
+                'other_email' => $request->input('other_email') ?? '',
                 'industry_id' => $request->input('industry_id') ?? $jobList->industry_id,
                 'authorized_to_work_in_us' => $request->input('authorized_to_work_in_us') ?? $jobList->authorized_to_work_in_us,
                 'is_vaccinated' => $request->input('is_vaccinated') ?? $jobList->is_vaccinated,
@@ -291,7 +293,7 @@ class JobListController extends Controller
                                 'type_id' => $type_id,
                             ]);
                     } else {
-                        if (in_array($type_id, ['1,','2','3','4','5'])) {
+                        if (in_array($type_id, ['1', '2', '3', '4', '5'])) {
                             JobType::create([
                                 'job_list_id' => $job_list_id,
                                 'type_id' => $type_id,
@@ -299,12 +301,16 @@ class JobListController extends Controller
                         }
                     }
                 }
-                JobType::where('job_list_id', $job_list_id)
-                    ->whereNotIn('type_id', $job_types_request)
+                JobType::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($job_types_request) {
+                        $query->whereNotIn('type_id', ['1', '2', '3', '4', '5']);
+                        $query->orwhereNotIn('type_id', $job_types_request);
+                    })
                     ->delete();
             }
             if ($request->filled('industry_physical_setting')) {
                 $industry_physical_settings_request = explode(",", $request->input('industry_physical_setting'));
+                $medical_physical_settings = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
                 $existingSettings = JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
                     ->pluck('industry_physical_setting_id')
                     ->toArray();
@@ -317,40 +323,59 @@ class JobListController extends Controller
                                 'industry_physical_setting_id' => $setting_id,
                             ]);
                     } else {
-                        JobIndustryPhysicalSetting::create([
-                            'job_list_id' => $job_list_id,
-                            'industry_physical_setting_id' => $setting_id,
-                        ]);
+                        if (in_array($setting_id, $medical_physical_settings)) {
+                            JobIndustryPhysicalSetting::create([
+                                'job_list_id' => $job_list_id,
+                                'industry_physical_setting_id' => $setting_id,
+                            ]);
+                        }
                     }
                 }
-                JobIndustryPhysicalSetting::where('job_list_id', $job_list_id)
-                    ->whereNotIn('industry_physical_setting_id', $industry_physical_settings_request)
+                JobIndustryPhysicalSetting::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($industry_physical_settings_request) {
+                        $medical_physical_settings = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                        $query->whereNotIn('industry_physical_setting_id', $medical_physical_settings);
+                        $query->orwhereNotIn('industry_physical_setting_id', $industry_physical_settings_request);
+                    })
                     ->delete();
             }
             if ($request->filled('industry_speciality')) {
                 $industry_specialities_request = explode(",", $request->input('industry_speciality'));
-
+                $availableSpecialities = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36'];
                 $existingSpecialities = JobIndustrySpeciality::where('job_list_id', $job_list_id)
                     ->pluck('industry_speciality_id')
                     ->toArray();
                 foreach ($industry_specialities_request as $speciality_id) {
-                    if (!in_array($speciality_id, $existingSpecialities)) {
-                        JobIndustrySpeciality::create([
-                            'job_list_id' => $job_list_id,
-                            'industry_speciality_id' => $speciality_id,
-                        ]);
+                    if (in_array($speciality_id, $existingSpecialities)) {
+                        JobIndustrySpeciality::where('job_list_id', $job_list_id)
+                            ->where('industry_speciality_id', $speciality_id)
+                            ->update([
+                                'job_list_id' => $job_list_id,
+                                'industry_speciality_id' => $speciality_id
+                            ]);
+                    } else {
+                        if (in_array($speciality_id, $availableSpecialities)) {
+                            JobIndustrySpeciality::create([
+                                'job_list_id' => $job_list_id,
+                                'industry_speciality_id' => $speciality_id,
+                            ]);
+                        }
                     }
                 }
-
-                JobIndustrySpeciality::where('job_list_id', $job_list_id)
-                    ->whereNotIn('industry_speciality_id', $industry_specialities_request)
+                JobIndustrySpeciality::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($industry_specialities_request) {
+                        $query->whereNotIn('industry_speciality_id', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36']);
+                        $query->orwhereNotIn('industry_speciality_id', $industry_specialities_request);
+                    })
                     ->delete();
             }
+
             if ($request->filled('benefits')) {
                 $job_benefits_request = explode(',', $request->input('benefits'));
                 $existingBenefits = JobBenefits::where('job_list_id', $job_list_id)
                     ->pluck('benefit_id')
                     ->toArray();
+                $availableBenefits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
                 foreach ($job_benefits_request as $benefit_id) {
                     if (in_array($benefit_id, $existingBenefits)) {
                         JobBenefits::where('job_list_id', $job_list_id)
@@ -360,14 +385,19 @@ class JobListController extends Controller
                                 'benefit_id' => $benefit_id,
                             ]);
                     } else {
-                        JobBenefits::create([
-                            'job_list_id' => $job_list_id,
-                            'benefit_id' => $benefit_id,
-                        ]);
+                        if (in_array($benefit_id, $availableBenefits)) {
+                            JobBenefits::create([
+                                'job_list_id' => $job_list_id,
+                                'benefit_id' => $benefit_id,
+                            ]);
+                        }
                     }
                 }
-                JobBenefits::where('job_list_id', $job_list_id)
-                    ->whereNotIn('benefit_id', $job_benefits_request)
+                JobBenefits::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($job_benefits_request) {
+                        $query->whereNotIn('benefit_id', ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']);
+                        $query->orwhereNotIn('benefit_id', $job_benefits_request);
+                    })
                     ->delete();
             }
 
@@ -410,14 +440,19 @@ class JobListController extends Controller
                                 'weekly_schedule_id' => $schedule_id,
                             ]);
                     } else {
-                        JobWeeklySchedule::create([
-                            'job_list_id' => $job_list_id,
-                            'weekly_schedule_id' => $schedule_id,
-                        ]);
+                        if (in_array($schedule_id, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])) {
+                            JobWeeklySchedule::create([
+                                'job_list_id' => $job_list_id,
+                                'weekly_schedule_id' => $schedule_id,
+                            ]);
+                        }
                     }
                 }
-                JobWeeklySchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('weekly_schedule_id', $job_weekly_schedule_request)
+                JobWeeklySchedule::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($job_weekly_schedule_request) {
+                        $query->whereNotIn('weekly_schedule_id',  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']);
+                        $query->orwhereNotIn('weekly_schedule_id', $job_weekly_schedule_request);
+                    })
                     ->delete();
             }
 
@@ -435,32 +470,39 @@ class JobListController extends Controller
                                 'supplemental_schedules_id' => $schedule_id,
                             ]);
                     } else {
-                        JobSupplementalSchedule::create([
-                            'job_list_id' => $job_list_id,
-                            'supplemental_schedules_id' => $schedule_id,
-                        ]);
+                        if (in_array($schedule_id, ['1', '2', '3', '4', '5'])) {
+                            JobSupplementalSchedule::create([
+                                'job_list_id' => $job_list_id,
+                                'supplemental_schedules_id' => $schedule_id,
+                            ]);
+                        }
                     }
                 }
-                JobSupplementalSchedule::where('job_list_id', $job_list_id)
-                    ->whereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request)
+                JobSupplementalSchedule::Where('job_list_id', $job_list_id)
+                    ->where(function ($query) use ($job_supplementary_schedule_request) {
+                        $query->whereNotIn('supplemental_schedules_id',  ['1', '2', '3', '4', '5']);
+                        $query->orwhereNotIn('supplemental_schedules_id', $job_supplementary_schedule_request);
+                    })
                     ->delete();
             }
-
 
             if ($request->filled('dealbreakers')) {
                 foreach ($request->input('dealbreakers') as $dealbreaker) {
                     $dealbreakerId = $dealbreaker['id'];
-                    JobListDealbreaker::updateOrInsert(
-                        [
+                    $dealbreakerData = JobListDealbreaker::Where('dealbreaker_id', $dealbreakerId)->Where('job_list_id', $job_list_id)->first();
+                    if ($dealbreakerData) {
+                        $dealbreakerData->update(['dealbreaker_id' => $dealbreakerId, 'required' => $dealbreaker['required']]);
+                    } else {
+                        JobListDealbreaker::create([
                             'job_list_id' => $job_list_id,
                             'dealbreaker_id' => $dealbreakerId,
-                            'required' => $dealbreaker['required'],
-                        ],
-                    );
+                            'required' => $dealbreaker['required']
+                        ]);
+                    }
                 }
             }
 
-            $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->first();
+            $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
             return response([
                 'message' => "Success",
                 'data' => $joblist

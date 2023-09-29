@@ -15,8 +15,12 @@ class JobIndustrySpeciality extends Model
         'job_list_id',
         'industry_speciality_id',
     ];
-
-    public function industrySpeciality() :BelongsTo{
+    public function job_list(): BelongsTo
+    {
+        return $this->belongsTo(JobList::class);
+    }
+    public function industrySpeciality(): BelongsTo
+    {
         return $this->belongsTo(IndustrySpeciality::class);
     }
 }
