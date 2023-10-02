@@ -33,7 +33,7 @@ class JobListController extends Controller
 
     public function index()
     {
-        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers')->get();
+        $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules')->get();
 
         return response([
             'job_list' => $jobLists,
