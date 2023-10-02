@@ -183,4 +183,9 @@ class User extends Authenticatable
         return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
         // return $this->morphedByMany('App\Models\JobList', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
+
+    public function notifications()
+    {
+        return $this->morphMany('App\Models\Notification', 'notifiable');
+    }
 }

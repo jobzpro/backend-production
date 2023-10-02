@@ -99,4 +99,9 @@ class Company extends Model
         return Favorite::with('favoriter', 'favoritable')->where('favoritable_id', $this->id)->get();
         // return $this->morphedByMany('App\Models\User', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
+
+    public function notifications()
+    {
+        return $this->morphMany('App\Models\Notification', 'notifiable');
+    }
 }
