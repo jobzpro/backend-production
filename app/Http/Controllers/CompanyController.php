@@ -28,7 +28,7 @@ class CompanyController extends Controller
         $companies = Company::with('businessType', 'industry')->get();
 
         return response([
-            'company' => $companies->paginate(10),
+            'company' => $companies,
             'message' => 'Successful'
         ], 200);
     }
