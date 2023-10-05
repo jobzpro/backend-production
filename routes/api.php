@@ -16,6 +16,7 @@ use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
 use App\Http\Controllers\JobBenefitsController;
 use App\Http\Controllers\JobShiftController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QualificationsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TypeController;
@@ -94,6 +95,10 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'userFavorites');
             Route::post('/', 'addUserFavorites');
         });
+
+        Route::prefix('/{id}/notifications')->controller(NotificationController::class)->group(function () {
+            Route::get('/', 'jobSeekerNotifications');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -137,6 +142,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/favorites')->controller(FavoriteController::class)->group(function () {
             Route::get('/', 'companyFavorites');
             Route::post('/', 'addCompanyFavorites');
+        });
+
+        Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
+            Route::get('/', 'companyNotifications');
         });
     });
 

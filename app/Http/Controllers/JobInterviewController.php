@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\MailerController as MailerController;
 use App\Models\Company;
 use App\Enums\JobApplicationStatus as application_status;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class JobInterviewController extends Controller
@@ -71,6 +72,16 @@ class JobInterviewController extends Controller
 
         $jobApplication->update([
             'status' => application_status::interview,
+        ]);
+
+        $notification = Notification::create([
+            'notifiable_id' => $jobApplication->user->id,
+            'notifiable_type' => get_class($jobApplication->user),
+            'notifier_id' => $jobApplication->id,
+            'notifier_type' => get_class($jobApplication),
+            'notif_type' => 'interview_scheduled',
+            'content' => $company->name . 'has scheduled your interview.',
+            'title' => 'Interview Scheduled',
         ]);
 
 
