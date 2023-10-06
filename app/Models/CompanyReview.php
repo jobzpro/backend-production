@@ -19,10 +19,14 @@ class CompanyReview extends Model
         'employment_status',
         'position',
         'content',
+        'pin',
+        'anonymous',
     ];
 
     protected $casts = [
         'currently_employed' => 'boolean',
+        'pin' => 'boolean',
+        'anonymous' => 'boolean',
     ];
 
     public function company(): BelongsTo

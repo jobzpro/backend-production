@@ -6,6 +6,7 @@ use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyReviewController;
 use App\Http\Controllers\DealbreakerController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\JobApplicationController;
@@ -99,6 +100,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/{id}/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'jobSeekerNotifications');
         });
+
+        Route::prefix('/{id}/reviews')->controller(CompanyReviewController::class)->group(function () {
+            Route::get('/', 'reviewsOfJobseeker');
+            Route::delete('/{review_id}', 'deleteReview');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -146,6 +152,12 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'companyNotifications');
+        });
+
+        Route::prefix('/reviews')->controller(CompanyReviewController::class)->group(function () {
+            Route::get('/', 'reviewsForCompany');
+            Route::post('/', 'postAReview');
+            Route::post('/{review_id}/pin', 'pinReview');
         });
     });
 
