@@ -71,7 +71,7 @@ class JobApplicationController extends Controller
         $account = Auth::user();
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
-        $user_companies = UserCompany::where('company_id', $company->id)->with('user')->get();
+        $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
 
 
         if ($request->has('file')) {
