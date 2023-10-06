@@ -12,14 +12,14 @@ use App\Mail\InviteStaff;
 
 class EmployerMailerController extends Controller
 {
-    
-    public function applicantApplied($applicant, $employer, $company, $job_list){
 
+    public function applicantApplied($applicant, $employer, $company, $job_list){
+        return response()->json(['employer' => $employer, 'employer user' => $employer->user ?? '', 'employer user account' => $employer->user->account ?? '', 'employer email' => $employer->user->account->email ?? ''], 200);
         $to = $employer->user->account->email;
         $jobApp = JobApplication::where('user_id', $applicant->id)->first();
 
         $mailData = [
-            'employer_name' => $employer->user->first_name,
+            'employer_name' => $employer->user->first_name ?? '',
             'company_name' => $company->name,
             'applicant' => $applicant->first_name . " ". $applicant->last_name,
             'job_list' => $job_list->job_title,
@@ -34,7 +34,7 @@ class EmployerMailerController extends Controller
         }
 
         Mail::to($to)->send(new JobApplications($mailData,$attachment));
-    
+
     }
 
     public function sendEmployerStaffInvite($company, $email, $user, $link){

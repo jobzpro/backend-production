@@ -71,7 +71,7 @@ class JobApplicationController extends Controller
         $account = Auth::user();
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
-        $user_companies = UserCompany::where('company_id', $company->id)->get();
+        $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
 
 
         if ($request->has('file')) {
@@ -134,20 +134,19 @@ class JobApplicationController extends Controller
             'is_Read' => false,
         ]);
 
-
         if ($user_companies) {
             foreach ($user_companies as $employer) {
-                (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
+                return (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
             }
         }
 
-        if ($user) {
-            (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
-        }
+        // if ($user) {
+        //     (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
+        // }
 
-        return response([
-            'message' => 'Application Successfully Submitted',
-        ], 200);
+        // return response([
+        //     'message' => 'Application Successfully Submitted',
+        // ], 200);
     }
 
     /**
