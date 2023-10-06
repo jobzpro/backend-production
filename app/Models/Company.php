@@ -42,7 +42,7 @@ class Company extends Model
 
     public function jobListings(): HasMany
     {
-        return $this->hasMany(JobList::class);
+        return $this->hasMany(JobList::class)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers', 'jobStandardShifts', 'jobWeeklySchedules', 'jobSupplementalSchedules');
     }
 
     public function businessType(): BelongsTo
