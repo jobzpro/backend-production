@@ -15,27 +15,27 @@ class EmployerMailerController extends Controller
 
     public function applicantApplied($applicant, $employer, $company, $job_list){
 
-        $to = $employer->user->account->email;
+        // $to = $employer->user->account->email;
         $jobApp = JobApplication::where('user_id', $applicant->id)->first();
 
-        return response()->json(['employer' => $to, 'job app' => $jobApp]);
+        return response()->json(['employer' => $employer, 'job app' => $jobApp]);
 
-        $mailData = [
-            'employer_name' => $employer->user->first_name,
-            'company_name' => $company->name,
-            'applicant' => $applicant->first_name . " ". $applicant->last_name,
-            'job_list' => $job_list->job_title,
-        ];
+        // $mailData = [
+        //     'employer_name' => $employer->user->first_name,
+        //     'company_name' => $company->name,
+        //     'applicant' => $applicant->first_name . " ". $applicant->last_name,
+        //     'job_list' => $job_list->job_title,
+        // ];
 
-        $resume = $jobApp->resume_path;
+        // $resume = $jobApp->resume_path;
 
-        if($resume != null){
-            $attachment[] = Attachment::fromPath($resume)->as('resume.pdf')->withMime('application/pdf');
-        }else{
-            $attachment = [];
-        }
+        // if($resume != null){
+        //     $attachment[] = Attachment::fromPath($resume)->as('resume.pdf')->withMime('application/pdf');
+        // }else{
+        //     $attachment = [];
+        // }
 
-        Mail::to($to)->send(new JobApplications($mailData,$attachment));
+        // Mail::to($to)->send(new JobApplications($mailData,$attachment));
 
     }
 
