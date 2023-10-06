@@ -134,6 +134,8 @@ class JobApplicationController extends Controller
             'is_Read' => false,
         ]);
 
+        return response()->json($user_companies, 200);
+
         if ($user_companies) {
             foreach ($user_companies as $employer) {
                 return (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
