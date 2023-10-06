@@ -14,7 +14,7 @@ class EmployerMailerController extends Controller
 {
 
     public function applicantApplied($applicant, $employer, $company, $job_list){
-        if($employer->user->account->email) {
+        if($employer->user->account) {
             $jobApp = JobApplication::where('user_id', $applicant->id)->first();
 
             $mailData = [
