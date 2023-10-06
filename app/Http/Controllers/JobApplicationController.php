@@ -136,17 +136,18 @@ class JobApplicationController extends Controller
 
         if ($user_companies) {
             foreach ($user_companies as $employer) {
+                return response()->json(['employer' => $employer, 'employer user' => $employer->user ?? '', 'employer user account' => $employer->user->account ?? '', 'employer email' => $employer->user->account->email ?? ''], 200);
                 (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
             }
         }
 
-        if ($user) {
-            (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
-        }
+        // if ($user) {
+        //     (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
+        // }
 
-        return response([
-            'message' => 'Application Successfully Submitted',
-        ], 200);
+        // return response([
+        //     'message' => 'Application Successfully Submitted',
+        // ], 200);
     }
 
     /**
