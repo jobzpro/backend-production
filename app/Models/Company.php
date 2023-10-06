@@ -104,4 +104,9 @@ class Company extends Model
     {
         return $this->morphMany('App\Models\Notification', 'notifiable');
     }
+
+    public function companyReviews(): HasMany
+    {
+        return $this->hasMany(CompanyReview::class);
+    }
 }
