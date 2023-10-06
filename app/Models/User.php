@@ -193,4 +193,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CompanyReview::class);
     }
+
+    public function appReviews(): HasMany
+    {
+        return $this->hasMany(AppReview::class);
+    }
 }

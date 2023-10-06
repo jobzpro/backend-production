@@ -9,6 +9,7 @@ use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 use App\Nova\User;
 use App\Nova\Account;
+use App\Nova\AppReview;
 use App\Nova\BusinessType;
 use App\Nova\Role;
 use App\Nova\Company;
@@ -34,28 +35,31 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
 
-        Nova::mainMenu(function (Request $request){
+        Nova::mainMenu(function (Request $request) {
             return [
                 MenuSection::dashboard(Main::class)->icon('chart-bar'),
-                MenuSection::make('Account',[
+                MenuSection::make('Account', [
                     MenuItem::resource(Account::class),
                     MenuItem::resource(User::class),
                     MenuItem::resource(UserRole::class),
                     MenuItem::resource(Role::class),
                 ])->icon('users')->collapsable(),
 
-                MenuSection::make('Company',[
+                MenuSection::make('Company', [
                     MenuItem::resource(Company::class),
                     MenuItem::resource(Industry::class),
                     MenuItem::resource(BusinessType::class),
                 ])->collapsable(),
 
-                MenuSection::make('Job',[
+                MenuSection::make('Job', [
                     MenuItem::resource(JobList::class),
                     MenuItem::resource(JobLocation::class),
                     MenuItem::resource(JobApplication::class),
                 ])->icon('briefcase')->collapsable(),
 
+                MenuSection::make('Reviews', [
+                    MenuItem::resource(AppReview::class),
+                ])->icon('review')->collapsable(),
             ];
         });
     }
@@ -122,12 +126,13 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     }
 
 
-    public function resources(){
+    public function resources()
+    {
         Nova::resourcesIn(app_path('Nova'));
     }
 
     //***function to test laravel nova gates on local env**//
-    
+
     // protected function authorization(){
     //     $this->gate();
 

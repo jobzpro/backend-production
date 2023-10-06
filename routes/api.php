@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AppReviewController;
 use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
@@ -105,6 +106,10 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'reviewsOfJobseeker');
             Route::delete('/{review_id}', 'deleteReview');
         });
+
+        Route::prefix('/{id}/app-reviews')->controller(AppReviewController::class)->group(function () {
+            Route::post('/', 'addReview');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -201,6 +206,7 @@ Route::apiResources([
     'industry-physical-settings' => IndustryPhysicalSettingsController::class,
     'benefits' => JobBenefitsController::class,
     'qualifications' => QualificationsController::class,
+    'app-reviews' => AppReviewController::class,
 ], ['only' => ['index', 'show']]);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
