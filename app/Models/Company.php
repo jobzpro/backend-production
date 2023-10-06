@@ -40,7 +40,7 @@ class Company extends Model
         return $this->hasMany(UserCompany::class, 'company_id');
     }
 
-    public function JobListings(): HasMany
+    public function jobListings(): HasMany
     {
         return $this->hasMany(JobList::class);
     }
