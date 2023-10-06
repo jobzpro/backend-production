@@ -188,4 +188,14 @@ class User extends Authenticatable
     {
         return $this->morphMany('App\Models\Notification', 'notifiable');
     }
+
+    public function companyReviews(): HasMany
+    {
+        return $this->hasMany(CompanyReview::class);
+    }
+
+    public function appReviews(): HasMany
+    {
+        return $this->hasMany(AppReview::class);
+    }
 }

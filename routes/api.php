@@ -2,10 +2,12 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AppReviewController;
 use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyReviewController;
 use App\Http\Controllers\DealbreakerController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\JobApplicationController;
@@ -99,6 +101,15 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/{id}/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'jobSeekerNotifications');
         });
+
+        Route::prefix('/{id}/reviews')->controller(CompanyReviewController::class)->group(function () {
+            Route::get('/', 'reviewsOfJobseeker');
+            Route::delete('/{review_id}', 'deleteReview');
+        });
+
+        Route::prefix('/{id}/app-reviews')->controller(AppReviewController::class)->group(function () {
+            Route::post('/', 'addReview');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -147,6 +158,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'companyNotifications');
         });
+
+        Route::prefix('/reviews')->controller(CompanyReviewController::class)->group(function () {
+            Route::get('/', 'reviewsForCompany');
+            Route::post('/', 'postAReview');
+            Route::post('/{review_id}/pin', 'pinReview');
+        });
     });
 
     Route::prefix('/job')->controller(JobApplicationController::class)->group(function () {
@@ -189,6 +206,7 @@ Route::apiResources([
     'industry-physical-settings' => IndustryPhysicalSettingsController::class,
     'benefits' => JobBenefitsController::class,
     'qualifications' => QualificationsController::class,
+    'app-reviews' => AppReviewController::class,
 ], ['only' => ['index', 'show']]);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
