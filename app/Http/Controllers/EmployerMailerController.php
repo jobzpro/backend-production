@@ -19,7 +19,7 @@ class EmployerMailerController extends Controller
         $jobApp = JobApplication::where('user_id', $applicant->id)->first();
 
         $mailData = [
-            'employer_name' => $employer->user->first_name,
+            'employer_name' => $employer->user->first_name ?? '',
             'company_name' => $company->name,
             'applicant' => $applicant->first_name . " ". $applicant->last_name,
             'job_list' => $job_list->job_title,
