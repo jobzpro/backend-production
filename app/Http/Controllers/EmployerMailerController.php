@@ -14,7 +14,7 @@ class EmployerMailerController extends Controller
 {
 
     public function applicantApplied($applicant, $employer, $company, $job_list){
-
+        return response()->json(['employer' => $employer, 'employer user' => $employer->user ?? '', 'employer user account' => $employer->user->account ?? '', 'employer email' => $employer->user->account->email ?? ''], 200);
         $to = $employer->user->account->email;
         $jobApp = JobApplication::where('user_id', $applicant->id)->first();
 
