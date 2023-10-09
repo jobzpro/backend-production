@@ -17,6 +17,7 @@ use App\Nova\Industry;
 use App\Nova\JobApplication;
 use App\Nova\JobList;
 use App\Nova\JobLocation;
+use App\Nova\Report;
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Menu\MenuItem;
@@ -57,9 +58,13 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(JobApplication::class),
                 ])->icon('briefcase')->collapsable(),
 
-                MenuSection::make('Reviews', [
+                MenuSection::make('Report', [
+                    MenuItem::resource(Report::class),
+                ])->icon('document-text')->collapsable(),
+
+                MenuSection::make('Review', [
                     MenuItem::resource(AppReview::class),
-                ])->icon('review')->collapsable(),
+                ])->icon('document-text')->collapsable(),
             ];
         });
     }

@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mail\AdminNotifications;
+use App\Mail\ReportResponse;
 use Illuminate\Support\Facades\Mail;
 
 class AdminMailerController extends Controller
 {
-    public function newEmployerSignUp(){
+    public function newEmployerSignUp()
+    {
         $email = "admin@jobzpro.com";
         $subject = "New Company Sign Up";
 
@@ -19,7 +21,8 @@ class AdminMailerController extends Controller
         Mail::to($email)->send(new AdminNotifications($mailData, $subject));
     }
 
-    public function sendApprovalMail($email){
+    public function sendApprovalMail($email)
+    {
         $subject = "Welcome to Jobzpro";
 
         $mailData = [
@@ -27,7 +30,13 @@ class AdminMailerController extends Controller
         ];
 
         Mail::to($email)->send(new AdminNotifications($mailData, $subject));
-
     }
 
+    public function sendReportResponseMail($email, $subject, $response)
+    {
+        $mailData = [
+            'body' => $response,
+        ];
+        Mail::to($email)->send(new ReportResponse($mailData, $subject));
+    }
 }
