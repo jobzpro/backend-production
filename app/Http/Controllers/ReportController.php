@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\JobList;
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -75,6 +76,8 @@ class ReportController extends Controller
                         'type' => $request['type'],
                     ]);
 
+                    (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
+
                     return response([
                         'reports' => $user->reportedEntities(),
                         'message' => "Successfully reported Company",
@@ -94,6 +97,8 @@ class ReportController extends Controller
                         'type' => $request['type'],
                     ]);
                     $jobListing->reports()->save($report);
+
+                    (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
 
                     return response([
                         'reports' => $user->reportedEntities(),
@@ -140,6 +145,12 @@ class ReportController extends Controller
                     'type' => $request['type'],
                 ]);
                 $user->reports()->save($report);
+
+                $userCompany = $company->userCompany()->whereHas('user.userRoles', function (Builder $query) {
+                    $query->where('role_id', '=', 2);
+                })->first();
+
+                (new AdminMailerController)->sendReportResponseMail($userCompany->user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
 
                 return response([
                     'reports' => $company->reportedEntities(),
