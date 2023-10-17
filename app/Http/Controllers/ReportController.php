@@ -76,7 +76,7 @@ class ReportController extends Controller
                         'type' => $request['type'],
                     ]);
 
-                    // (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
+                    (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
 
                     return response([
                         'reports' => $user->reportedEntities(),
@@ -98,7 +98,7 @@ class ReportController extends Controller
                     ]);
                     $jobListing->reports()->save($report);
 
-                    // (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
+                    (new AdminMailerController)->sendReportResponseMail($user->account->email, "Report Response", "Thanks for getting in touch! We know how important it is to get immediate help. We will investigate your report and get back to you as soon as possible.");
 
                     return response([
                         'reports' => $user->reportedEntities(),
