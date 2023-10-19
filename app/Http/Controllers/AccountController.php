@@ -186,14 +186,22 @@ class AccountController extends Controller
         }
 
         if ($existingUser) {
-            $token = $existingAccount->createToken('API Token')->accessToken;
+            $role = $existingUser->userRoles()->first();
 
-            return response([
-                'user' => $existingUser,
-                'user_role' => $existingUser->userRoles()->first(),
-                'token' => $token,
-                'message' => "Sign-in with Google Successful"
-            ], 200);
+            if ($role->role_id == 3) {
+                $token = $existingAccount->createToken('API Token')->accessToken;
+
+                return response([
+                    'user' => $existingUser,
+                    'user_role' => $existingUser->userRoles()->first(),
+                    'token' => $token,
+                    'message' => "Sign-in with Google Successful"
+                ], 200);
+            } else {
+                return response([
+                    "message" => "Account already exists.",
+                ], 400);
+            }
         } else {
 
             $full_name = explode(" ", $user->name);
@@ -329,19 +337,27 @@ class AccountController extends Controller
         }
 
         if ($existingUser) {
-            $token = $existingAccount->createToken('API Token')->accessToken;
+            $role = $existingUser->userRoles()->first();
 
-            // $userRole = UserRole::create([
-            //     'user_id' => $existingUser->id,
-            //     'role_id' => 3,
-            // ]);
+            if ($role->role_id == 3) {
+                $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return response([
-                'user' => $existingUser,
-                'user_role' => $existingUser->userRoles()->first(),
-                'token' => $token,
-                'messsage' => 'Sign-in with LinkedIn Successful'
-            ], 200);
+                // $userRole = UserRole::create([
+                //     'user_id' => $existingUser->id,
+                //     'role_id' => 3,
+                // ]);
+
+                return response([
+                    'user' => $existingUser,
+                    'user_role' => $existingUser->userRoles()->first(),
+                    'token' => $token,
+                    'messsage' => 'Sign-in with LinkedIn Successful'
+                ], 200);
+            } else {
+                return response([
+                    "message" => "Account already exists.",
+                ], 400);
+            }
         } else {
 
             $full_name = explode(" ", $user->name);
@@ -404,19 +420,27 @@ class AccountController extends Controller
         }
 
         if ($existingUser) {
-            $token = $existingAccount->createToken('API Token')->accessToken;
+            $role = $existingUser->userRoles()->first();
 
-            // $userRole = UserRole::create([
-            //     'user_id' => $existingUser->id,
-            //     'role_id' => 3,
-            // ]);
+            if ($role->role_id == 3) {
+                $token = $existingAccount->createToken('API Token')->accessToken;
 
-            return response([
-                'user' => $existingUser,
-                'user_role' => $existingUser->userRoles()->first(),
-                'token' => $token,
-                'messsage' => 'Sign-in with Facebook Successful'
-            ], 200);
+                // $userRole = UserRole::create([
+                //     'user_id' => $existingUser->id,
+                //     'role_id' => 3,
+                // ]);
+
+                return response([
+                    'user' => $existingUser,
+                    'user_role' => $existingUser->userRoles()->first(),
+                    'token' => $token,
+                    'messsage' => 'Sign-in with Facebook Successful'
+                ], 200);
+            } else {
+                return response([
+                    "message" => "Account already exists.",
+                ], 400);
+            }
         } else {
 
             $full_name = explode(" ", $user->name);
