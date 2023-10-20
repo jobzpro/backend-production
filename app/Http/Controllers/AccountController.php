@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Helper\FileManager;
 use App\Models\StaffInvite;
 use App\Http\Controllers\UploadController as Uploader;
+use Illuminate\Database\Eloquent\Builder;
 
 class AccountController extends Controller
 {
@@ -470,34 +471,37 @@ class AccountController extends Controller
     public function resetPasswordRequest(Request $request)
     {
         $data = $request->all();
-        $user = Account::where('email', '=', $data['email'])->first();
+        // $user = Account::where('email', '=', $data['email'])->first();
+        $user = Account::with(['user.userRoles' => function (Builder $query) use ($data) {
+            $query->where('role_id', $data['is_employer'] === 1 ? '2' : '3');
+        }])->where('email', '=', $data['email'])->first();
 
         if (!$user) {
             return response([
-                'message' => "User doesn't not exist."
+                'message' => "User does not exist."
             ], 400);
-        }
-
-        //create password tokens
-        try {
-            PasswordResetTokens::create([
-                'email' => $data['email'],
-                'token' => Str::random(60),
-                'created_at' => Carbon::now()
-            ]);
-        } catch (\Exception $e) {
-        }
-
-        $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
-
-        if ($this->sendResetEmail($data['email'], $tokenData->token)) {
-            return response([
-                'message' => "A reset link has been sent to your email address."
-            ], 200);
         } else {
-            return response([
-                'message' => "A network error occured. Please try again."
-            ], 400);
+            //create password tokens
+            try {
+                PasswordResetTokens::create([
+                    'email' => $data['email'],
+                    'token' => Str::random(60),
+                    'created_at' => Carbon::now()
+                ]);
+            } catch (\Exception $e) {
+            }
+
+            $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
+
+            if ($this->sendResetEmail($data['email'], $tokenData->token)) {
+                return response([
+                    'message' => "A reset link has been sent to your email address."
+                ], 200);
+            } else {
+                return response([
+                    'message' => "A network error occured. Please try again."
+                ], 400);
+            }
         }
     }
 
