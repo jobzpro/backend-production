@@ -10,7 +10,7 @@ class AppReviewController extends Controller
 {
     public function index()
     {
-        $reviews = AppReview::with('user')->where('pin', '1')->get();
+        $reviews = AppReview::with('user')->where('pin', 'true')->get();
 
         return response([
             'reviews' => $reviews,
