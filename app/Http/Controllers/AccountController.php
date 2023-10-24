@@ -473,7 +473,7 @@ class AccountController extends Controller
         $data = $request->all();
         // $user = Account::where('email', '=', $data['email'])->first();
         $user = Account::with(['user.userRoles' => function (Builder $query) use ($data) {
-            $query->where('role_id', $data['is_employer'] === 1 ? '2' : '3');
+            $query->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
         }])->where('email', '=', $data['email'])->first();
 
         if (!$user) {
