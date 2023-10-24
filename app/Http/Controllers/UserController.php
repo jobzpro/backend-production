@@ -259,35 +259,35 @@ class UserController extends Controller
                 'files.*' => 'mimes:pdf,doc,docx,txt,jpg,jpeg,png',
             ]);
 
-            if ($filesValidator->fails()) {
-                return response([
-                    'message' => "Invalid file.",
-                    'errors' => $filesValidator->errors(),
-                ], 400);
-            } else {
-                $path = 'files';
-                //!is_dir($path) && mkdir($path, 0777, true);
+            // if ($filesValidator->fails()) {
+            //     return response([
+            //         'message' => "Invalid file.",
+            //         'errors' => $filesValidator->errors(),
+            //     ], 400);
+            // } else {
+            $path = 'files';
+            //!is_dir($path) && mkdir($path, 0777, true);
 
-                foreach ($request->file('files') as $file) {
-                    //Storage::disk('public')->put($path.$fileName, File::get($file));
-                    $fileName = time() . $file->getClientOriginalName();
-                    $filePath = Storage::disk('s3')->put($path, $file);
-                    $filePath   = Storage::disk('s3')->url($filePath);
-                    $file_type  = $file->getClientOriginalExtension();
-                    $fileSize   = $this->fileSize($file);
+            foreach ($request->file('files') as $file) {
+                //Storage::disk('public')->put($path.$fileName, File::get($file));
+                $fileName = time() . $file->getClientOriginalName();
+                $filePath = Storage::disk('s3')->put($path, $file);
+                $filePath   = Storage::disk('s3')->url($filePath);
+                $file_type  = $file->getClientOriginalExtension();
+                $fileSize   = $this->fileSize($file);
 
-                    $x = FileAttachment::create([
-                        'name' => $fileName,
-                        'user_id' => $id,
-                        'path' => $filePath,
-                        'type' => $file_type,
-                        'size' => $fileSize,
-                        'is_certification' => true,
-                    ]);
+                $x = FileAttachment::create([
+                    'name' => $fileName,
+                    'user_id' => $id,
+                    'path' => $filePath,
+                    'type' => $file_type,
+                    'size' => $fileSize,
+                    'is_certification' => true,
+                ]);
 
-                    array_push($attached_file, $x);
-                }
+                array_push($attached_file, $x);
             }
+            // }
 
             return response([
                 'user' => $user,
