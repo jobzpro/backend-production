@@ -472,9 +472,12 @@ class AccountController extends Controller
     {
         $data = $request->all();
         // $user = Account::where('email', '=', $data['email'])->first();
-        $user = Account::with(['user.userRoles' => function (Builder $query) use ($data) {
-            $query->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
-        }])->where('email', '=', $data['email'])->first();
+        // $user = Account::with(['user.userRoles' => function (Builder $query) use ($data) {
+        //     $query->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
+        // }])->where('email', '=', $data['email'])->first();
+        $user = Account::where('email', '=', $data['email'])->whereHas('user.userRoles', function ($q) use ($data) {
+            $q->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
+        })->with('user.userRoles')->get()->first();
 
         if (!$user) {
             return response([
