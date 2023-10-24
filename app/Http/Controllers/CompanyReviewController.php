@@ -23,7 +23,7 @@ class CompanyReviewController extends Controller
                 'employment_status' => $request['employment_status'],
                 'position' => $request['position'],
                 'content' => $request['content'],
-                'anonymous' => $request['anonymous'],
+                'anonymous' => $request['anonymous'] == 'true' ? 1 : 0,
             ]);
 
             return response([

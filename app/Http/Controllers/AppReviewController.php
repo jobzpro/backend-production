@@ -27,7 +27,7 @@ class AppReviewController extends Controller
                 'user_id' => $user->id,
                 'rating' => $request['rating'],
                 'content' => $request['content'],
-                'anonymous' => $request['anonymous']
+                'anonymous' => $request['anonymous'] == 'true' ? 1 : 0,
             ]);
 
             return response([
