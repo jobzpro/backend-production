@@ -11,7 +11,7 @@ use App\Models\AppReview;
 use App\Models\CompanyReview;
 use App\Models\Industry;
 
-class JobStatusData extends Controller
+class JobStatusDataController extends Controller
 {
     public function get_job_status_data(){
         $job_posting = JobList::count();
@@ -32,7 +32,7 @@ class JobStatusData extends Controller
         $industry = Industry::get();
         
         $industry->each(function ($industry) {
-            $countData = CompanyReview::where('company_id', $industry->company_id)->count();
+            $countData = JobList::where('industry_id', $industry->industry_id)->count();
             $industry->count = $countData??0;
         });
         
