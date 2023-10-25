@@ -57,7 +57,7 @@ class JobStatusDataController extends Controller
     }
 
     public function get_users_review() {
-       $reviews =  AppReview::where('pin',true)->limit(9)->get();
+       $reviews =  AppReview::where('pin',true)->limit(7)->get();
         return response([
             'reviews'=> $reviews,
             'message' => "Success",
