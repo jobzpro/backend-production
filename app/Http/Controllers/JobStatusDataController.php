@@ -32,7 +32,7 @@ class JobStatusDataController extends Controller
         $industry = Industry::get();
         
         $industry->each(function ($industry) {
-            $countData = JobList::where('industry_id', $industry->industry_id)->count();
+            $countData = JobList::where('industry_id', $industry->id)->count();
             $industry->count = $countData??0;
         });
         
