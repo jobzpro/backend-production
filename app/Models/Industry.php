@@ -18,9 +18,9 @@ class Industry extends Model
         'description',
     ];
 
-    public function industrySpeciality(): HasMany
+    public function manyJobList(): HasMany
     {
-        return $this->hasMany(IndustrySpeciality::class);
+        return $this->hasMany(JobList::class);
     }
     
     public function company():HasOne{

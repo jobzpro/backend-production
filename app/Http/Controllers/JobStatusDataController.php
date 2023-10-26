@@ -31,14 +31,14 @@ class JobStatusDataController extends Controller
     
     public function get_trending_categories() {
         
-        $industry = Industry::with('industrySpeciality')->get();
+        $industry = Industry::with('manyJobList')->get();
 
         $industry = $industry->map(function ($item) {
-            $countData = count($item->industrySpeciality); // Get the count of industry specialities
+            $countData = count($item->manyJobList); // Get the count of industry specialities
             $item->specialityCount = $countData; // Add the count as a new property
             return $item;
         })->sortByDesc('specialityCount'); 
-        
+
         return response([
             'data' => $industry,
             'message' => "Success",
