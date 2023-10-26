@@ -22,6 +22,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QualificationsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\JobStatusDataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +35,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/get_job_status_data', [JobStatusDataController::class, 'get_job_status_data']);
+    Route::get('/get_trending_categories', [JobStatusDataController::class, 'get_trending_categories']);
+    Route::get('/get_top_rated_companies', [JobStatusDataController::class, 'get_top_rated_companies']);
+    Route::get('/get_users_review', [JobStatusDataController::class, 'get_users_review']);
+});
+
+
 
 Route::prefix('auth')->controller(AccountController::class)->group(function () {
     Route::post('/register', 'register');
