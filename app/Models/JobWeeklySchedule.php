@@ -19,4 +19,9 @@ class JobWeeklySchedule extends Model
     {
         return $this->belongsTo(JobList::class);
     }
+
+    public function weeklySchedule(): BelongsTo
+    {
+        return $this->belongsTo(WeeklySchedule::class);
+    }
 }
