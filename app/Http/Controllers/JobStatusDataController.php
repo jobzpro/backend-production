@@ -54,13 +54,34 @@ class JobStatusDataController extends Controller
         $tel = $industry->whereIn('name', ['Technology'])->count();
         $others = $industry->whereIn('name', ['Renewable Energy','Sustainability and Environmental Protection','Education and Online Learning','Construction and Infrastracture','Transportation'])->count();
         return response([
-            'af' => $af,
-            'health'=>$health,
-            'hr'=>$hr,
-            'dam'=>$dam,
-            'hrm'=>$hrm,
-            'tel'=>$tel,
-            'others'=>$others,
+            'af' =>[
+                'count'=>$af,
+                'name'=>['Financial Services'],
+            ],
+            'health'=>[
+                'count'=>$health,
+                'name'=>['Medical', 'Biotechnology'],
+            ],
+            'hr'=>[
+                'count'=>$hr,
+                'name'=>['Supply Chain and Logistics'],
+            ],
+            'dam'=>[
+                'count'=>$dam,
+                'name'=>['E-commerce and Digital Marketing','Creative Industries'],
+            ],
+            'hrm'=>[
+                'count'=>$hrm,
+                'name'=>['Hospitality'],
+            ],
+            'tel'=>[
+                'count'=>$tel,
+                'name'=>['Technology'],
+            ],
+            'others'=>[
+                'count'=>$others,
+                'name'=>['Renewable Energy','Sustainability and Environmental Protection','Education and Online Learning','Construction and Infrastracture','Transportation'],
+            ],
             'message' => "Success",
         ], 200);
         
