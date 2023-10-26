@@ -36,7 +36,6 @@ class JobStatusDataController extends Controller
             $countData = JobList::where('industry_id', $industry->id)->count();
             $industry->count = $countData??0;
         });
-     
 
         return response([
             'industry' =>$industry,
