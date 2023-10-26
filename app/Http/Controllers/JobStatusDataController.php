@@ -50,7 +50,7 @@ class JobStatusDataController extends Controller
         $health = $industry->whereIn('name', ['Medical', 'Biotechnology'])->count();
         $hr = $industry->whereIn('name', ['Supply Chain and Logistics'])->count();
         $dam = $industry->whereIn('name', ['E-commerce and Digital Marketing','Creative Industries'])->count();
-        $hrm = $industry->whereIn('name', ['hospitality'])->count();
+        $hrm = $industry->whereIn('name', ['Hospitality'])->count();
         $tel = $industry->whereIn('name', ['Technology'])->count();
         $others = $industry->whereIn('name', ['Renewable Energy','Sustainability and Environmental Protection','Education and Online Learning','Construction and Infrastracture','Transportation'])->count();
         return response([
