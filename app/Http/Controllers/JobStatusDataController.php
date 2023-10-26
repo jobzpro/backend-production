@@ -31,13 +31,8 @@ class JobStatusDataController extends Controller
     
     public function get_trending_categories() {
         
-        $industry = Industry::with('manyJobList')->get();
-
-        $industry = $industry->map(function ($item) {
-            $countData = count($item->manyJobList); // Get the count of industry specialities
-            $item->specialityCount = $countData; // Add the count as a new property
-            return $item;
-        })->sortByDesc('specialityCount'); 
+        $industry = Industry::withCount('manyJobList')->get();
+        $industry = $industry->sortByDesc('many_job_list_count'); // Sort the collection by the count in descending order
         
         return response([
             'data' => $industry,
