@@ -34,11 +34,11 @@ class JobStatusDataController extends Controller
         $industry = Industry::with('manyJobList')->get();
 
         $industry = $industry->map(function ($item) {
-            $countData = count($item->manyJobList); 
-            $item->specialityCount = $countData; 
+            $countData = count($item->manyJobList); // Get the count of industry specialities
+            $item->specialityCount = $countData; // Add the count as a new property
             return $item;
         })->sortByDesc('specialityCount'); 
-
+        
         return response([
             'data' => $industry,
             'message' => "Success",
