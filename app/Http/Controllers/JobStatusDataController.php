@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\AppReview;
 use App\Models\CompanyReview;
 use App\Models\Industry;
+use App\Models\IndustrySpeciality;
 
 class JobStatusDataController extends Controller
 {
@@ -39,16 +40,30 @@ class JobStatusDataController extends Controller
         // Other = Renewable Energy, Sustainability, education, construction and infras,  transportion
         
         $industry = Industry::get();
-        
-        $industry->each(function ($industry) {
-            $countData = JobList::where('industry_id', $industry->id)->count();
-            $industry->count = $countData??0;
+
+        $industry->each(function ($item) {
+            $countData = IndustrySpeciality::where('industry_id', $item->id)->count();
+            $item->count = $countData;
         });
         
+        $af = $industry->whereIn('name', ['Financial Services'])->count();
+        $health = $industry->whereIn('name', ['Medical', 'Biotechnology'])->count();
+        $hr = $industry->whereIn('name', ['Supply Chain and Logistics'])->count();
+        $dam = $industry->whereIn('name', ['E-commerce and Digital Marketing','Creative Industries'])->count();
+        $hrm = $industry->whereIn('name', ['hospitality'])->count();
+        $tel = $industry->whereIn('name', ['Technology'])->count();
+        $others = $industry->whereIn('name', ['Renewable Energy','Sustainability and Environmental Protection','Education and Online Learning','Construction and Infrastracture','Transportation'])->count();
         return response([
-            'industry' =>$industry,
+            'af' => $af,
+            'health'=>$health,
+            'hr'=>$hr,
+            'dam'=>$dam,
+            'hrm'=>$hrm,
+            'tel'=>$tel,
+            'others'=>$others,
             'message' => "Success",
         ], 200);
+        
     }
     
     public function get_top_rated_companies() {
