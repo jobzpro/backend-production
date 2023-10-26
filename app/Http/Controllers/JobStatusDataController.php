@@ -31,15 +31,17 @@ class JobStatusDataController extends Controller
     
     public function get_trending_categories() {
         
-        $industry = Industry::withCount('manyJobList')->get();
-        $industry = $industry->sortByDesc('many_job_list_count'); // Sort the collection by the count in descending order
-        
+        $industry = Industry::get();
+        $industry->each(function ($industry) {
+            $countData = JobList::where('industry_id', $industry->id)->count();
+            $industry->count = $countData??0;
+        });
+     
+
         return response([
-            'data' => $industry,
+            'industry' =>$industry,
             'message' => "Success",
         ], 200);
-        
-        
     }
     
     public function get_top_rated_companies() {
