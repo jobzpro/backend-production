@@ -15,8 +15,8 @@ class JobStatusDataController extends Controller
 {
     public function get_job_status_data(){
         $job_posting = JobList::count();
-        $hired = JobApplication::where('status','hired')->count();;
-        $employers = Company::count();
+        $hired = JobApplication::where('status','hired')->count();
+        $employers = Company::distinct('name')->get()->pluck('name')->count();
         $users = User::count();
 
         return response([
@@ -29,6 +29,15 @@ class JobStatusDataController extends Controller
     }
     
     public function get_trending_categories() {
+
+        // Accounting /Finance = financial services,
+        // Health = Medical = Biotechnology, 
+        // Health Human Resources = supply chain = human resources,
+        // Design, Art & Multimedia = E-commerce and Digital marketing = creative industry,
+        // Restaurant & Food Services = hospitality, 
+        // Telecommunications = Technology,
+        // Other = Renewable Energy, Sustainability, education, construction and infras,  transportion
+        
         $industry = Industry::get();
         
         $industry->each(function ($industry) {
