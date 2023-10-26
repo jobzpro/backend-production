@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Industry extends Model
 {
@@ -17,6 +18,11 @@ class Industry extends Model
         'description',
     ];
 
+    public function industrySpeciality(): HasMany
+    {
+        return $this->hasMany(IndustrySpeciality::class);
+    }
+    
     public function company():HasOne{
         return $this->hasOne(Company::class);
     }
