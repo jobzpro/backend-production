@@ -36,7 +36,7 @@ class JobListController extends Controller
         $jobLists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'jobListDealbreakers', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules')->get();
 
         return response([
-            'job_list' => $jobLists,
+            'job_list' => $jobLists->paginate(5),
         ], 200);
     }
 
