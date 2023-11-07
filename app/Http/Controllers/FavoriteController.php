@@ -178,10 +178,18 @@ class FavoriteController extends Controller
         $favorite = Favorite::with('favoriter', 'favoritable')->find($id);
 
         if ($favorite) {
-            return response([
-                'favorite' => $favorite,
-                'message' => "Successful",
-            ], 200);
+            if ($favorite->favoritable instanceof JobList) {
+                $jobList = $favorite->favoritable()->with('company')->get()->first();
+                return response([
+                    'favorite' => $jobList,
+                    'message' => "Successful",
+                ], 200);
+            } else {
+                return response([
+                    'favorite' => $favorite,
+                    'message' => "Successful",
+                ], 200);
+            }
         } else {
             return response([
                 'message' => "Favorite not found",
