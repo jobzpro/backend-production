@@ -26,4 +26,13 @@ class Favorite extends Model
     {
         return $this->morphTo();
     }
+
+    public function jobListCompany()
+    {
+        if ($this->favoritable instanceof JobList) {
+            return $this->favoritable->company;
+        } else {
+            return null;
+        }
+    }
 }
