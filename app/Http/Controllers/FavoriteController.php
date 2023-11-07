@@ -179,7 +179,7 @@ class FavoriteController extends Controller
 
         if ($favorite) {
             if ($favorite->favoritable instanceof JobList) {
-                $favJobList = Favorite::with('favoriter', 'favoritable', 'jobListCompany')->find($id);
+                $favJobList = Favorite::with('favoriter', 'favoritable.company')->find($id);
                 return response([
                     'favorite' => $favJobList,
                     'message' => "Successful",

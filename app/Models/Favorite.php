@@ -26,10 +26,4 @@ class Favorite extends Model
     {
         return $this->morphTo();
     }
-
-    public function jobListCompany()
-    {
-        // return $this->favoritable->company;
-        return Company::where('id', $this->favoritable->company_id)->get();
-    }
 }
