@@ -48,7 +48,7 @@ class JobStatusDataController extends Controller
 
         $company->each(function ($company) {
             $averageRating = CompanyReview::where('company_id', $company->id)->avg('rating');
-            $jobLists = JobList::where('company_id', $company->id)->get();
+            $jobLists = JobList::where('company_id', $company->id)->count();
             $company->job_lists = $jobLists;
             $company->average_rating = $averageRating??0;
         });
