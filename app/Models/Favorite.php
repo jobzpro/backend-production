@@ -29,6 +29,7 @@ class Favorite extends Model
 
     public function jobListCompany()
     {
-        return $this->favoritable->company;
+        // return $this->favoritable->company;
+        return Company::where('id', $this->favoritable->company_id)->get();
     }
 }
