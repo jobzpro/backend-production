@@ -28,9 +28,9 @@ class JobStatusDataController extends Controller
             'message' => "Success",
         ], 200);
     }
-    
+
     public function get_trending_categories() {
-        
+
         $industry = Industry::get();
         $industry->each(function ($industry) {
             $countData = JobList::where('industry_id', $industry->id)->count();
@@ -42,12 +42,14 @@ class JobStatusDataController extends Controller
             'message' => "Success",
         ], 200);
     }
-    
+
     public function get_top_rated_companies() {
         $company = Company::limit(9)->get();
 
         $company->each(function ($company) {
             $averageRating = CompanyReview::where('company_id', $company->id)->avg('rating');
+            $jobLists = JobList::where('company_id', $company->id)->count();
+            $company->job_lists = $jobLists;
             $company->average_rating = $averageRating??0;
         });
 
