@@ -107,6 +107,6 @@ class Company extends Model
 
     public function companyReviews(): HasMany
     {
-        return $this->hasMany(CompanyReview::class);
+        return $this->hasMany(CompanyReview::class)->with('user');
     }
 }
