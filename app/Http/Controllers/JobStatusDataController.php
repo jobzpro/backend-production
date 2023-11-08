@@ -55,7 +55,7 @@ class JobStatusDataController extends Controller
             $company->total_reviewers = $totalReviewers ?? 0;
         });
 
-        $sortedCompanies = $companies->sortByDesc('average_rating')->values()->all();
+        $sortedCompanies = $company->sortByDesc('average_rating')->values()->all();
 
         return response([
             'company' => $sortedCompanies,
