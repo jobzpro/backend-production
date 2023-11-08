@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -180,7 +182,13 @@ class User extends Authenticatable
 
     public function favoritedJobListings()
     {
-        return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
+        // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
+        return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
+            $morphTo->morphWith([
+                JobList::class => ['company'],
+            ]);
+        }])->get();
+        // Favorite::whereHasMorph('favoritable', [App\Models\JobList::class], function(Builder $query) { $query->with('company'); })->with('favoriter', 'favoritable.company')->get();
         // return $this->morphedByMany('App\Models\JobList', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
 
