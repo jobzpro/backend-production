@@ -52,7 +52,7 @@ class JobStatusDataController extends Controller
             $jobLists = JobList::where('company_id', $company->id)->count();
             $company->job_lists = $jobLists;
             $company->average_rating = $averageRating ?? 0;
-            $company->total_reviewers = $$totalReviewers ?? 0;
+            $company->total_reviewers = $totalReviewers ?? 0;
         });
 
         return response([
