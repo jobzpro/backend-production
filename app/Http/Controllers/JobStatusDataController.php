@@ -51,12 +51,14 @@ class JobStatusDataController extends Controller
             $totalReviewers = CompanyReview::where('company_id', $company->id)->count();
             $jobLists = JobList::where('company_id', $company->id)->count();
             $company->job_lists = $jobLists;
-            $company->average_rating = $averageRating ?? 0;
+            $company->average_rating = $averageRating ? (int) $averageRating : 0;
             $company->total_reviewers = $totalReviewers ?? 0;
         });
 
+        $sortedCompanies = $companies->sortByDesc('average_rating')->values()->all();
+
         return response([
-            'company' => $company,
+            'company' => $sortedCompanies,
             'message' => "Success",
         ], 200);
     }
