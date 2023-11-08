@@ -37,8 +37,10 @@ class JobStatusDataController extends Controller
             $industry->count = $countData??0;
         });
 
+        $sortedIndustry = $industry->sortByDesc('count')->values()->all();
+
         return response([
-            'industry' =>$industry,
+            'industry' =>$sortedIndustry,
             'message' => "Success",
         ], 200);
     }
