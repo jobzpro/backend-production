@@ -599,9 +599,9 @@ class AccountController extends Controller
             return response([
                 'message' => "Password Sucessfully changed.",
             ], 200);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             return response([
-                'message' => "A Network Error occurred. Please try again.",
+                'message' => $e,
             ], 400);
         }
 
