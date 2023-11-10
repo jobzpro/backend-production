@@ -2,29 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Helper\FileManager;
+use App\Http\Controllers\MailerController as MailerController;
+use App\Http\Controllers\UploadController as Uploader;
 use App\Models\Account;
-use App\Models\User;
-use App\Models\PasswordResetTokens;
 use App\Models\Company;
-use App\Models\UserRole;
+use App\Models\PasswordResetTokens;
 use App\Models\Role;
-use App\Models\Image;
+use App\Models\StaffInvite;
+use App\Models\User;
+use App\Models\UserCompany;
+use App\Models\UserRole;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
-use App\Http\Controllers\MailerController as MailerController;
-use App\Models\UserCompany;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use App\Helper\FileManager;
-use App\Models\StaffInvite;
-use App\Http\Controllers\UploadController as Uploader;
-use Illuminate\Database\Eloquent\Builder;
+use Laravel\Socialite\Facades\Socialite;
 
 class AccountController extends Controller
 {
@@ -34,13 +31,13 @@ class AccountController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|unique:accounts',
-            'password' => 'required|confirmed'
+            'password' => 'required|confirmed',
         ]);
 
         if ($validator->fails()) {
             return response([
                 'message' => "Registration Unsuccessful",
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 400);
         }
 
@@ -73,7 +70,7 @@ class AccountController extends Controller
         $result = [
             'account' => $account,
             'user_role' => $userRole,
-            'message' => "Registration Successful"
+            'message' => "Registration Successful",
         ];
 
         return response()->json($result, 200);
@@ -112,13 +109,13 @@ class AccountController extends Controller
                         'account' => $account,
                         'user_role' => $userRoles,
                         'token' => $token,
-                        'message' => "Login Successful"
+                        'message' => "Login Successful",
                     ];
 
                     return response()->json($result, 200);
                 } else {
                     return response([
-                        'message' => 'username and password do not match'
+                        'message' => 'username and password do not match',
                     ], 400);
                 }
             } else {
@@ -138,21 +135,19 @@ class AccountController extends Controller
         if (Auth::check()) {
             Auth::user()->token()->revoke();
             return response([
-                'message' => "User logged out successfully"
+                'message' => "User logged out successfully",
             ], 200);
         } else {
             return response([
-                'message' => "Something went wrong. Please try again."
+                'message' => "Something went wrong. Please try again.",
             ], 400);
         }
     }
-
 
     public function redirectToGoogle()
     {
         //return Socialite::driver('google')->stateless()->redirect();
     }
-
 
     public function handleGoogleCallback(Request $request)
     {
@@ -196,7 +191,7 @@ class AccountController extends Controller
                     'user' => $existingUser,
                     'user_role' => $existingUser->userRoles()->first(),
                     'token' => $token,
-                    'message' => "Sign-in with Google Successful"
+                    'message' => "Sign-in with Google Successful",
                 ], 200);
             } else {
                 return response([
@@ -224,7 +219,7 @@ class AccountController extends Controller
             return response([
                 'user' => $newUser,
                 'token' => $token,
-                'message' => "Sign-in with Google Successful"
+                'message' => "Sign-in with Google Successful",
             ], 200);
         }
     }
@@ -273,7 +268,7 @@ class AccountController extends Controller
                 'user' => $existingUser,
                 'user_role' => $existingUser->userRoles()->first(),
                 'token' => $token,
-                'message' => "Sign-in with Apple Successful"
+                'message' => "Sign-in with Apple Successful",
             ], 200);
         } else {
 
@@ -296,11 +291,10 @@ class AccountController extends Controller
             return response([
                 'user' => $newUser,
                 'token' => $token,
-                'message' => "Sign-in with Apple Successful"
+                'message' => "Sign-in with Apple Successful",
             ], 200);
         }
     }
-
 
     public function redirectToLinkedIn()
     {
@@ -352,7 +346,7 @@ class AccountController extends Controller
                     'user' => $existingUser,
                     'user_role' => $existingUser->userRoles()->first(),
                     'token' => $token,
-                    'messsage' => 'Sign-in with LinkedIn Successful'
+                    'messsage' => 'Sign-in with LinkedIn Successful',
                 ], 200);
             } else {
                 return response([
@@ -380,7 +374,7 @@ class AccountController extends Controller
             return response([
                 'user' => $newUser,
                 'token' => $token,
-                'message' => "Sign-in with LinkedIn Successful"
+                'message' => "Sign-in with LinkedIn Successful",
             ], 200);
         }
     }
@@ -435,7 +429,7 @@ class AccountController extends Controller
                     'user' => $existingUser,
                     'user_role' => $existingUser->userRoles()->first(),
                     'token' => $token,
-                    'messsage' => 'Sign-in with Facebook Successful'
+                    'messsage' => 'Sign-in with Facebook Successful',
                 ], 200);
             } else {
                 return response([
@@ -463,7 +457,7 @@ class AccountController extends Controller
             return response([
                 'user' => $newUser,
                 'token' => $token,
-                'message' => "Sign-in with Facebook Successful"
+                'message' => "Sign-in with Facebook Successful",
             ], 200);
         }
     }
@@ -481,7 +475,7 @@ class AccountController extends Controller
 
         if (!$user) {
             return response([
-                'message' => "User does not exist."
+                'message' => "User does not exist.",
             ], 400);
         } else {
             //create password tokens
@@ -489,7 +483,7 @@ class AccountController extends Controller
                 PasswordResetTokens::create([
                     'email' => $data['email'],
                     'token' => Str::random(60),
-                    'created_at' => Carbon::now()
+                    'created_at' => Carbon::now(),
                 ]);
             } catch (\Exception $e) {
             }
@@ -498,11 +492,11 @@ class AccountController extends Controller
 
             if ($this->sendResetEmail($data['email'], $tokenData->token)) {
                 return response([
-                    'message' => "A reset link has been sent to your email address."
+                    'message' => "A reset link has been sent to your email address.",
                 ], 200);
             } else {
                 return response([
-                    'message' => "A network error occured. Please try again."
+                    'message' => "A network error occured. Please try again.",
                 ], 400);
             }
         }
@@ -531,7 +525,7 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:accounts,email',
             'password' => 'required|confirmed',
-            'token' => 'required'
+            'token' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -546,7 +540,7 @@ class AccountController extends Controller
 
         if (!$tokenData) {
             return response([
-                'message' => 'Incorrect token data.'
+                'message' => 'Incorrect token data.',
             ], 400);
         }
 
@@ -565,13 +559,52 @@ class AccountController extends Controller
 
         if ((new MailerController)->sendSuccessEmail($tokenData->email)) {
             return response([
-                'message' => "Password Sucessfully changed."
+                'message' => "Password Sucessfully changed.",
             ], 200);
         } else {
             return response([
-                'message' => "A Network Error occurred. Please try again."
+                'message' => "A Network Error occurred. Please try again.",
             ], 400);
         }
+    }
+
+    public function userResetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => 'Please complete the details',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $account = Auth::user();
+        $user = User::find($account->user->id);
+
+        $data = $request->all();
+
+        if (!$user) {
+            return response([
+                'message' => 'Invalid token',
+            ], 400);
+        }
+
+        try {
+            $user->password = Hash::make($data['password']);
+            $user->update();
+
+            return response([
+                'message' => "Password Sucessfully changed.",
+            ], 200);
+        } catch (\Throwable $th) {
+            return response([
+                'message' => "A Network Error occurred. Please try again.",
+            ], 400);
+        }
+
     }
 
     public function resetPasswordView(Request $request)
@@ -581,7 +614,7 @@ class AccountController extends Controller
         return response([
             'token' => $token,
             'email' => $email,
-            'message' => 'Success'
+            'message' => 'Success',
         ], 200);
     }
 
@@ -590,7 +623,7 @@ class AccountController extends Controller
         $data = $request->all();
 
         $imageValidator = Validator::make($request->all(), [
-            'company_logo' => 'image|mimes:jpeg,png,jpg|max:4000'
+            'company_logo' => 'image|mimes:jpeg,png,jpg|max:4000',
         ]);
 
         if ($imageValidator->fails()) {
@@ -627,7 +660,7 @@ class AccountController extends Controller
         if ($validator->fails()) {
             return response([
                 'message' => "Company creation Unsuccessful",
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 400);
         }
 
@@ -663,11 +696,11 @@ class AccountController extends Controller
 
         if ((new MailerController)->sendEmployerSuccessEmail($company, $user, $user_password)) {
             return response([
-                'message' => "Successful"
+                'message' => "Successful",
             ], 200);
         } else {
             return response([
-                'message' => "A Network Error occurred. Please try again."
+                'message' => "A Network Error occurred. Please try again.",
             ], 400);
         }
     }
@@ -716,7 +749,7 @@ class AccountController extends Controller
                             'company' => $company,
                             'token' => $token,
                             'account' => $account,
-                            'message' => "Login Successful"
+                            'message' => "Login Successful",
                         ];
                         return response()->json($result, 200);
                     } else {
@@ -733,18 +766,18 @@ class AccountController extends Controller
                                 'incorrect_signin_attempts' => ($incorrect_signin_attempts++),
                             ]);
                             return response([
-                                'message' => 'username and password do not match'
+                                'message' => 'username and password do not match',
                             ], 400);
                         }
                     }
                 } else {
                     return response([
-                        'message' => ' Account not yet verified, please contact admin.'
+                        'message' => ' Account not yet verified, please contact admin.',
                     ], 400);
                 }
             } else {
                 return response([
-                    'message' => 'employer account not found.'
+                    'message' => 'employer account not found.',
                 ], 400);
             }
         } else {
@@ -775,13 +808,13 @@ class AccountController extends Controller
 
         if (!$invite_code) {
             return response([
-                'message' => 'Incorrect invite code.'
+                'message' => 'Incorrect invite code.',
             ], 400);
         }
 
         if ($invite_code->invite_expires_at > Carbon::now()) {
             return response([
-                'message' => 'Invite code expired. Please contact invitor for a new code.'
+                'message' => 'Invite code expired. Please contact invitor for a new code.',
             ], 400);
         }
 
@@ -819,9 +852,8 @@ class AccountController extends Controller
         $result = [
             'account' => $account,
             'user_role' => $userRole,
-            'message' => "Registration Successful"
+            'message' => "Registration Successful",
         ];
-
 
         return response()->json($result, 200);
     }
