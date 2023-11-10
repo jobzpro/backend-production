@@ -601,7 +601,7 @@ class AccountController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response([
-                'message' => $e,
+                'message' => $account,
             ], 400);
         }
 
