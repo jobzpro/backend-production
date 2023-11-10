@@ -582,7 +582,7 @@ class AccountController extends Controller
         }
 
         $account = Auth::user();
-        $user = User::find($account->user->id);
+        $user = Account::find($account->user->account_id);
 
         $data = $request->all();
 
@@ -601,7 +601,7 @@ class AccountController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response([
-                'message' => $account,
+                'message' => $e,
             ], 400);
         }
 
