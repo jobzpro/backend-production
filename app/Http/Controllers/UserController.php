@@ -311,15 +311,17 @@ class UserController extends Controller
             ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
         }
 
-        if (!empty($sortFilter)) {
-            if ($sortFilter == "Recent to Oldest") {
-                $users = $users->orderBy('created_at', 'desc');
-            } elseif ($sortFilter == "Alphabetical") {
-                $users = $users->orderBy('first_name', 'asc');
-            }
+        if ($sortFilter == "Recent to Oldest") {
+            $users = $users->latest();
+        } elseif ($sortFilter == "Alphabetical") {
+            $users = $users->orderBy('first_name', 'ASC');
+        } elseif ($sortFilter == "Profile Completion") {
+            $users = $users->orderBy('profile_completion', 'DESC');
+        } else {
+            $users = $users->orderBy('profile_completion', 'DESC');
         }
-
-        $users = $users->orderBy('profile_completion', 'desc')->get();
+        
+        $users = $users->get();
 
 
         return response([
