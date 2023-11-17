@@ -303,27 +303,24 @@ class UserController extends Controller
 
         $users = User::with('currentExperience');
 
-        if (!$keyword == null) {
+        if (!empty($keyword)) {
             $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             })
-                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
-                ->orderBy('profile_completion', 'DESC');
+            ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
         }
 
-        // dd(!$keyword == null);
-        if (!$sortFilter == null) {
-            // dd("sort");
+        if (!empty($sortFilter)) {
             if ($sortFilter == "Recent to Oldest") {
-                $users = $users->latest()->orderBy('profile_completion', 'DESC')->get();
-            } else if ($sortFilter == "Alphabetical") {
-                // dd("alpha");
-                $users = $users->orderBy('first_name', 'ASC')->orderBy('profile_completion', 'DESC')->get();
+                $users = $users->orderBy('created_at', 'desc');
+            } elseif ($sortFilter == "Alphabetical") {
+                $users = $users->orderBy('first_name', 'asc');
             }
-        } else {
-            $users = $users->get();
         }
+
+        $users = $users->orderBy('profile_completion', 'desc')->get();
+
 
         return response([
             'users' => $users->paginate(10),
