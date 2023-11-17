@@ -322,7 +322,7 @@ class UserController extends Controller
                 $users = $users->orderBy('first_name', 'ASC')->orderBy('profile_completion', 'DESC')->get();
             }
         } else {
-            $users = $users->orderBy('profile_completion', 'DESC')->get();
+            $users = $users->get();
         }
 
         return response([
