@@ -185,7 +185,7 @@ class User extends Authenticatable
 
         return Favorite::with(['favoriter', 'favoritable' => function (MorphTo $morphTo) {
             $morphTo->morphWith([
-                JobList::class => ['company'],
+                JobList::class => ['company', 'industry'],
             ]);
         }])->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->orderBy('created_at', $orderBy)->get();
 
