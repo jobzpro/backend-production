@@ -67,6 +67,7 @@ class FavoriteController extends Controller
                 $company = Company::find($request['company_id']);
 
                 if ($company) {
+                    $orderBy = $request->input('orderBy', 'asc');
                     $user->favorites()->create([
                         'favoritable_id' => $company->id,
                         'favoritable_type' => get_class($company),
@@ -75,7 +76,7 @@ class FavoriteController extends Controller
                     ]);
 
                     return response([
-                        'favorites' => $user->favoritedJobListings(),
+                        'favorites' => $user->favoritedJobListings($orderBy),
                         'message' => "Successfully added Favorite",
                     ], 200);
                 } else {
@@ -87,6 +88,7 @@ class FavoriteController extends Controller
                 $jobList = JobList::find($request['job_list_id']);
 
                 if ($jobList) {
+                    $orderBy = $request->input('orderBy', 'asc');
                     $user->favorites()->create([
                         'favoritable_id' => $jobList->id,
                         'favoritable_type' => get_class($jobList),
@@ -99,7 +101,7 @@ class FavoriteController extends Controller
                     // ]);
 
                     return response([
-                        'favorites' => $user->favoritedJobListings(),
+                        'favorites' => $user->favoritedJobListings($orderBy),
                         'message' => "Successfully added Favorite",
                     ], 200);
                 } else {
