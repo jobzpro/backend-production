@@ -19,7 +19,7 @@ class FavoriteController extends Controller
 
         if ($user) {
             return response([
-                'favorites' => $user->favoritedJobListings(),
+                'favorites' => $user->favoritedJobListings()->paginate(10),
                 'message' => "Successful",
             ], 200);
         } else {

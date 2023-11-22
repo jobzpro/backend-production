@@ -182,12 +182,19 @@ class User extends Authenticatable
 
     public function favoritedJobListings()
     {
-        // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
-        return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
+
+        return Favorite::with(['favoriter', 'favoritable' => function (MorphTo $morphTo) {
             $morphTo->morphWith([
                 JobList::class => ['company'],
             ]);
-        }])->get();
+        }])->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
+        
+        // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
+        // return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
+        //     $morphTo->morphWith([
+        //         JobList::class => ['company'],
+        //     ]);
+        // }])->get();
         // Favorite::whereHasMorph('favoritable', [App\Models\JobList::class], function(Builder $query) { $query->with('company'); })->with('favoriter', 'favoritable.company')->get();
         // return $this->morphedByMany('App\Models\JobList', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
