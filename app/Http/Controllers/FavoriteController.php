@@ -13,13 +13,14 @@ class FavoriteController extends Controller
 {
     //
 
-    public function userFavorites($id)
+    public function userFavorites($id, Request $request)
     {
         $user = User::find($id);
 
         if ($user) {
+            $orderBy = $request->input('orderBy', 'asc');
             return response([
-                'favorites' => $user->favoritedJobListings()->paginate(10),
+                'favorites' => $user->favoritedJobListings($orderBy)->paginate(10),
                 'message' => "Successful",
             ], 200);
         } else {
