@@ -106,6 +106,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/{id}/favorites')->controller(FavoriteController::class)->group(function () {
             Route::get('/', 'userFavorites');
+            Route::get('/all', 'allUserFavorites');
             Route::post('/', 'addUserFavorites');
         });
 

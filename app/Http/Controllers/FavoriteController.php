@@ -30,6 +30,23 @@ class FavoriteController extends Controller
         }
     }
 
+    public function allUserFavorites($id, Request $request)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $orderBy = $request->input('orderBy', 'asc');
+            return response([
+                'favorites' => $user->favoritedJobListings($orderBy),
+                'message' => "Successful",
+            ], 200);
+        } else {
+            return response([
+                'message' => "User not found.",
+            ], 400);
+        }
+    }
+
     public function companyFavorites($id)
     {
         $company = Company::find($id);
