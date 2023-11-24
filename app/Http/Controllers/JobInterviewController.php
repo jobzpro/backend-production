@@ -56,8 +56,17 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $employer = request()->user();;
-        $company = null;
+        $employer_id = request()->user()->id();
+
+        $userCompanies = $employer_id->userCompanies;
+
+        if ($userCompanies && $userCompanies->count() > 0) {
+            $companies = $userCompanies->first()->companies;
+        
+            if ($companies && $companies->count() > 0) {
+                $company = Company::find($companies->first()->id);
+            }
+        }
 
         if ($employer) {
             $companies = $employer->companies;
@@ -69,7 +78,7 @@ class JobInterviewController extends Controller
     
         if (!$company) {
             return response([
-                'message' => "Company not found for the authenticated user.",
+                'message' =>  $userCompanies,
             ], 404);
         }
 
