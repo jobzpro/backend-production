@@ -58,7 +58,7 @@ class JobInterviewController extends Controller
         $data = $request->all();
         $employer = request()->user();
         $employer_id = $employer->id;
-        $company = Company::find($employer_id->userCompanies->first()->companies->first()->id);
+        $company = Company::find($employer->userCompanies->first()->companies->first()->id);
 
         // $userCompanies = $employer->userCompanies;
 
