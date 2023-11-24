@@ -56,8 +56,27 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $employer = auth()->user();
-        $company = Company::find($employer->userCompanies->first()->companies->first()->id);
+        $employer_id = request()->user();;
+        $company = null;
+
+        if ($employer) {
+            $userCompanies = $employer->userCompanies;
+    
+            if ($userCompanies && $userCompanies->count() > 0) {
+                $companies = $userCompanies->first()->companies;
+    
+                if ($companies && $companies->count() > 0) {
+                    $company = Company::find($companies->first()->id);
+                }
+            }
+        }
+    
+        if (!$company) {
+            return response([
+                'message' => "Company not found for the authenticated user.",
+            ], 404);
+        }
+
         $jobApplication = JobApplication::find($data['job_application_id']);
 
         $jobInterview = JobInterview::create([
