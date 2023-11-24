@@ -69,7 +69,7 @@ class JobInterviewController extends Controller
     
         if (!$company) {
             return response([
-                'message' => $employer,
+                'message' => "Company not found for the authenticated user.",
             ], 404);
         }
 
