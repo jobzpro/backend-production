@@ -71,11 +71,11 @@ class JobInterviewController extends Controller
     
         if (!$company) {
             return response([
-                'message' =>  $userCompanies,
+                'message' =>  "No company found for user",
             ], 404);
         }
         $jobInterview = JobInterview::create([
-            'employer_id' => $employer_id,
+            'employer_id' => $employer->id,
             'applicant_id' => $jobApplication->user_id,
             'job_application_id' => $jobApplication->id,
             'job_list' => $jobApplication->job_list_id,
