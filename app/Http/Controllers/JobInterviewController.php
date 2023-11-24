@@ -22,6 +22,7 @@ class JobInterviewController extends Controller
     public function index()
     {
         $user = User::find(request()->user()->id);
+
         $company_id = $user->userCompanies->first()->companies->first()->id;
 
         if ($user->userRoles->first()->role->role_name == "Jobseeker") {
@@ -55,8 +56,8 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $employer_id = request()->user()->id;
-        $company = Company::find($employer_id->userCompanies->first()->companies->first()->id);
+        $employer = auth()->user();
+        $company = Company::find($employer->userCompanies->first()->companies->first()->id);
         $jobApplication = JobApplication::find($data['job_application_id']);
 
         $jobInterview = JobInterview::create([
