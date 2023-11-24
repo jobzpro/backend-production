@@ -105,7 +105,7 @@ class User extends Authenticatable
 
     public function userCompanies(): HasMany
     {
-        return $this->hasMany(UserCompany::class, 'user_id');
+        return $this->hasManyThrough(Company::class, UserCompany::class, 'user_id', 'id', 'id', 'company_id');
     }
 
     // public function company(): HasMany{
