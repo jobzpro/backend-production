@@ -56,9 +56,10 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $employer_id = request()->user()->id;
+        $employer = request()->user();
+        $employer_id = $employer->id;
 
-        $userCompanies = $employer_id->userCompanies;
+        $userCompanies = $employer->userCompanies;
 
         if ($userCompanies && $userCompanies->count() > 0) {
             $companies = $userCompanies->first()->companies;
