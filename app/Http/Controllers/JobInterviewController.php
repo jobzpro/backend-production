@@ -57,35 +57,24 @@ class JobInterviewController extends Controller
     {
         $data = $request->all();
         $employer = request()->user();
-        $employer_id = $employer->id;
-        $company = Company::find($employer->userCompany->first());
+        $userCompanies = $employer->userCompanies;
+        $company = null;
+        $jobApplication = JobApplication::find($data['job_application_id']);
 
-        // $userCompanies = $employer->userCompanies;
 
-        // if ($userCompanies && $userCompanies->count() > 0) {
-        //     $companies = $userCompanies->first()->companies;
-        
-        //     if ($companies && $companies->count() > 0) {
-        //         $company = Company::find($companies->first()->id);
-        //     }
-        // }
-
-        // if (!$company) {
-        //     $companies = $employer->companies;
+        if ($userCompanies && $userCompanies->count() > 0) {
+            $company = $userCompanies->first()->companies;
     
-        //     if ($companies && $companies->count() > 0) {
-        //         $company = $companies->first();
-        //     }
-        // }
+            if ($company && $company->count() > 0) {
+                $company = $company->first();
+            }
+        }
     
         if (!$company) {
             return response([
-                'message' =>  $company,
+                'message' =>  $userCompanies,
             ], 404);
         }
-
-        $jobApplication = JobApplication::find($data['job_application_id']);
-
         $jobInterview = JobInterview::create([
             'employer_id' => $employer_id,
             'applicant_id' => $jobApplication->user_id,
@@ -118,6 +107,7 @@ class JobInterviewController extends Controller
             'message' => "Success",
         ], 200);
     }
+
 
     /**
      * Display the specified resource.
