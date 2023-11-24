@@ -60,7 +60,6 @@ class JobInterviewController extends Controller
         $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($data['job_application_id']);
-        dd($userCompanies);
 
         if ($userCompanies && $userCompanies->count() > 0) {
             $company = $userCompanies->first()->companies;
