@@ -82,7 +82,7 @@ class JobInterviewController extends Controller
             'company_id' => $company->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
-            'interview_date' => Carbon::parse($data['interview_date'])->format("d/m/Y h:m A"),
+            'interview_date' => Carbon::parse($data['interview_date'])->format("d/m/Y h:m"),
         ]);
 
         $jobApplication->update([
