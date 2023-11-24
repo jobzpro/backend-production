@@ -74,7 +74,7 @@ class JobInterviewController extends Controller
                 'message' =>  "No company found for user",
             ], 404);
         }
-        dd($jobApplication);
+
         $jobInterview = JobInterview::create([
             'employer_id' => $employer->id,
             'applicant_id' => $jobApplication->user_id,
