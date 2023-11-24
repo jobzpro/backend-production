@@ -56,11 +56,11 @@ class JobInterviewController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $employer = request()->user();
+        $employer = User::find(request()->user()->id);
         $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($data['job_application_id']);
-
+        dd($userCompanies);
 
         if ($userCompanies && $userCompanies->count() > 0) {
             $company = $userCompanies->first()->companies;
