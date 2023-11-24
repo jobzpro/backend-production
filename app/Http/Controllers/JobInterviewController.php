@@ -58,6 +58,7 @@ class JobInterviewController extends Controller
         $data = $request->all();
         $employer = request()->user();
         $employer_id = $employer->id;
+        $company = null;
 
         $userCompanies = $employer->userCompanies;
 
@@ -69,7 +70,7 @@ class JobInterviewController extends Controller
             }
         }
 
-        if ($employer) {
+        if (!$company) {
             $companies = $employer->companies;
     
             if ($companies && $companies->count() > 0) {
