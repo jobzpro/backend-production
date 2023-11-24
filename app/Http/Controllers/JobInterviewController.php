@@ -58,29 +58,29 @@ class JobInterviewController extends Controller
         $data = $request->all();
         $employer = request()->user();
         $employer_id = $employer->id;
-        $company = null;
+        $company = Company::find($employer_id->userCompanies->first()->companies->first()->id);
 
-        $userCompanies = $employer->userCompanies;
+        // $userCompanies = $employer->userCompanies;
 
-        if ($userCompanies && $userCompanies->count() > 0) {
-            $companies = $userCompanies->first()->companies;
+        // if ($userCompanies && $userCompanies->count() > 0) {
+        //     $companies = $userCompanies->first()->companies;
         
-            if ($companies && $companies->count() > 0) {
-                $company = Company::find($companies->first()->id);
-            }
-        }
+        //     if ($companies && $companies->count() > 0) {
+        //         $company = Company::find($companies->first()->id);
+        //     }
+        // }
 
-        if (!$company) {
-            $companies = $employer->companies;
+        // if (!$company) {
+        //     $companies = $employer->companies;
     
-            if ($companies && $companies->count() > 0) {
-                $company = $companies->first();
-            }
-        }
+        //     if ($companies && $companies->count() > 0) {
+        //         $company = $companies->first();
+        //     }
+        // }
     
         if (!$company) {
             return response([
-                'message' =>  $userCompanies,
+                'message' =>  $company,
             ], 404);
         }
 
