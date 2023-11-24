@@ -79,7 +79,7 @@ class JobInterviewController extends Controller
             'employer_id' => $employer->id,
             'applicant_id' => $jobApplication->user_id,
             'job_application_id' => $jobApplication->id,
-            'job_list' => $jobApplication->job_list_id,
+            'job_list_id' => $jobApplication->job_list_id,
             'company_id' => $company->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
