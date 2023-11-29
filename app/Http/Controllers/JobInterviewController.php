@@ -34,7 +34,7 @@ class JobInterviewController extends Controller
                 'message' => "Success",
             ]);
         } else {
-            $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->get();
+            $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->with('jobList')->get();
             return response([
                 'job_interviews' => $jobInterviews,
                 'message' => "Success",
