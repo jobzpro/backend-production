@@ -291,9 +291,7 @@ class JobApplicationController extends Controller
         {
             foreach ($jobseeker_applications as $application) {
                 // dd($application);
-                if($application->jobList) {
-                    $application->company = Company::find($application->jobList->company_id);
-                }
+                $application->company = Company::find($application->jobList?->company_id);
             }
 
             return response([
