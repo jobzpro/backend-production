@@ -68,6 +68,7 @@ class JobApplicationController extends Controller
     public function store(Request $request, $id)
     {
         $job_list = JobList::find($id);
+        dd($job_list);
         $account = Auth::user();
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
@@ -286,9 +287,13 @@ class JobApplicationController extends Controller
 
         $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
 
-        if($jobseeker_applications) {
+        if($jobseeker_applications)
+        {
             foreach ($jobseeker_applications as $application) {
-                $application->company = Company::find($application->jobList->company_id);
+                // dd($application);
+                if($application->jobList) {
+                    $application->company = Company::find($application->jobList->company_id);
+                }
             }
 
             return response([
