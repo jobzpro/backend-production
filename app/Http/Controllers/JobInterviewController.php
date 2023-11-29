@@ -35,8 +35,6 @@ class JobInterviewController extends Controller
             ]);
         } else {
             $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->get();
-            $jobInterviewsQuery = JobInterview::where('company_id', $company_id)->with('applicant');
-            dd($jobInterviewsQuery->toSql(), $jobInterviewsQuery->getBindings());
             return response([
                 'job_interviews' => $jobInterviews,
                 'message' => "Success",
