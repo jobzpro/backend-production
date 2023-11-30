@@ -20,6 +20,7 @@ use App\Models\CompanyNotification;
 use App\Http\Controllers\MailerController as MailerController;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class JobApplicationController extends Controller
 {
@@ -282,14 +283,18 @@ class JobApplicationController extends Controller
     }
 
     public function jobApplicationHistory() {
-        return response([
-                    'application_history' => 'Success',
-                ], 200);
-        // $account = Auth::user();
-        // $user_id = $account->user->id;
-
+        $account = Auth::user();
+        $user_id = $account->user->id;
+        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry')->get();
         // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
-
+        // $jobseeker_applications = DB::table('users')
+        //         ->join('job_applications', 'users.id', '=', 'job_applications.user_id')
+        //         ->join('job_lists', 'job_lists.id', '=', 'job_applications.job_list_id')
+        //         ->join('companies', 'companies.id', '=', 'job_lists.company_id')
+        //         ->join('industries', 'industries.id', '=', 'job_lists.industry_id')
+        //         ->select('job_applications.id', 'job_applications.status', 'companies.company_logo_path', 'companies.name as company_name', 'job_lists.job_title', 'industries.name as industry_name', 'job_lists.min_salary', 'job_lists.max_salary', 'job_applications.applied_at', 'users.id as user_id')
+        //         ->where('users.id', '=', $user_id)
+        //         ->get();
         // if($jobseeker_applications)
         // {
         //     foreach ($jobseeker_applications as $application) {
@@ -305,6 +310,18 @@ class JobApplicationController extends Controller
         //         'message' => 'Not found',
         //     ], 400);
         // }
+         if($jobseeker_applications)
+        {
+            return response([
+                'application_history' => $jobseeker_applications,
+            ], 200);
+        }
+        else
+        {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
 
     }
 
