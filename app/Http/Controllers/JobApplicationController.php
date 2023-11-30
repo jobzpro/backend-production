@@ -283,8 +283,8 @@ class JobApplicationController extends Controller
     }
 
     public function jobApplicationHistory() {
-        // $account = Auth::user();
-        // $user_id = $account->user->id;
+        $account = Auth::user();
+        $user_id = $account->user->id;
         // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry')->get();
 
         // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
@@ -314,6 +314,7 @@ class JobApplicationController extends Controller
 
         return response([
                 'message' => 'test',
+                'user_id' => $user_id
             ], 200);
 
     }

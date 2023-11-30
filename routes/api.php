@@ -91,6 +91,7 @@ Route::prefix('/email/verify')->controller(VerifyEmailController::class)->group(
 });
 
 Route::middleware(['auth:api'])->group(function () {
+    Route::get('/job-application-history', [JobApplicationController::class, 'jobApplicationHistory']);
     Route::prefix('/jobseeker')->controller(UserController::class)->group(function () {
         Route::get('/{id}/profile', 'showJobseekerProfile');
         Route::patch('/{id}/profile/update', 'updateJobseekerProfile');
@@ -212,7 +213,7 @@ Route::middleware(['auth:api'])->group(function () {
     // });
 });
 
-Route::get('/job-application-history', [JobApplicationController::class, 'jobApplicationHistory']);
+
 
 Route::apiResources([
     'company' => CompanyController::class,
