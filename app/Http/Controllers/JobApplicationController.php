@@ -69,7 +69,7 @@ class JobApplicationController extends Controller
     public function store(Request $request, $id)
     {
         $job_list = JobList::find($id);
-        dd($job_list);
+        // dd($job_list);
         $account = Auth::user();
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
