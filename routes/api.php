@@ -207,10 +207,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/search', 'searchResumes');
     });
 
-    Route::prefix('/job-application-history')->controller(JobApplicationController::class)->group(function () {
-        Route::get('/', 'jobApplicationHistory');
-    });
+    // Route::prefix('/job-application-history')->controller(JobApplicationController::class)->group(function () {
+    //     Route::get('/', 'jobApplicationHistory');
+    // });
 });
+
+Route::get('/job-application-history', [JobApplicationController::class, 'jobApplicationHistory']);
 
 Route::apiResources([
     'company' => CompanyController::class,
