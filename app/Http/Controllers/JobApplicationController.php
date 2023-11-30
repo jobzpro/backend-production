@@ -282,26 +282,29 @@ class JobApplicationController extends Controller
     }
 
     public function jobApplicationHistory() {
-        $account = Auth::user();
-        $user_id = $account->user->id;
+        return response([
+                    'application_history' => 'Success',
+                ], 200);
+        // $account = Auth::user();
+        // $user_id = $account->user->id;
 
-        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
+        // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
 
-        if($jobseeker_applications)
-        {
-            foreach ($jobseeker_applications as $application) {
-                // dd($application);
-                $application->company = Company::find($application->jobList?->company_id);
-            }
+        // if($jobseeker_applications)
+        // {
+        //     foreach ($jobseeker_applications as $application) {
+        //         // dd($application);
+        //         $application->company = Company::find($application->jobList?->company_id);
+        //     }
 
-            return response([
-                'application_history' => $jobseeker_applications,
-            ], 200);
-        }else {
-            return response([
-                'message' => 'Not found',
-            ], 400);
-        }
+        //     return response([
+        //         'application_history' => $jobseeker_applications,
+        //     ], 200);
+        // }else {
+        //     return response([
+        //         'message' => 'Not found',
+        //     ], 400);
+        // }
 
     }
 
