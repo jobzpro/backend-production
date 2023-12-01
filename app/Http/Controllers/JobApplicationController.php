@@ -49,7 +49,7 @@ class JobApplicationController extends Controller
             if ($sortFilter == "Recent to Oldest") {
                 $applications = $applications->latest()->get()->paginate(10);;
             } else if ($sortFilter == "Alphabetical") {
-                $applications = $applications->orderBy('first_name')->paginate(10);
+                $applications = $applications->orderBy('user.first_name')->paginate(10);
             }
         } else {
             $applications = $applications->paginate(10);
