@@ -33,7 +33,7 @@ class JobApplicationController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $applications = JobApplication::with('jobList', 'jobInterviews');
+        $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
 
         if (!$keyword == null) {
             $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
@@ -47,18 +47,16 @@ class JobApplicationController extends Controller
 
         if (!$sortFilter == null) {
             if ($sortFilter == "Recent to Oldest") {
-                $applications = $applications->latest()->with('user')->get();
+                $applications = $applications->latest()->get()->paginate(10);;
             } else if ($sortFilter == "Alphabetical") {
-                $applications = $applications->with(['user' => function ($q) {
-                    $q->orderBy('first_name');
-                }])->get();
+                $applications = $applications->orderBy('first_name')->paginate(10);
             }
         } else {
-            $applications = $applications->with('user')->get();
+            $applications = $applications->paginate(10);
         }
 
         return response([
-            'applications' => $applications->paginate(10),
+            'applications' => $applications,
             'message' => "Success",
         ], 200);
     }
