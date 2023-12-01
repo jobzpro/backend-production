@@ -56,8 +56,8 @@ class CompanyReviewController extends Controller
         if (!$keyword == null) {
             $reviews = $reviews->whereHas('company', function ($q) use ($keyword) {
                 $q->where('name', 'LIKE', '%' . $keyword . '%');
-            })
-        };
+            });
+        }
 
         return response([
             'reviews' => $reviews->paginate(10),
