@@ -51,8 +51,10 @@ class JobApplicationController extends Controller
             } else if ($sortFilter == "Alphabetical") {
                 $app = $applications->get();
 
-                $applications = $app->sortBy(function ($q) {
-                    return $q->user->first_name;
+                $applications = $app->reject(function ($app) {
+                    return $app->user->first_name === null;
+                })->sortBy(function ($app) {
+                    return $app->user->first_name;
                 })->paginate(10);
             }
         } else {
