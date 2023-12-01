@@ -285,7 +285,13 @@ class JobApplicationController extends Controller
     public function jobApplicationHistory(Request $request) {
         $account = Auth::user();
         $user_id = $account->user->id;
+        $status = $request->query('status');
         $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry')->get();
+
+        if(!$status == null)
+        {
+            $jobseeker_applications = $jobseeker_applications->where('status', $status);
+        }
 
         // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
         // $jobseeker_applications = DB::table('users')

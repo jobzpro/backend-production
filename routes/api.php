@@ -206,12 +206,14 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('/resumes')->controller(UserController::class)->group(function () {
         Route::get('/search', 'searchResumes');
     });
+    // Route::resource('job-application-history', JobApplicationController::class);
 
-    // Route::prefix('/job-application-history')->controller(JobApplicationController::class)->group(function () {
-    //     Route::get('/', 'jobApplicationHistory');
-    // });
+    Route::prefix('/job-application-history')->controller(JobApplicationController::class)->group(function () {
+        Route::get('/list', 'jobApplicationHistory');
+    });
 
-    Route::get('/job-application-history', [JobApplicationController::class, 'jobApplicationHistory']);
+
+    // Route::get('/job-application-history/list', [JobApplicationController::class, 'jobApplicationHistory']);
 });
 
 Route::apiResources([
