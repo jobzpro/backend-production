@@ -46,11 +46,21 @@ class CompanyReviewController extends Controller
         ], 200);
     }
 
-    public function reviewsOfJobseeker($id)
-    {
+    public function reviewsOfJobseeker(Request $request, $id)
+    {   
+        $keyword = $request->query('keyword');
         $jobseeker = User::find($id);
+        $reviews = $jobseeker->companyReviews;
+
+
+        if (!$keyword == null) {
+            $reviews = $reviews->whereHas('company', function ($q) use ($keyword) {
+                $q->where('name', 'LIKE', '%' . $keyword . '%');
+            })
+        };
+
         return response([
-            'reviews' => $jobseeker->companyReviews->paginate(10),
+            'reviews' => $reviews->paginate(10),
             'message' => "Successful."
         ], 200);
     }
