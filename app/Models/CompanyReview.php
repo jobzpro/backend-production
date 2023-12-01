@@ -38,4 +38,10 @@ class CompanyReview extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function industry(): BelongsTo
+    {
+        return $this->belongsTo(Industry::class, 'industry_id');
+    }
+
 }
