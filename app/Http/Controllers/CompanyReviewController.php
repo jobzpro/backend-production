@@ -50,7 +50,7 @@ class CompanyReviewController extends Controller
     {   
         $keyword = $request->query('keyword');
         $jobseeker = User::find($id);
-        $reviews = CompanyReview::with('company');
+        $reviews = CompanyReview::where('user_id', $jobseeker->id)->with('company');
 
 
         if (!$keyword == null) {
