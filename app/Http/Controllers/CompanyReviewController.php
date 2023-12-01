@@ -50,7 +50,7 @@ class CompanyReviewController extends Controller
     {
         $jobseeker = User::find($id);
         return response([
-            'reviews' => $jobseeker->companyReviews,
+            'reviews' => $jobseeker->companyReviews->paginate(10),
             'message' => "Successful."
         ], 200);
     }
