@@ -31,17 +31,12 @@ class CompanyReview extends Model
 
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class)->with('industry');
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-    
-    public function industry(): BelongsTo
-    {
-        return $this->belongsTo(Industry::class, 'industry_id');
     }
 
 }

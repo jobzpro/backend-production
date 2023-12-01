@@ -206,7 +206,7 @@ class User extends Authenticatable
 
     public function companyReviews(): HasMany
     {
-        return $this->hasMany(CompanyReview::class)->with('company', 'industry');
+        return $this->hasMany(CompanyReview::class)->with('company');
     }
 
     public function appReviews(): HasMany
