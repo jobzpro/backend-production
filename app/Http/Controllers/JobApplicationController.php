@@ -69,7 +69,7 @@ class JobApplicationController extends Controller
     public function store(Request $request, $id)
     {
         $job_list = JobList::find($id);
-        dd($job_list);
+        // dd($job_list);
         $account = Auth::user();
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
@@ -286,7 +286,7 @@ class JobApplicationController extends Controller
         $account = Auth::user();
         $user_id = $account->user->id;
         $status = $request->query('status');
-        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry')->get();
+        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry', 'jobInterviews')->get();
 
         if(!$status == null)
         {
