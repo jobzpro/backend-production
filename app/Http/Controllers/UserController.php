@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function showJobseekerProfile($id)
     {
-        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('id', $id)->first();
 
         return response([
             'user' => $result,
