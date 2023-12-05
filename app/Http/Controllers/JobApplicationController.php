@@ -286,50 +286,28 @@ class JobApplicationController extends Controller
         $account = Auth::user();
         $user_id = $account->user->id;
         $status = $request->query('status');
-        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry', 'jobInterviews')->get();
+        $orderBy = $request->query('orderBy');
+        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry', 'jobInterviews')
+            // ->orderby('interview_date', $orderBy)
+            ->get();
 
         if(!$status == null)
         {
             $jobseeker_applications = $jobseeker_applications->where('status', $status);
         }
-
-        // $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList')->get();
-        // $jobseeker_applications = DB::table('users')
-        //         ->join('job_applications', 'users.id', '=', 'job_applications.user_id')
-        //         ->join('job_lists', 'job_lists.id', '=', 'job_applications.job_list_id')
-        //         ->join('companies', 'companies.id', '=', 'job_lists.company_id')
-        //         ->join('industries', 'industries.id', '=', 'job_lists.industry_id')
-        //         ->select('job_applications.id', 'job_applications.status', 'companies.company_logo_path', 'companies.name as company_name', 'job_lists.job_title', 'industries.name as industry_name', 'job_lists.min_salary', 'job_lists.max_salary', 'job_applications.applied_at', 'users.id as user_id')
-        //         ->where('users.id', '=', $user_id)
-        //         ->get();
-        // if($jobseeker_applications)
-        // {
-        //     foreach ($jobseeker_applications as $application) {
-        //         // dd($application);
-        //         $application->company = Company::find($application->jobList?->company_id);
-        //     }
-
-        //     return response([
-        //         'application_history' => $jobseeker_applications,
-        //     ], 200);
-        // }else {
-        //     return response([
-        //         'message' => 'Not found',
-        //     ], 400);
-        // }
-            if($jobseeker_applications)
-            {
-                return response([
-                    'applicationHistory' => $jobseeker_applications->paginate(10),
-                    // 'user_id' => $user_id
-                ], 200);
-            }
-            else
-            {
-                return response([
-                    'message' => 'Not found',
-                ], 400);
-            }
+        if($jobseeker_applications)
+        {
+            return response([
+                'applicationHistory' => $jobseeker_applications->paginate(10),
+                // 'user_id' => $user_id
+            ], 200);
+        }
+        else
+        {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
         return response([
                 'message' => 'test',
                 // 'user_id' => $user_id

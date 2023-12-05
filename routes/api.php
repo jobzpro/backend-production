@@ -212,6 +212,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/list', 'jobApplicationHistory');
     });
 
+    Route::prefix('/job-interview-applications')->controller(JobInterviewController::class)->group(function () {
+        Route::get('/list', 'getUserInterviews');
+    });
+
 
     // Route::get('/job-application-history/list', [JobApplicationController::class, 'jobApplicationHistory']);
 });

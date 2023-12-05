@@ -13,6 +13,8 @@ use App\Models\Company;
 use App\Enums\JobApplicationStatus as application_status;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class JobInterviewController extends Controller
 {
@@ -62,12 +64,12 @@ class JobInterviewController extends Controller
 
         if ($userCompanies && $userCompanies->count() > 0) {
             $company = $userCompanies->first()->companies;
-    
+
             if ($company && $company->count() > 0) {
                 $company = $company->first();
             }
         }
-    
+
         if (!$company) {
             return response([
                 'message' =>  "No company found for user",
@@ -252,5 +254,37 @@ class JobInterviewController extends Controller
             'interviews' => $jobInterviews->paginate(10),
             'message' => "Success",
         ], 200);
+    }
+
+    public function getUserInterviews(Request $request){
+        $user = Auth::user();
+        $user_id = $user->user->id;
+        // $status = $request->query('status');
+        $orderBy = $request->query('orderBy');
+        $interviewApplications = User::find($user_id)
+            ->join('job_applications', 'users.id', '=', 'job_applications.user_id')
+            ->join('job_interviews', 'job_applications.id', '=', 'job_interviews.job_application_id')
+            ->join('job_lists', 'job_lists.id', '=', 'job_applications.job_list_id')
+            ->join('companies', 'companies.id', '=', 'job_lists.company_id')
+            ->join('industries', 'industries.id', '=', 'job_lists.industry_id')
+            ->select(
+                'job_applications.id',
+                'job_applications.status',
+                'companies.company_logo_path',
+                'companies.name as company_name',
+                'companies.address_line',
+                'job_lists.job_title',
+                'industries.name as industry_name',
+                'job_interviews.interview_date',
+                'job_interviews.meeting_link'
+            )
+            ->where('users.id', '=', $user_id)
+            // ->where('job_applications.status', '=', $status)
+            ->orderBy('interview_date', $orderBy)
+            ->get();
+
+        return response([
+            'interviews' => $interviewApplications->paginate(10),
+        ]);
     }
 }
