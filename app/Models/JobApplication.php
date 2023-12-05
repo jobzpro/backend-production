@@ -37,8 +37,8 @@ class JobApplication extends Model
         return $this->belongsTo(JobList::class, 'job_list_id');
     }
 
-    public function jobInterviews(): BelongsTo{
-        return $this->belongsTo(JobInterview::class);
+    public function jobInterviews(): HasMany{
+        return $this->hasMany(JobInterview::class);
     }
 
     // public function jobLocation(): HasOne{
