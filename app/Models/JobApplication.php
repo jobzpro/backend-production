@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+// use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobApplication extends Model
@@ -36,9 +37,11 @@ class JobApplication extends Model
         return $this->belongsTo(JobList::class, 'job_list_id');
     }
 
-    public function jobInterviews(): HasMany{
-        return $this->hasMany(JobInterview::class);
+    public function jobInterviews(): BelongsTo{
+        return $this->belongsTo(JobInterview::class);
     }
 
-    
+    // public function jobLocation(): HasOne{
+    //     return $this->hasMany(JobLocation::class);
+    // }
 }
