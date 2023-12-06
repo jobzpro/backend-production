@@ -42,6 +42,7 @@ class AccountController extends Controller
         }
 
         $data = $request->all();
+        // $token = $account->createToken('API Token')->accessToken;
 
         $account = Account::create([
             'email' => $data['email'],
@@ -59,6 +60,7 @@ class AccountController extends Controller
             //'email' => $data['email'],
             'created_at' => Carbon::now(),
         ]);
+        $token = $account->createToken('API Token')->accessToken;
 
         $userRole = UserRole::create([
             'user_id' => $account->user->id,
@@ -71,6 +73,7 @@ class AccountController extends Controller
             'account' => $account,
             'user_role' => $userRole,
             'message' => "Registration Successful",
+            'token' => $token
         ];
 
         return response()->json($result, 200);
