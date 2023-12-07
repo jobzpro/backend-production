@@ -20,6 +20,7 @@ use App\Models\JobIndustrySpeciality;
 use App\Models\JobStandardShift;
 use App\Models\JobSupplementalSchedule;
 use App\Models\JobWeeklySchedule;
+use App\Models\Industry;
 use App\Http\Controllers\UploadController as Uploader;
 use App\Models\JobListDealbreaker;
 use Illuminate\Support\Facades\Auth;
@@ -745,7 +746,13 @@ class JobListController extends Controller
 
     public function getJobListings(string $id)
     {
+        $company = Auth::user();
+        // dd($company);
         $company_id = $id;
+        $company = Company::find($company_id);
+        // dd($company->industry_id);
+        $company_industry = Industry::find($company->industry_id);
+        // dd($company_industry->name);
         $job_lists = JobList::with('job_types', 'jobListDealbreakers')->where('company_id', $company_id)->get();
         $results = [];
         $types = [];
@@ -754,6 +761,7 @@ class JobListController extends Controller
 
         foreach ($job_lists as $job_list) {
             $result = [
+                'company_industry' => $company_industry->name,
                 'job_list_id' => $job_list->id,
                 'job_list_title' => $job_list->job_title,
                 'hiring' => $job_list->number_of_vacancies,
