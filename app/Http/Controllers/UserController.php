@@ -301,29 +301,30 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $users = User::with('currentExperience');
+        $users = User::with('currentExperience')->orderBy('profile_id', 'DESC');
+        // $users = User::orderBy('id', 'ASC');
 
-        if (!empty($keyword)) {
-            $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
-                $q->where('position', 'LIKE', '%' . $keyword . '%');
-            })
-            ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-        }
+        // if (!empty($keyword)) {
+        //     $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
+        //         $q->where('position', 'LIKE', '%' . $keyword . '%');
+        //     })
+        //     ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+        //     ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+        // }
 
-        if ($sortFilter == "Recent to Oldest") {
-            $users = $users->latest();
-        } elseif ($sortFilter == "Alphabetical") {
-            $users = $users->orderBy('first_name', 'ASC');
-        } elseif ($sortFilter == "Profile Completion") {
-            // dd($sortFilter);
-            $users = $users->orderBy('profile_completion', 'DESC');
-        } else {
-            // dd($sortFilter);
-            $users = $users->orderBy('profile_completion', 'DESC');
-        }
+        // if ($sortFilter == "Recent to Oldest") {
+        //     $users = $users->latest();
+        // } elseif ($sortFilter == "Alphabetical") {
+        //     $users = $users->orderBy('first_name', 'ASC');
+        // } elseif ($sortFilter == "Profile Completion") {
+        //     // dd($sortFilter);
+        //     $users = $users->orderBy('profile_completion', 'DESC');
+        // } else {
+        //     // dd($sortFilter);
+        //     $users = $users->orderBy('profile_completion', 'DESC');
+        // }
 
-        $users = $users->orderBy('profile_completion', 'DESC')->get();
+        $users = $users->get();
 
 
         return response([
