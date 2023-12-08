@@ -314,13 +314,13 @@ class UserController extends Controller
         if ($sortFilter == "Recent to Oldest") {
             $users = $users->latest();
         } elseif ($sortFilter == "Alphabetical") {
-            $users = $users->orderBy('first_name', 'ASC');
+            $users = $users->orderBy('first_name', 'asc');
         } elseif ($sortFilter == "Profile Completion") {
-            $users = $users->orderBy('profile_completion', 'DESC');
+            $users = $users->orderBy('profile_completion', 'desc');
         } else {
-            $users = $users->orderBy('profile_completion', 'DESC');
+            $users = $users->orderBy('profile_completion', 'desc');
         }
-        
+
         $users = $users->get();
 
 
