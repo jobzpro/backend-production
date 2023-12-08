@@ -316,12 +316,14 @@ class UserController extends Controller
         } elseif ($sortFilter == "Alphabetical") {
             $users = $users->orderBy('first_name', 'asc');
         } elseif ($sortFilter == "Profile Completion") {
-            $users = $users->orderBy('profile_completion', 'asc');
+            // dd($sortFilter);
+            $users = $users->orderBy('profile_completion', '');
         } else {
-            $users = $users->orderBy('profile_completion', 'asc');
+            // dd($sortFilter);
+            $users = $users->orderBy('profile_completion', 'desc');
         }
 
-        $users = $users->get();
+        $users = $users->orderBy('profile_completion', 'desc')->get();
 
 
         return response([
