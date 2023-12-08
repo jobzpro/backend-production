@@ -33,8 +33,8 @@ class JobApplicationController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
-        // $applications = JobApplication::with('jobList', 'jobInterviews', 'user', 'jobList.experience_level');
+        // $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
+        $applications = JobApplication::with('jobList', 'jobInterviews', 'user', 'jobList.experience_level');
 
         if (!$keyword == null) {
             $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
