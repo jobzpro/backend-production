@@ -318,10 +318,10 @@ class UserController extends Controller
             $users = $users->orderBy('first_name', 'ASC');
         } elseif ($sortFilter == "Profile Completion") {
             // dd($sortFilter);
-            $users = $users->orderByRaw('CAST(profile_completion) ASC');
+            $users = $users->orderByRaw('id', 'DESC');
         } else {
             // dd($sortFilter);
-            $users = $users->orderByRaw('CAST(profile_completion) DESC');
+            $users = $users->orderBy('id', 'ASC');
         }
 
         $users = $users->get();
