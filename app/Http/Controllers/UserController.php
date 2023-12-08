@@ -316,9 +316,9 @@ class UserController extends Controller
         } elseif ($sortFilter == "Alphabetical") {
             $users = $users->orderBy('first_name', 'asc');
         } elseif ($sortFilter == "Profile Completion") {
-            $users = $users->orderByRaw('ABS(profile_completion)');
+            $users = $users->orderBy('profile_completion', 'asc');
         } else {
-            $users = $users->orderByRaw('ABS(profile_completion)');
+            $users = $users->orderBy('profile_completion', 'asc');
         }
 
         $users = $users->get();
