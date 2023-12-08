@@ -43,6 +43,7 @@ class User extends Authenticatable
         'experience_level',
         'incorrect_signin_attempts',
         'gender',
+        'profile_completion'
     ];
 
     /**
@@ -63,9 +64,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = [
-        'profile_completion'
-    ];
+    // protected $appends = [
+    //     'profile_completion'
+    // ];
 
 
     public function account(): BelongsTo

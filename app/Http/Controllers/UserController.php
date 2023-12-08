@@ -302,7 +302,7 @@ class UserController extends Controller
         $sortFilter = $request->query('sort');
 
         $users = User::with('currentExperience');
-        $users = User::orderBy('id', 'ASC');
+        // $users = User::orderBy('id', 'ASC');
 
         if (!empty($keyword)) {
             $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
@@ -318,13 +318,13 @@ class UserController extends Controller
             $users = $users->orderBy('first_name', 'ASC');
         } elseif ($sortFilter == "Profile Completion") {
             // dd($sortFilter);
-            $users = $users->orderByRaw('profile_completion', 'ASC');
+            $users = $users->get()->sortByDesc('profile_completion');
         } else {
-            // dd($sortFilter);
-            $users = $users->orderBy('profile_completion', 'DESC');
+            $users = $users->get()->sortByDesc('profile_completion');
+            // dd($users);
         }
 
-        $users = $users->get();
+        // $users = $users->get();
 
 
         return response([
