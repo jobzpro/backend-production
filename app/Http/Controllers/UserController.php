@@ -301,7 +301,7 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $users = User::orderBy('profile_completion', 'asc');
+        $users = User::orderBy('id', 'desc');
         // $users = User::orderBy('id', 'ASC');
 
         // if (!empty($keyword)) {
