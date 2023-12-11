@@ -744,16 +744,17 @@ class JobListController extends Controller
         ]);
     }
 
-    public function getJobListings(string $id)
+    public function getJobListings(Request $request, string $id)
     {
         $company = Auth::user();
-        // dd($company);
         $company_id = $id;
+        $keyword = $request->query('keyword');
         $company = Company::find($company_id);
-        // dd($company->industry_id);
         $company_industry = Industry::find($company->industry_id);
-        // dd($company_industry->name);
-        $job_lists = JobList::with('job_types', 'jobListDealbreakers')->where('company_id', $company_id)->get();
+        $job_lists = JobList::with('job_types', 'jobListDealbreakers')
+                    ->where('company_id', $company_id)
+                    ->where('job_title', 'LIKE', '%' . $keyword . '%')
+                    ->get();
         $results = [];
         $types = [];
         $dealbreakers = [];
@@ -773,7 +774,6 @@ class JobListController extends Controller
                 'job_types' => $types,
                 'dealbreakers' => $job_list->jobListDealbreakers,
                 // 'dealbreakers' => $job_list->jobListDealbreakers->with('dealbreakers')->get(),
-
             ];
             foreach ($job_list->job_types as $jtype) {
                 $type = $jtype->type;
