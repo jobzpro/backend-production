@@ -754,6 +754,7 @@ class JobListController extends Controller
         $job_lists = JobList::with('job_types', 'jobListDealbreakers')
                     ->where('company_id', $company_id)
                     ->where('job_title', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('status', 'LIKE', '%' . $keyword . '%')
                     ->get();
         $results = [];
         $types = [];
