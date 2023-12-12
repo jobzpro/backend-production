@@ -749,12 +749,13 @@ class JobListController extends Controller
         $company = Auth::user();
         $company_id = $id;
         $keyword = $request->query('keyword');
+        $status = $request->query('status');
         $company = Company::find($company_id);
         $company_industry = Industry::find($company->industry_id);
         $job_lists = JobList::with('job_types', 'jobListDealbreakers')
                     ->where('company_id', $company_id)
                     ->where('job_title', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('status', 'LIKE', '%' . $keyword . '%')
+                    ->where('status', 'LIKE', '%' . $status . '%')
                     ->get();
         $results = [];
         $types = [];
