@@ -523,7 +523,9 @@ class JobListController extends Controller
         $jobList = JobList::find($job_list_id);
 
         if ($jobList) {
-            $jobList->delete();
+            // $jobList->delete();
+            $jobList->status = "deleted";
+            $jobList->save();
 
             return response([
                 'message' => "Success",
@@ -756,6 +758,7 @@ class JobListController extends Controller
                     ->where('company_id', $company_id)
                     ->where('job_title', 'LIKE', '%' . $keyword . '%')
                     ->where('status', 'LIKE', '%' . $status . '%')
+                    ->where('status', '!=', 'deleted')
                     ->get();
         $results = [];
         $types = [];
