@@ -33,6 +33,10 @@ class JobApplication extends Model
         return $this->belongsTo(User::class);
     }
 
+    // public function userExperience(): HasMany{
+    //     return $this->hasMany(UserExperience::class);
+    // }
+
     public function jobList(): BelongsTo{
         return $this->belongsTo(JobList::class, 'job_list_id');
     }
