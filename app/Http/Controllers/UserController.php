@@ -301,7 +301,7 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $users = User::with('currentExperience');
+        $users = User::with('experiences', 'certifications', 'account', 'references');
         // $users = User::orderBy('id', 'ASC');
 
         if (!empty($keyword)) {
