@@ -238,7 +238,7 @@ class JobApplicationController extends Controller
     {
         $job_application = JobApplication::with('jobList')->find($request->job_application_id);
         if ($job_application) {
-            $job_application->update(['status' => $request['status']]);
+            $job_application->update(['status' => $request->query('status')]);
             if($job_application->jobList == null){
                 $company_name = 'No company name';
             }
