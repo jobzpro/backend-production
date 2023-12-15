@@ -242,7 +242,3 @@ Route::prefix('/shifts')->controller(JobShiftController::class)->group(function 
     Route::get('/weekly', 'getWeeklyShifts')->name('jobs.weekly');
     Route::get('/supplemental', 'getSupplementalShifts')->name('jobs.supplemental');
 });
-
-Route::prefix('/test')->controller(JobApplicationController::class)->group(function () {
-    Route::get('/jesse', 'searchApplicantion');
-});
