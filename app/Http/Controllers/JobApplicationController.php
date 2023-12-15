@@ -238,14 +238,13 @@ class JobApplicationController extends Controller
     {
         $job_application = JobApplication::with('jobList')->find($id);
         if ($job_application) {
+            $company_name = '';
             $job_application->update(['status' => $request['status']]);
             if($job_application->jobList == null){
                 $company_name = 'No company name';
-                return $company_name;
             }
             else{
                 $company_name = $job_application->jobList->company->name;
-                return $company_name;
             }
             if ($request['status'] == 'reviewed') {
                 $notification = Notification::create([
