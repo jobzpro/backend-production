@@ -237,12 +237,11 @@ class JobApplicationController extends Controller
     public function setStatus(Request $request, string $id)
     {
         $job_application = JobApplication::find($id);
-        dd($job_application);
 
         if ($job_application) {
             $job_application->update(['status' => $request['status']]);
+               dd($job_application);
             $company_name = $job_application->jobList->company->name;
-            // dd($company_name);
 
             if ($request['status'] == 'reviewed') {
                 $notification = Notification::create([
