@@ -236,57 +236,57 @@ class JobApplicationController extends Controller
 
     public function setStatus(Request $request, string $id)
     {
-        echo('Test');
-        // $job_application = JobApplication::with('jobList')->find($request->job_application_id);
-        // if ($job_application) {
-        //     $job_application->update(['status' => $request['status']]);
-        //     if($job_application->jobList == null){
-        //         $company_name = 'No company name';
-        //     }
-        //     else{
-        //         $company_name = $job_application->jobList->company->name;
-        //     }
-        //     if ($request['status'] == 'reviewed') {
-        //         $notification = Notification::create([
-        //             'notifiable_id' => $job_application->user->id,
-        //             'notifiable_type' => get_class($job_application->user),
-        //             'notifier_id' => $job_application->id,
-        //             'notifier_type' => get_class($job_application),
-        //             'notif_type' => 'application_reviewed',
-        //             'content' => $company_name . ' has reviewed your application.',
-        //             'title' => 'Application Reviewed',
-        //         ]);
-        //     } else if ($request['status'] == 'rejected') {
-        //         $notification = Notification::create([
-        //             'notifiable_id' => $job_application->user->id,
-        //             'notifiable_type' => get_class($job_application->user),
-        //             'notifier_id' => $job_application->id,
-        //             'notifier_type' => get_class($job_application),
-        //             'notif_type' => 'application_rejected',
-        //             'content' => $company_name . ' has rejected your application.',
-        //             'title' => 'Application Rejected',
-        //         ]);
-        //     } else if ($request['status'] == 'approved') {
-        //         $notification = Notification::create([
-        //             'notifiable_id' => $job_application->user->id,
-        //             'notifiable_type' => get_class($job_application->user),
-        //             'notifier_id' => $job_application->id,
-        //             'notifier_type' => get_class($job_application),
-        //             'notif_type' => 'application_approved',
-        //             'content' => $company_name . ' has approved your application.',
-        //             'title' => 'Application Approved',
-        //         ]);
-        //     }
+        // echo('Test');
+        $job_application = JobApplication::with('jobList')->find($request->job_application_id);
+        if ($job_application) {
+            $job_application->update(['status' => $request->query('status')]);
+            if($job_application->jobList == null){
+                $company_name = 'No company name';
+            }
+            else{
+                $company_name = $job_application->jobList->company->name;
+            }
+            if ($request['status'] == 'reviewed') {
+                $notification = Notification::create([
+                    'notifiable_id' => $job_application->user->id,
+                    'notifiable_type' => get_class($job_application->user),
+                    'notifier_id' => $job_application->id,
+                    'notifier_type' => get_class($job_application),
+                    'notif_type' => 'application_reviewed',
+                    'content' => $company_name . ' has reviewed your application.',
+                    'title' => 'Application Reviewed',
+                ]);
+            } else if ($request['status'] == 'rejected') {
+                $notification = Notification::create([
+                    'notifiable_id' => $job_application->user->id,
+                    'notifiable_type' => get_class($job_application->user),
+                    'notifier_id' => $job_application->id,
+                    'notifier_type' => get_class($job_application),
+                    'notif_type' => 'application_rejected',
+                    'content' => $company_name . ' has rejected your application.',
+                    'title' => 'Application Rejected',
+                ]);
+            } else if ($request['status'] == 'approved') {
+                $notification = Notification::create([
+                    'notifiable_id' => $job_application->user->id,
+                    'notifiable_type' => get_class($job_application->user),
+                    'notifier_id' => $job_application->id,
+                    'notifier_type' => get_class($job_application),
+                    'notif_type' => 'application_approved',
+                    'content' => $company_name . ' has approved your application.',
+                    'title' => 'Application Approved',
+                ]);
+            }
 
-        //     return response([
-        //         'application' => $job_application,
-        //         'message' => "Success",
-        //     ], 200);
-        // } else {
-        //     return response([
-        //         'message' => 'Not found',
-        //     ], 400);
-        // }
+            return response([
+                'application' => $job_application,
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
     }
 
     public function jobApplicationHistory(Request $request) {
