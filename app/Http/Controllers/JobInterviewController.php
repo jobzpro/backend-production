@@ -88,7 +88,8 @@ class JobInterviewController extends Controller
         ]);
 
         $jobApplication->update([
-            'status' => application_status::interview,
+            // 'status' => application_status::interview,
+            'status' => 'Scheduled'
         ]);
 
         $notification = Notification::create([
