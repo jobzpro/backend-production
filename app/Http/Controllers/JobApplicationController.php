@@ -236,6 +236,8 @@ class JobApplicationController extends Controller
 
     public function setStatus(Request $request, string $id)
     {
+        $status = $request->query('status');
+        dd($status);
         $job_application = JobApplication::with('jobList')->find($request->job_application_id);
         if ($job_application) {
             $job_application->update(['status' => $request->query('status')]);
