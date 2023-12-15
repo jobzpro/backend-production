@@ -238,7 +238,7 @@ class JobApplicationController extends Controller
     {
         $job_application = JobApplication::with('jobList')->find($id);
         $job_list = JobList::where('id', $job_application->job_list_id)->with('company')->first();
-        dd($job_application->job_list_id);
+        dd($job_list);
         // dd($job_application);
 
         if ($job_application) {
