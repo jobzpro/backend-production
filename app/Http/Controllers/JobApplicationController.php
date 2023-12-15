@@ -242,6 +242,7 @@ class JobApplicationController extends Controller
             $job_application->update(['status' => $request['status']]);
             //    dd($job_application);
             // $company_name = $job_application->jobList->company->name;
+            dd($job_application->jobList);
             if($job_application->jobList->company == null){
                 $company_name = "No company name";
                 return $company_name;
