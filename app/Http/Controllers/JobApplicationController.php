@@ -240,8 +240,9 @@ class JobApplicationController extends Controller
 
         if ($job_application) {
             $job_application->update(['status' => $request['status']]);
-               dd($job_application);
-            $company_name = $job_application->jobList->company->name;
+            //    dd($job_application);
+            // $company_name = $job_application->jobList->company->name;
+            dd($job_application->jobList->company->name);
 
             if ($request['status'] == 'reviewed') {
                 $notification = Notification::create([
