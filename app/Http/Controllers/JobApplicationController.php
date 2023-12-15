@@ -230,8 +230,9 @@ class JobApplicationController extends Controller
         }
     }
 
-    public function searchApplicantion(Request $request, $id)
+    public function searchApplicantion(Request $request)
     {
+        echo('Test');
     }
 
     public function setStatus(Request $request, string $id)
