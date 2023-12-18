@@ -54,13 +54,13 @@ class JobInterviewController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, int $job_application_id)
     {
         $data = $request->all();
         $employer = User::find(request()->user()->id);
         $userCompanies = $employer->userCompanies;
         $company = null;
-        $jobApplication = JobApplication::find($data['job_application_id']);
+        $jobApplication = JobApplication::find($job_application_id);
 
         if ($userCompanies && $userCompanies->count() > 0) {
             $company = $userCompanies->first()->companies;
