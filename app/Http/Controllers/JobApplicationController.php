@@ -247,7 +247,8 @@ class JobApplicationController extends Controller
             else{
                 $company_name = $job_application->jobList->company->name;
             }
-            if ($request['status'] == 'reviewed') {
+
+            if ($request->query('status') == 'reviewed') {
                 $notification = Notification::create([
                     'notifiable_id' => $job_application->user->id,
                     'notifiable_type' => get_class($job_application->user),
@@ -257,7 +258,7 @@ class JobApplicationController extends Controller
                     'content' => $company_name . ' has reviewed your application.',
                     'title' => 'Application Reviewed',
                 ]);
-            } else if ($request['status'] == 'rejected') {
+            } else if ($request->query('status') == 'rejected') {
                 $notification = Notification::create([
                     'notifiable_id' => $job_application->user->id,
                     'notifiable_type' => get_class($job_application->user),
@@ -267,7 +268,7 @@ class JobApplicationController extends Controller
                     'content' => $company_name . ' has rejected your application.',
                     'title' => 'Application Rejected',
                 ]);
-            } else if ($request['status'] == 'approved') {
+            } else if ($request->query('status') == 'approved') {
                 $notification = Notification::create([
                     'notifiable_id' => $job_application->user->id,
                     'notifiable_type' => get_class($job_application->user),
