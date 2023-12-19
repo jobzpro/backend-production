@@ -24,7 +24,7 @@ class JobInterviewController extends Controller
     public function index()
     {
         $user = User::find(request()->user()->id);
-
+        // dd($user);
         if ($user->userRoles->first()->role->role_name == "Jobseeker") {
             $jobInterviews =  JobInterview::where('applicant_id', $user->id)->with('jobList')->get();
 
@@ -37,7 +37,7 @@ class JobInterviewController extends Controller
             $company_id = $user->userCompanies->first()->companies->first()->id;
             $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant')->get();
             return response([
-                'job_interviews' => $jobInterviews,
+                'job_interviews' => $jobInterviews->paginate(10),
                 'message' => "Success",
             ], 200);
         }
