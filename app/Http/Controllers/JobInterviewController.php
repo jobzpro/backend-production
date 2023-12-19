@@ -29,9 +29,9 @@ class JobInterviewController extends Controller
         // dd($user);
         // dd($user->userRoles->first()->role->role_name);
         if ($user->userRoles->first()->role->role_name == "Jobseeker") {
-            $jobInterviews =  JobInterview::where('applicant_id', $user->id)->with('jobList')->get();
-
-
+            $jobInterviews =  JobInterview::where('applicant_id', $user->id)
+                ->where('role.role_name', '!=', 'Jobseeker')
+                ->with('jobList')->get();
             return response([
                 'job_interviews' => $jobInterviews,
                 'message' => "Success",
