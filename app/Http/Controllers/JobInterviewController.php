@@ -64,7 +64,7 @@ class JobInterviewController extends Controller
         $data = $request->all();
         $employer = User::find(request()->user()->id);
         $userRole = UserRole::with('role')->where('user_id', "=", $employer->id)->first();
-        dd($userRole->id);
+        dd($userRole->role_id);
         $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($job_application_id);
