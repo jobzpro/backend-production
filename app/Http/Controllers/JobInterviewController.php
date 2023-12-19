@@ -6,6 +6,8 @@ use App\Models\JobApplication;
 use App\Models\JobInterview;
 use App\Models\JobList;
 use App\Models\User;
+use App\Models\UserRole;
+use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MailerController as MailerController;
@@ -61,7 +63,7 @@ class JobInterviewController extends Controller
     {
         $data = $request->all();
         $employer = User::find(request()->user()->id);
-        dd($employer->id);
+        $userRole = UserRole::with('role')->where('user_id', "=", $employer->id)->first();
         $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($job_application_id);
@@ -81,7 +83,7 @@ class JobInterviewController extends Controller
         }
 
         $jobInterview = JobInterview::create([
-            'employer_id' => $employer->id,
+            'employer_id' => $userRole->id,
             'applicant_id' => $jobApplication->user_id,
             'job_application_id' => $jobApplication->id,
             'job_list_id' => $jobApplication->job_list_id,
