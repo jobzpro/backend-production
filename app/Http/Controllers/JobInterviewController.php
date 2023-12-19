@@ -36,7 +36,9 @@ class JobInterviewController extends Controller
             ]);
         } else {
             $company_id = $user->userCompanies->first()->companies->first()->id;
-            $jobInterviews = JobInterview::where('company_id', $company_id)->with('applicant', 'role')->get();
+            $jobInterviews = JobInterview::where('company_id', $company_id)
+                ->where('employer_id', '!=' , $user->employer_id)
+                ->with('applicant', 'role')->get();
             return response([
                 'job_interviews' => $jobInterviews->paginate(10),
                 'message' => "Success",
@@ -58,6 +60,7 @@ class JobInterviewController extends Controller
     public function store(Request $request, int $job_application_id)
     {
         $data = $request->all();
+        dd($employer->id);
         $employer = User::find(request()->user()->id);
         $userCompanies = $employer->userCompanies;
         $company = null;
