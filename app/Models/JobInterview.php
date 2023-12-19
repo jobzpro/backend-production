@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,5 +38,10 @@ class JobInterview extends Model
     public function applicant(): BelongsTo
     {
         return $this->belongsTo(User::class, 'applicant_id', 'id');
+    }
+
+    public function role(): HasOne
+    {
+        return $this->hasOne(Role::class, 'id', 'employer_id');
     }
 }
