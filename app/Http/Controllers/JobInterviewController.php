@@ -60,8 +60,8 @@ class JobInterviewController extends Controller
     public function store(Request $request, int $job_application_id)
     {
         $data = $request->all();
-        dd($employer->id);
         $employer = User::find(request()->user()->id);
+        dd($employer->id);
         $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($job_application_id);
