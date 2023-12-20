@@ -23,9 +23,11 @@ class JobInterviewController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = User::find(request()->user()->id);
+        $orderBy = $request->query('orderBy');
+        $keyword = $request->query('keyword');
         // dd($user);
         // dd($user->userRoles->first()->role->role_name);
         if ($user->userRoles->first()->role->role_name == "Jobseeker") {
@@ -41,7 +43,15 @@ class JobInterviewController extends Controller
                 ->where('employer_id', '!=' , $user->employer_id)
                 ->where('status', 'for_interview')
                 // ->where('employer_id', '!=', 3)
-                ->with('applicant', 'jobList', 'userRole', 'user')->get();
+                ->with('applicant', 'jobList', 'userRole', 'user')
+                ->orderBy('interview_date', $orderBy);
+                // ->get();
+
+            if(!$keyword == null) {
+                $jobInterviews = $jobInterviews->whereHas('applicant', function ($q) use ($keyword){
+                    $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+                });
+            }
             return response([
                 'job_interviews' => $jobInterviews->paginate(10),
                 'message' => "Success",
