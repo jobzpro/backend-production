@@ -44,4 +44,14 @@ class JobInterview extends Model
     {
         return $this->hasOne(Role::class, 'id', 'employer_id');
     }
+
+    public function userRole(): HasOne
+    {
+        return $this->hasOne(UserRole::class, 'user_id', 'employer_id' );
+    }
+
+    public function User(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'employer_id');
+    }
 }

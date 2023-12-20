@@ -40,8 +40,8 @@ class JobInterviewController extends Controller
             $jobInterviews = JobInterview::where('company_id', $company_id)
                 ->where('employer_id', '!=' , $user->employer_id)
                 ->where('status', 'for_interview')
-                ->where('employer_id', '!=', 3)
-                ->with('applicant', 'role', 'jobList')->get();
+                // ->where('employer_id', '!=', 3)
+                ->with('applicant', 'jobList', 'userRole', 'user')->get();
             return response([
                 'job_interviews' => $jobInterviews->paginate(10),
                 'message' => "Success",
@@ -84,7 +84,8 @@ class JobInterviewController extends Controller
         }
 
         $jobInterview = JobInterview::create([
-            'employer_id' => $userRole->role_id,
+            // 'employer_id' => $userRole->role_id,
+            'employer_id' => $employer->id,
             'applicant_id' => $jobApplication->user_id,
             'job_application_id' => $jobApplication->id,
             'job_list_id' => $jobApplication->job_list_id,
