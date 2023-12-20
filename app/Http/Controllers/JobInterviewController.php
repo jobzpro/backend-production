@@ -39,6 +39,7 @@ class JobInterviewController extends Controller
             $company_id = $user->userCompanies->first()->companies->first()->id;
             $jobInterviews = JobInterview::where('company_id', $company_id)
                 ->where('employer_id', '!=' , $user->employer_id)
+                ->where('status', 'for_interview')
                 ->where('employer_id', '!=', 3)
                 ->with('applicant', 'role')->get();
             return response([
@@ -166,23 +167,29 @@ class JobInterviewController extends Controller
     {
     }
 
-    public function setStatus(Request $request, $id)
+    public function setStatus(Request $request, int $interview_id, int $job_application_id)
     {
-        $validator = Validator::make($request->all(), [
-            'status' => 'required',
-        ]);
+        // $status = $request->query('status');
 
-        if ($validator->fails()) {
-            return response([
-                'message' => "Something went wrong",
-                'errors' => $validator->errors()
-            ], 400);
-        }
+        $job_application = JobApplication::find($job_application_id);
+        // dd($job_application);
+        $job_application->update(['status' => $request->query('status')]);
+        // dd($status);
+        // $validator = Validator::make($request->all(), [
+        //     'status' => 'required',
+        // ]);
 
-        $jobInterview = JobInterview::find($id);
+        // if ($validator->fails()) {
+        //     return response([
+        //         'message' => "Something went wrong",
+        //         'errors' => $validator->errors()
+        //     ], 400);
+        // }
+
+        $jobInterview = JobInterview::find($interview_id);
 
         if ($jobInterview) {
-            $jobInterview->update(['status' => $request['status']]);
+            $jobInterview->update(['status' => $request->query('status')]);
 
             return response([
                 'interview' => $jobInterview,
