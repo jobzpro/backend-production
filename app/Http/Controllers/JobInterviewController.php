@@ -232,7 +232,7 @@ class JobInterviewController extends Controller
             $jobInterview->update([
                 'interview_date' => $request['interview_date'],
                 'meeting_link' => $request['meeting_link'],
-                'notes' => $request['notes'],
+                // 'notes' => $request['notes'],
             ]);
 
             return response([
