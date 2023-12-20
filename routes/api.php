@@ -187,7 +187,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/{job_appication_id}/set-interview', 'store');
         Route::get('/all', 'index');
         Route::post('/{interview_id}/{job_application_id}/set-status', 'setStatus');
-        Route::post('/reschedule', 'reschedule');
+        Route::post('/{interview_id}/reschedule', 'reschedule');
         Route::get('/search', 'search');
         Route::get('/{id}', 'show');
     });

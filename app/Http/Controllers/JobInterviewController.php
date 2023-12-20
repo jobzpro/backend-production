@@ -213,7 +213,7 @@ class JobInterviewController extends Controller
         }
     }
 
-    public function reschedule(Request $request, $id)
+    public function reschedule(Request $request, int $interview_id)
     {
         $validator = Validator::make($request->all(), [
             'interview_date' => 'required',
@@ -226,7 +226,7 @@ class JobInterviewController extends Controller
             ], 400);
         }
 
-        $jobInterview = JobInterview::find($id);
+        $jobInterview = JobInterview::find($interview_id);
 
         if ($jobInterview) {
             $jobInterview->update([
