@@ -41,7 +41,7 @@ class JobInterviewController extends Controller
                 ->where('employer_id', '!=' , $user->employer_id)
                 ->where('status', 'for_interview')
                 ->where('employer_id', '!=', 3)
-                ->with('applicant', 'role')->get();
+                ->with('applicant', 'role', 'jobList')->get();
             return response([
                 'job_interviews' => $jobInterviews->paginate(10),
                 'message' => "Success",
