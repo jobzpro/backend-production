@@ -93,6 +93,8 @@ class JobInterviewController extends Controller
             ], 404);
         }
 
+        // echo(Carbon::parse($data['interview_date'])->format("Y-m-d H:i:s"));
+
         $jobInterview = JobInterview::create([
             // 'employer_id' => $userRole->role_id,
             'employer_id' => $employer->id,
@@ -102,7 +104,7 @@ class JobInterviewController extends Controller
             'company_id' => $company->id,
             'notes' => $data['notes'],
             'meeting_link' => $data['meeting_link'],
-            'interview_date' => Carbon::parse($data['interview_date'])->format("Y-m-d h:m:s"),
+            'interview_date' => Carbon::parse($data['interview_date'])->format("Y-m-d H:i:s"),
         ]);
 
         $jobApplication->update([
