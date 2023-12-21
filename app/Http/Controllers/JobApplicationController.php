@@ -41,32 +41,6 @@ class JobApplicationController extends Controller
                     $q->where('company_id', $company_id);
                 })
                 ->orderBy('created_at', $order);
-
-        // $applications = JobList::where('company_id', $company_id)->with('jobInterviews', 'jobApplications.user', 'experience_level')
-        //     ->where('job_title', 'LIKE', '%' . $keyword . '%')
-        //     ->orWhereHas('jobApplications.user', function($q) use ($keyword){
-        //         $q->where('first_name', 'LIKE', '%' . $keyword . '%');
-        //     });
-
-        // $applications = JobList::where('company_id', $company_id)
-        //         ->with('jobInterviews', 'jobApplications.user', 'experience_level')
-        //         ->where(function ($query) use ($keyword) {
-        //             $query->where('job_title', 'LIKE', '%' . $keyword . '%')
-        //             ->orWhereHas('jobApplications.user', function ($q) use ($keyword) {
-        //             $q->where('first_name', 'LIKE', '%' . $keyword . '%');
-        //          });
-        // });
-
-        // if (!$keyword == null) {
-        //     $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
-        //         $q->where('job_title', 'LIKE', '%' . $keyword . '%');
-        //     })
-        //         ->orWhereHas('user', function ($q) use ($keyword) {
-        //             $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-        //                 ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-        //         });
-        // }
-
         if (!$sortFilter == null) {
             if ($sortFilter == "Recent to Oldest") {
                 $applications = $applications->latest()->get()->paginate(10);
