@@ -45,6 +45,10 @@ class JobApplication extends Model
         return $this->hasMany(JobInterview::class);
     }
 
+    public function company(): BelongsTo{
+        return $this->belongsTo(Company::class);
+    }
+
     // public function jobLocation(): HasOne{
     //     return $this->hasMany(JobLocation::class);
     // }

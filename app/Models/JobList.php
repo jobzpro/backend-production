@@ -143,4 +143,8 @@ class JobList extends Model
     {
         return $this->morphToMany('App\Jobseeker', 'favoritable', 'favorites', 'favoritable_id', 'favoriter_id');
     }
+
+    public function user(): BelongsTo{
+        return $this->belongsTo(User::class);
+    }
 }

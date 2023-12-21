@@ -28,25 +28,41 @@ class JobApplicationController extends Controller
     /**
      * Display a listing of the resource.jobApp
      */
-    public function index(Request $request)
+    public function index(Request $request, int $id)
     {
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
+        $company_id = $id;
         $order = $request->query('orderBy');
         // $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
-        // $user = User::where('account_id', Auth::id())->first();
-        // dd($user);
-        $applications = JobApplication::with('jobList', 'jobInterviews', 'user', 'jobList.experience_level', 'user.user_experience')->orderBy('created_at', $order);
+        $user = User::where('account_id', Auth::id())->first();
+        // $applications = JobApplication::with('jobList', 'jobInterviews', 'user', 'jobList.experience_level', 'user.user_experience')
+        //         ->orderBy('created_at', $order);
 
-        if (!$keyword == null) {
-            $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
-                $q->where('job_title', 'LIKE', '%' . $keyword . '%');
-            })
-                ->orWhereHas('user', function ($q) use ($keyword) {
-                    $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                });
-        }
+        // $applications = JobList::where('company_id', $company_id)->with('jobInterviews', 'jobApplications.user', 'experience_level')
+        //     ->where('job_title', 'LIKE', '%' . $keyword . '%')
+        //     ->orWhereHas('jobApplications.user', function($q) use ($keyword){
+        //         $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+        //     });
+
+        $applications = JobList::where('company_id', $company_id)
+    ->with('jobInterviews', 'jobApplications.user', 'experience_level')
+    ->where(function ($query) use ($keyword) {
+        $query->where('job_title', 'LIKE', '%' . $keyword . '%')
+            ->orWhereHas('jobApplications.user', function ($q) use ($keyword) {
+                $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+            });
+    });
+
+        // if (!$keyword == null) {
+        //     $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
+        //         $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+        //     })
+        //         ->orWhereHas('user', function ($q) use ($keyword) {
+        //             $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+        //                 ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+        //         });
+        // }
 
         if (!$sortFilter == null) {
             if ($sortFilter == "Recent to Oldest") {
