@@ -232,7 +232,7 @@ class JobInterviewController extends Controller
 
         if ($jobInterview) {
             $jobInterview->update([
-                'interview_date' => $request['interview_date'],
+                'interview_date' => Carbon::parse($request['interview_date'])->format("Y-m-d H:i:s"),
                 'meeting_link' => $request['meeting_link'],
                 // 'notes' => $request['notes'],
             ]);
