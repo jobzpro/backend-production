@@ -46,13 +46,13 @@ class JobApplicationController extends Controller
         //     });
 
         $applications = JobList::where('company_id', $company_id)
-    ->with('jobInterviews', 'jobApplications.user', 'experience_level')
-    ->where(function ($query) use ($keyword) {
-        $query->where('job_title', 'LIKE', '%' . $keyword . '%')
-            ->orWhereHas('jobApplications.user', function ($q) use ($keyword) {
-                $q->where('first_name', 'LIKE', '%' . $keyword . '%');
-            });
-    });
+                ->with('jobInterviews', 'jobApplications.user', 'experience_level')
+                ->where(function ($query) use ($keyword) {
+                    $query->where('job_title', 'LIKE', '%' . $keyword . '%')
+                    ->orWhereHas('jobApplications.user', function ($q) use ($keyword) {
+                    $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+                 });
+        });
 
         // if (!$keyword == null) {
         //     $applications = $applications->whereHas('jobList', function ($q) use ($keyword) {
