@@ -41,6 +41,19 @@ class JobApplicationController extends Controller
                     $q->where('company_id', $company_id);
                 })
                 ->orderBy('created_at', $order);
+
+        if(!$keyword == null) {
+            $applications = $applications
+            ->whereHas('jobList', function ($query) use ($keyword){
+                $query->where('job_title', 'LIKE', '%' . $keyword . '%');
+            })
+            ->orWhereHas('user', function ($query) use ($keyword){
+                $query->where('first_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('middle_name', 'LIKE', '%', '%' . $keyword . '%')
+                ->orWhere('last_name', 'LIKE', '%', '%' . $keyword . '%');
+            });
+        }
+
         if (!$sortFilter == null) {
             if ($sortFilter == "Recent to Oldest") {
                 $applications = $applications->latest()->get()->paginate(10);

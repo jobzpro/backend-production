@@ -42,14 +42,17 @@ class JobInterviewController extends Controller
             $jobInterviews = JobInterview::where('company_id', $company_id)
                 ->where('employer_id', '!=' , $user->employer_id)
                 ->where('status', 'for_interview')
-                // ->where('employer_id', '!=', 3)
                 ->with('applicant', 'jobList', 'userRole', 'user')
                 ->orderBy('interview_date', $orderBy);
                 // ->get();
 
             if(!$keyword == null) {
-                $jobInterviews = $jobInterviews->whereHas('applicant', function ($q) use ($keyword){
+                $jobInterviews = $jobInterviews
+                ->whereHas('applicant', function ($q) use ($keyword){
                     $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+                })
+                ->orWhereHas('jobList', function ($q) use ($keyword){
+                    $q->where('job_title', 'LIKE', '%' . $keyword . '%');
                 });
             }
             return response([
