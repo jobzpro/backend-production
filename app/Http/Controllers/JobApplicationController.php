@@ -47,12 +47,12 @@ class JobApplicationController extends Controller
             ->whereHas('jobList', function ($query) use ($company_id,$keyword){
                 $query->where('company_id', $company_id)
                 ->where('job_title', 'LIKE', '%' . $keyword . '%');
-            })
-            ->orWhereHas('user', function ($query) use ($keyword){
-                $query->where('first_name', 'LIKE', '%' . $keyword . '%')
-                ->orWhere('middle_name', 'LIKE', '%', '%' . $keyword . '%')
-                ->orWhere('last_name', 'LIKE', '%', '%' . $keyword . '%');
             });
+            // ->orWhereHas('user', function ($query) use ($keyword){
+            //     $query->where('first_name', 'LIKE', '%' . $keyword . '%')
+            //     ->orWhere('middle_name', 'LIKE', '%', '%' . $keyword . '%')
+            //     ->orWhere('last_name', 'LIKE', '%', '%' . $keyword . '%');
+            // });
         }
 
         // if (!$sortFilter == null) {
