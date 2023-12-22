@@ -40,12 +40,20 @@ class JobInterviewController extends Controller
             ]);
         } else {
             $company_id = $user->userCompanies->first()->companies->first()->id;
-            $jobInterviews = JobInterview::where('company_id', $company_id)
+            // $jobInterviews = JobInterview::where('company_id', $company_id)
+            //     ->where('employer_id', '!=' , $user->employer_id)
+            //     ->where('status', 'for_interview')
+            //     ->with('applicant', 'jobList', 'userRole', 'user')
+            //     ->orderBy('interview_date', $orderBy);
+                // ->get();
+
+            $jobInterviews = JobInterview::with('applicant', 'jobList', 'userRole', 'user')
                 ->where('employer_id', '!=' , $user->employer_id)
                 ->where('status', 'for_interview')
-                ->with('applicant', 'jobList', 'userRole', 'user')
+                ->whereHas('jobList', function ($query) use ($company_id){
+                    $query->where('company_id', $company_id);
+                })
                 ->orderBy('interview_date', $orderBy);
-                // ->get();
 
             if(!$keyword == null) {
                 $jobInterviews = $jobInterviews
