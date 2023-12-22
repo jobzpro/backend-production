@@ -25,6 +25,7 @@ class JobInterviewController extends Controller
      */
     public function index(Request $request)
     {
+
         $user = User::find(request()->user()->id);
         $orderBy = $request->query('orderBy');
         $keyword = $request->query('keyword');
