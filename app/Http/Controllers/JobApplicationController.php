@@ -37,7 +37,7 @@ class JobApplicationController extends Controller
         // $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
         $user = User::where('account_id', Auth::id())->first();
         $applications = JobApplication::with('jobList', 'jobInterviews', 'jobList.user', 'jobList.experience_level', 'user.user_experience')
-            ->whereHas('jobInterviews', function ($q) use ($company_id, $keyword){
+            ->whereHas('jobList', function ($q) use ($company_id, $keyword){
                 $q->where('company_id', $company_id);
             })
             ->orderBy('created_at', $order);
