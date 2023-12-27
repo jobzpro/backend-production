@@ -98,10 +98,10 @@ class JobListController extends Controller
                 'other_email' => $data['other_email'] ?? null,
                 'industry_id' => $data['industry_id'] ?? null,
                 'files' => $file_attachments,
-                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'],
-                'is_vaccinated' => $data['is_vaccinated'],
-                'can_commute' => $data['can_commute'],
-                'qualification_id' => $data['qualification_id'],
+                'authorized_to_work_in_us' => $data['authorized_to_work_in_us'] ?? null,
+                'is_vaccinated' => $data['is_vaccinated'] ?? null,
+                'can_commute' => $data['can_commute'] ?? null,
+                'qualification_id' => $data['qualification_id'] ?? null,
             ]);
 
 
