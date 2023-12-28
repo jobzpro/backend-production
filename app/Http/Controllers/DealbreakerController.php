@@ -14,7 +14,7 @@ class DealbreakerController extends Controller
         $dealbreakers = Dealbreaker::with('choices')->where('company_id', $id)->get();
 
         return response([
-            'dealbreaker' => $dealbreakers->paginate(10),
+            'dealbreaker' => $dealbreakers,
             'message' => "Successful."
         ], 200);
     }
