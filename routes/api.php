@@ -231,6 +231,7 @@ Route::apiResources([
     'benefits' => JobBenefitsController::class,
     'qualifications' => QualificationsController::class,
     'app-reviews' => AppReviewController::class,
+    'company-dealbreakers' => DealbreakerController::class,
 ], ['only' => ['index', 'show']]);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
