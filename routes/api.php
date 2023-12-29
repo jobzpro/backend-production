@@ -97,7 +97,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::patch('/{id}/profile/references/update', 'updateReferences');
         Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
         Route::patch('/{id}/profile/educational_attainments/update', 'updateEducationalAttainments');
-        Route::patch('/{id}/profile/certifications/update', 'updateCertifications');
+        Route::post('/{id}/profile/certifications/update', 'updateCertifications');
 
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'userReports');
