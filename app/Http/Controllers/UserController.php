@@ -254,7 +254,6 @@ class UserController extends Controller
             }
         } else {
             $attached_file = [];
-
             $filesValidator = Validator::make($request->all(), [
                 'files.*' => 'mimes:pdf,doc,docx,txt,jpg,jpeg,png',
             ]);
@@ -267,6 +266,11 @@ class UserController extends Controller
             // } else {
             $path = 'files';
             //!is_dir($path) && mkdir($path, 0777, true);
+
+
+
+           // ]);
+
 
             foreach ($request->file('files') as $file) {
                 //Storage::disk('public')->put($path.$fileName, File::get($file));
