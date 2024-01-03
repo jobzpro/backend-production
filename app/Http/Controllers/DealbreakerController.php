@@ -40,14 +40,25 @@ class DealbreakerController extends Controller
             'company_id' => $request['company_id'],
         ]);
 
+        // if ($request->filled('choices')) {
+        //     // $dealbreakers = explode(',', $request['choices']);
+        //     foreach ($request['choices'] as $choice) {
+        //         // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
+        //         DealbreakerChoice::create([
+        //             'dealbreaker_id' => $dealbreaker->id,
+        //             'choice' => $choice,
+        //         ]);
+        //     }
+        // }
+
         if ($request->filled('choices')) {
-            // $dealbreakers = explode(',', $request['choices']);
-            foreach ($request['choices'] as $choice) {
-                // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
-                DealbreakerChoice::create([
-                    'dealbreaker_id' => $dealbreaker->id,
-                    'choice' => $choice,
-                ]);
+            foreach ($request['choices'] as $choiceData) {
+                if (isset($choiceData['choice'])) {
+                    DealbreakerChoice::create([
+                        'dealbreaker_id' => $dealbreaker->id,
+                        'choice' => $choiceData['choice'],
+                    ]);
+                }
             }
         }
 
