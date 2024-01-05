@@ -216,9 +216,10 @@ class JobListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $job_list_id)
+    public function show(string $id)
     {
-        $jobList = JobList::where('job_list_id', $job_list_id)
+        $job_list_id = request()->job_list_id;
+        $jobList = JobList::where('id', $job_list_id)
             ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
         return response([
             'job_list' => $jobList,
