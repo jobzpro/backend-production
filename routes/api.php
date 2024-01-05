@@ -98,6 +98,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::patch('/{id}/profile/experiences/update', 'updateExperiences');
         Route::patch('/{id}/profile/educational_attainments/update', 'updateEducationalAttainments');
         Route::post('/{id}/profile/certifications/update', 'updateCertifications');
+        Route::delete('/{id}/profile/certifications/delete', 'deleteCertificate');
 
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'userReports');

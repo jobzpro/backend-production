@@ -11,6 +11,7 @@ use App\Models\UserExperience;
 use App\Models\UserReference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -298,6 +299,20 @@ class UserController extends Controller
                 'message' => 'Certifications successfully updated'
             ], 200);
         }
+    }
+
+    public function deleteCertificate(Request $request)
+    {
+        $cert_id = $request->query('certId');
+        // dd($cert_id);
+        // dd(FileAttachment::find($cert_id));
+        $cert = FileAttachment::where('id', $cert_id)->delete();
+        $all_cert = FileAttachment::get();
+
+        return response()->json([
+            'message' => 'Deleted Successfully',
+            'certificate' => $all_cert
+        ], 200);
     }
 
     public function searchResumes(Request $request)
