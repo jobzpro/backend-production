@@ -128,6 +128,7 @@ Route::middleware(['auth:api'])->group(function () {
         #all job listing routes
         Route::prefix('/jobs')->controller(JobListController::class)->group(function () {
             Route::get('/', 'getJobListings');
+            Route::get('/{job_list_id}/show', 'show');
             Route::post('/post-job', 'store');
             Route::get('/{job_list_id}/applicants', 'getAllApplicantsForJobList');
             Route::patch('/{job_list_id}/archived', 'archiveJobList');
