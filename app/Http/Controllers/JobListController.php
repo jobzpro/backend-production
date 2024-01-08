@@ -237,9 +237,9 @@ class JobListController extends Controller
         $user = User::find($account->user->id);
         $userCompany = $user->userCompanies->first()->companies()->first();
         if ($userCompany->id == $jobList->company_id) {
-            $validator = Validator::make($request->all(), [
-                'job_title' => 'required',
-            ]);
+            // $validator = Validator::make($request->all(), [
+            //     'job_title' => 'required',
+            // ]);
 
             if ($validator->fails()) {
                 return response([
@@ -278,7 +278,7 @@ class JobListController extends Controller
 
             $job_location = JobLocation::where('job_list_id', $job_list_id)->first();
             $job_location->update([
-                'location' => $data['location'] ?? null,
+                'location' => $data['location'] ?? "",
                 'address' => $data['address'] ?? null,
                 'description' => $data['address_description'] ?? ""
             ]);
