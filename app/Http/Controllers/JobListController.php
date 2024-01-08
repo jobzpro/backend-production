@@ -261,7 +261,7 @@ class JobListController extends Controller
                 'experience_level_id' => $request->input('experience_level_id') ?? $jobList->experience_level_id,
                 'number_of_vacancies' => $request->input('number_of_vacancies') ?? $jobList->number_of_vacancies,
                 'hiring_urgency' => $request->input('hiring_urgency') ?? $jobList->hiring_urgency,
-                'job_excempt_from_local_laws' => $request->input('job_excempt_from_local_laws') ?? $jobList->job_excempt_from_locaa_laws,
+                'job_excempt_from_local_laws' => $request->input('job_excempt_from_local_laws') ?? $jobList->job_excempt_from_local_laws,
                 'status' => job_status::Published,
                 'can_applicant_with_criminal_record_apply' => $request->input('can_applicant_with_criminal_record_apply') ?? $jobList->can_applicant_with_criminal_record_apply,
                 'can_start_messages' => $request->input('can_start_messages') ?? $jobList->can_start_messages,
