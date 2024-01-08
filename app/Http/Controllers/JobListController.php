@@ -241,12 +241,12 @@ class JobListController extends Controller
             //     'job_title' => 'required',
             // ]);
 
-            if ($validator->fails()) {
-                return response([
-                    'message' => "Updating the Job was unsuccessful.",
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
+            // if ($validator->fails()) {
+            //     return response([
+            //         'message' => "Updating the Job was unsuccessful.",
+            //         'errors' => $validator->errors(),
+            //     ], 400);
+            // }
 
             $jobList->update([
                 'company_id' => $userCompany->id,
