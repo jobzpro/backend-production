@@ -278,7 +278,7 @@ class JobListController extends Controller
 
             $job_location = JobLocation::where('job_list_id', $job_list_id)->first();
             $job_location->update([
-                'location' => $data['location'],
+                'location' => $data['location'] ?? null,
                 'address' => $data['address'] ?? null,
                 'description' => $data['address_description'] ?? ""
             ]);
