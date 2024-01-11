@@ -21,7 +21,7 @@ class UserController extends Controller
     public function showJobseekerProfile($id)
     {
         $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', Auth::id())->first();
-
+        // dd(Auth::id());
         return response([
             'user' => $result,
             'message' => 'Successful'
@@ -283,7 +283,7 @@ class UserController extends Controller
 
                 $x = FileAttachment::create([
                     'name' => $fileName,
-                    'user_id' => $id,
+                    'user_id' => Auth::id(),
                     'path' => $filePath,
                     'type' => $file_type,
                     'size' => $fileSize,
