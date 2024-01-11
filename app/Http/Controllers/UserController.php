@@ -237,7 +237,6 @@ class UserController extends Controller
     public function updateCertifications(Request $request, $id)
     {
         $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', Auth::id())->first();
-        dd($user);
 
         if ($request['certification_id']) {
             $certification = $user->certifications()->where('id', '=', $request["certification_id"]);
@@ -284,7 +283,7 @@ class UserController extends Controller
 
                 $x = FileAttachment::create([
                     'name' => $fileName,
-                    'user_id' => $user->user_id,
+                    'user_id' => $user->id,
                     'path' => $filePath,
                     'type' => $file_type,
                     'size' => $fileSize,
