@@ -296,7 +296,7 @@ class UserController extends Controller
 
             return response([
                 'user' => $user,
-                'message' => 'Certifications successfully updated'
+                'message' => 'Certifications successfully uploaded'
             ], 200);
         }
     }
