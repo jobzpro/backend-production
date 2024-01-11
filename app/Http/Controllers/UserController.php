@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function showJobseekerProfile($id)
     {
-        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('id', $id)->first();
+        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', Auth::id())->first();
 
         return response([
             'user' => $result,
@@ -270,7 +270,7 @@ class UserController extends Controller
 
 
 
-           // ]);
+            // ]);
 
 
             foreach ($request->file('files') as $file) {
@@ -327,8 +327,8 @@ class UserController extends Controller
             $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             })
-            ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
         }
 
         if ($sortFilter == "Recent to Oldest") {
