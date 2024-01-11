@@ -283,7 +283,7 @@ class UserController extends Controller
 
                 $x = FileAttachment::create([
                     'name' => $fileName,
-                    'user_id' => Auth::id(),
+                    'user_id' => $user->user_id,
                     'path' => $filePath,
                     'type' => $file_type,
                     'size' => $fileSize,
