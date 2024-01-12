@@ -924,4 +924,14 @@ class JobListController extends Controller
             ], 200);
         }
     }
+
+    public function edit(string $id,  string $job_list_id)
+    {
+        $jobList = JobList::find($job_list_id);
+        $jobList = JobList::where('id', $job_list_id)
+            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
+        return response([
+            'job_list' => $jobList,
+        ], 200);
+    }
 }
