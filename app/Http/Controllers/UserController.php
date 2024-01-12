@@ -96,7 +96,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $id)->first();
 
         if ($avatar == null) {
             $fileName = $user->avatar_path;
