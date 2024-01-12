@@ -20,7 +20,7 @@ class UserController extends Controller
 
     public function showJobseekerProfile($id)
     {
-        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', Auth::id())->first();
+        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', $id)->first();
         // dd(Auth::id());
         return response([
             'user' => $result,
@@ -236,7 +236,7 @@ class UserController extends Controller
 
     public function updateCertifications(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', Auth::id())->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $id)->first();
 
         if ($request['certification_id']) {
             $certification = $user->certifications()->where('id', '=', $request["certification_id"]);
