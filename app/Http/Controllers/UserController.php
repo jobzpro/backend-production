@@ -20,8 +20,8 @@ class UserController extends Controller
 
     public function showJobseekerProfile($id)
     {
-        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('id', $id)->first();
-
+        $result = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', $id)->first();
+        // dd(Auth::id());
         return response([
             'user' => $result,
             'message' => 'Successful'
@@ -30,6 +30,7 @@ class UserController extends Controller
 
     public function updateJobseekerProfile(Request $request, $id)
     {
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', $id)->first();
         $imageValidator = Validator::make($request->all(), [
             'avatar' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -69,7 +70,7 @@ class UserController extends Controller
 
                     $x = FileAttachment::create([
                         'name' => $fileName,
-                        'user_id' => $id,
+                        'user_id' => $user->id,
                         'path' => $filePath,
                         'type' => $file_type,
                         'size' => $fileSize,
@@ -95,7 +96,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $id)->first();
 
         if ($avatar == null) {
             $fileName = $user->avatar_path;
@@ -236,7 +237,7 @@ class UserController extends Controller
 
     public function updateCertifications(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $id)->first();
 
         if ($request['certification_id']) {
             $certification = $user->certifications()->where('id', '=', $request["certification_id"]);
@@ -270,7 +271,7 @@ class UserController extends Controller
 
 
 
-           // ]);
+            // ]);
 
 
             foreach ($request->file('files') as $file) {
@@ -283,7 +284,7 @@ class UserController extends Controller
 
                 $x = FileAttachment::create([
                     'name' => $fileName,
-                    'user_id' => $id,
+                    'user_id' => $user->id,
                     'path' => $filePath,
                     'type' => $file_type,
                     'size' => $fileSize,
@@ -296,7 +297,7 @@ class UserController extends Controller
 
             return response([
                 'user' => $user,
-                'message' => 'Certifications successfully updated'
+                'message' => 'Certifications successfully uploaded'
             ], 200);
         }
     }
@@ -327,8 +328,8 @@ class UserController extends Controller
             $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             })
-            ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
         }
 
         if ($sortFilter == "Recent to Oldest") {
