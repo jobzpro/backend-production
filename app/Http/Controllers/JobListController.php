@@ -218,7 +218,8 @@ class JobListController extends Controller
      */
     public function show(string $id)
     {
-        $job_list_id = request()->job_list_id;
+        $job_list_id = request()->id;
+        // dd($job_list_id);
         $jobList = JobList::where('id', $job_list_id)
             ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
         return response([
@@ -756,11 +757,11 @@ class JobListController extends Controller
         $company = Company::find($company_id);
         $company_industry = Industry::find($company->industry_id);
         $job_lists = JobList::with('job_types', 'jobListDealbreakers')
-                    ->where('company_id', $company_id)
-                    ->where('job_title', 'LIKE', '%' . $keyword . '%')
-                    ->where('status', 'LIKE', '%' . $status . '%')
-                    ->where('status', '!=', 'deleted')
-                    ->get();
+            ->where('company_id', $company_id)
+            ->where('job_title', 'LIKE', '%' . $keyword . '%')
+            ->where('status', 'LIKE', '%' . $status . '%')
+            ->where('status', '!=', 'deleted')
+            ->get();
         $results = [];
         $types = [];
         $dealbreakers = [];
