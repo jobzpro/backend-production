@@ -30,6 +30,7 @@ class UserController extends Controller
 
     public function updateJobseekerProfile(Request $request, $id)
     {
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments', 'account')->where('account_id', $id)->first();
         $imageValidator = Validator::make($request->all(), [
             'avatar' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -69,7 +70,7 @@ class UserController extends Controller
 
                     $x = FileAttachment::create([
                         'name' => $fileName,
-                        'user_id' => $id,
+                        'user_id' => $user->id,
                         'path' => $filePath,
                         'type' => $file_type,
                         'size' => $fileSize,
