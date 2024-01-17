@@ -116,18 +116,18 @@ class AccountController extends Controller
                     ];
 
                     return response()->json($result, 200);
-                } else if ($userRoles->role_id == 3 && $account->email_verified_at == null) {
-                    $result = [
-                        'account' => $account,
-                        'user_role' => $userRoles,
-                        'message' => "Please verify your account by checking your email.",
-                    ];
-                    return response()->json($result, 300);
                 } else {
                     return response([
                         'message' => 'username and password do not match',
                     ], 400);
                 }
+            } else if ($userRoles->role_id == 3 && $account->email_verified_at == null) {
+                $result = [
+                    'account' => $account,
+                    'user_role' => $userRoles,
+                    'message' => "Please verify your account by checking your email.",
+                ];
+                return response()->json($result, 300);
             } else {
                 return response([
                     'message' => 'Account not found',
