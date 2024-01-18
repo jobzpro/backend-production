@@ -64,6 +64,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Core\Auth\VerifyEmail);
+    }
+
     // protected $appends = [
     //     'profile_completion'
     // ];
