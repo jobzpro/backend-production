@@ -11,33 +11,33 @@ use Illuminate\Routing\Controller;
 
 class VerifyEmailController extends Controller
 {
-    public function __invoke(Request $request){
+    public function __invoke(Request $request)
+    {
         $account = Account::find($request->route('id'));
-        
-        if($account->hasVerifiedEmail()){
-            return redirect(env('FRONT_URL'). '/auth/jobseeker/sign-in?verification=already-verified');
+
+        if ($account->hasVerifiedEmail()) {
+            return redirect(env('FRONT_URL') . '/auth/jobseeker/sign-in?verification=already-verified');
             // return response([
             //     'message' => "Email already verified."
             // ],200);
         }
 
-        if($account->markEmailAsVerified()){
+        if ($account->markEmailAsVerified()) {
             event(new Verified($account));
         }
 
-        return redirect(env('FRONT_URL').'/auth/jobseeker/sign-in?verification=success');
+        return redirect(env('FRONT_URL') . '/auth/jobseeker/sign-in?verification=success');
         // return response([
         //     'message' => "Sucessful"
         // ],200);
     }
 
-
-    public function resendEmail(Request $request){
+    public function resendEmail(Request $request)
+    {
         $request->user()->sendEmailVerificationNotification();
 
         return response([
             'message' => "Verification has been sent."
-        ],200);
+        ], 200);
     }
-
 }

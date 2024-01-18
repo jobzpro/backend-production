@@ -25,7 +25,7 @@ class Account extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $hidden = [
-        'password', 
+        'password',
         'remember_token',
     ];
 
@@ -35,7 +35,18 @@ class Account extends Authenticatable implements MustVerifyEmail
 
     //public $timestamps = false;
 
-    public function user(): HasOne{
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Core\Auth\VerifyEmail);
+    }
+
+    public function user(): HasOne
+    {
         return $this->hasOne(User::class);
     }
 }
