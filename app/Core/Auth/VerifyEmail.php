@@ -13,7 +13,7 @@ class VerifyEmail extends \Illuminate\Auth\Notifications\VerifyEmail
         return URL::signedRoute(
             'verification.verify',
             // Carbon::now()->addMinute(2880),
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 2880)),
             [
                 'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
