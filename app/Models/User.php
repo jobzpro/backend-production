@@ -69,10 +69,10 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function sendEmailVerificationNotification()
-    {
-        $this->notify(new \App\Core\Auth\VerifyEmail);
-    }
+    // public function sendEmailVerificationNotification()
+    // {
+    //     $this->notify(new \App\Core\Auth\VerifyEmail);
+    // }
 
     // protected $appends = [
     //     'profile_completion'
