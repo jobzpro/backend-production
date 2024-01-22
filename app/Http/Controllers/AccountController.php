@@ -480,7 +480,7 @@ class AccountController extends Controller
         //     $query->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
         // }])->where('email', '=', $data['email'])->first();
         $user = Account::where('email', '=', $data['email'])->whereHas('user.userRoles', function ($q) use ($data) {
-            $q->where('role_id', $data['is_employer']);
+            $q->where('role_id', "1" ? '2' : '3');
         })->with('user.userRoles')->get()->first();
 
         if (!$user) {
