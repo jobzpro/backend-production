@@ -93,6 +93,9 @@ return [
     | quickly generating a very large amount of password reset tokens.
     |
     */
+    'verification' => [
+        'expire' => 2880
+    ],
 
     'passwords' => [
         'users' => [
