@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\AdminMailerController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -106,5 +107,27 @@ class Company extends Model
     public function companyReviews(): HasMany
     {
         return $this->hasMany(CompanyReview::class)->with('user')->with('company');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::updated(function ($company) {
+            // if ($account->user_status == 'approved') {
+            //     (new AdminMailerController)->employerApproved($account->email);
+            // }
+
+            if ($company->wasChanged('status') && $company->status == 'approved') {
+                $userEmail = $company->userCompany->user->email;
+
+                // $companyWithUser = Company::query()
+                //     ->where('id', $company->id)
+                //     ->with(['userCompany.user'])
+                //     ->orderBy('id', 'DESC')
+                //     ->first();
+
+                (new AdminMailerController)->employerApproved($userEmail);
+            }
+        });
     }
 }

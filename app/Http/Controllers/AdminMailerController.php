@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Mail\AdminNotifications;
+use App\Mail\EmployerSignUpApproved;
 use App\Mail\ReportResponse;
 use Illuminate\Support\Facades\Mail;
 
@@ -30,6 +31,11 @@ class AdminMailerController extends Controller
         ];
 
         Mail::to($email)->send(new AdminNotifications($mailData, $subject));
+    }
+
+    public function employerApproved($email)
+    {
+        Mail::to($email)->send(new EmployerSignUpApproved());
     }
 
     public function sendReportResponseMail($email, $subject, $response)
