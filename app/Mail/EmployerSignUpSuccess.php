@@ -31,7 +31,7 @@ class EmployerSignUpSuccess extends Mailable
     {
         return new Envelope(
             from: new Address(env('MAIL_FROM_ADDRESS')),
-            subject: 'Welcome to Jobzpro',
+            subject: 'Thank you for joining with us',
         );
     }
 
