@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Http\Controllers\AdminMailerController;
+use App\Http\Controllers\MailerController;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class Company extends Model
 {
@@ -124,15 +128,21 @@ class Company extends Model
 
             if ($company->wasChanged('status') && $company->status == 'approved') {
                 // $userEmail = $company->userCompany->user->email;
-                $userEmail = $company->userCompany->first()->user->account->email;
-
+                // $userEmail = $company->userCompany->first()->user->account->email;
+                $company = $company;
+                $user = $company->userCompany->first()->user;
+                $user_password = Str::random(12);
+                $user->account::update([
+                    'password' => Hash::make($user_password),
+                    'email_verified_at' => Carbon::now()
+                ]);
                 // $companyWithUser = Company::query()
                 //     ->where('id', $company->id)
                 //     ->with(['userCompany.user'])
                 //     ->orderBy('id', 'DESC')
                 //     ->first();
 
-                (new AdminMailerController)->employerApproved($userEmail);
+                (new MailerController)->employerApproved($company, $user, $user_password);
             }
         });
     }

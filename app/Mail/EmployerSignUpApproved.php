@@ -18,9 +18,9 @@ class EmployerSignUpApproved extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($mailData)
     {
-        // $this->mailData = $mailData;
+        $this->mailData = $mailData;
     }
 
     /**

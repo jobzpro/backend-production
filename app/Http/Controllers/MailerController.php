@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ApplicationSubmitted;
+use App\Mail\EmployerSignUpApproved;
 use App\Mail\EmployerSignUpSuccess;
 use App\Mail\JobInterviews;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ use App\Models\User;
 
 class MailerController extends Controller
 {
-    public function sendResetPasswordEmail($user, $link){
+    public function sendResetPasswordEmail($user, $link)
+    {
 
         $mailData = [
             'user_first_name' => $user->user->first_name,
@@ -24,16 +26,30 @@ class MailerController extends Controller
         Mail::to($user->email)->send(new PasswordReset($mailData));
     }
 
-    public function sendSuccessEmail($email){
-        
+    public function sendSuccessEmail($email)
+    {
+
         Mail::to($email)->send(new SuccessEmail());
         return true;
     }
 
-    public function sendEmployerSuccessEmail($company, $user, $password){
+    public function employerApproved($company, $user, $password)
+    {
         $mailData = [
             'company_name' => $company->name,
-            'user_name' => $user->first_name." ".$user->last_name,
+            'user_name' => $user->first_name . " " . $user->last_name,
+            'email' => $user->account->email,
+            'temp_password' => $password,
+        ];
+
+        Mail::to($user->account->email)->send(new EmployerSignUpApproved($mailData));
+    }
+
+    public function sendEmployerSuccessEmail($company, $user, $password)
+    {
+        $mailData = [
+            'company_name' => $company->name,
+            'user_name' => $user->first_name . " " . $user->last_name,
             'email' => $user->account->email,
             'temp_password' => $password,
         ];
@@ -42,7 +58,8 @@ class MailerController extends Controller
         return true;
     }
 
-    public function sendApplicationSuccess($user, $company, $joblist){
+    public function sendApplicationSuccess($user, $company, $joblist)
+    {
         $mailData = [
             'company_name' => $company->name,
             'user_name' => $user->first_name,
@@ -52,7 +69,8 @@ class MailerController extends Controller
         Mail::to($user->account->email)->send(new ApplicationSubmitted($mailData));
     }
 
-    public function sendInterviewInvite($company, $jobInterview){
+    public function sendInterviewInvite($company, $jobInterview)
+    {
         $applicant = User::find($jobInterview['applicant_id']);
         $subject = "Job Application Update";
 
@@ -65,5 +83,4 @@ class MailerController extends Controller
 
         Mail::to($applicant->account->email)->send(new JobInterviews($mailData, $subject));
     }
-
 }
