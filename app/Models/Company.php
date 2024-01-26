@@ -132,7 +132,7 @@ class Company extends Model
                 $company = $company;
                 $user = $company->userCompany->first()->user;
                 $user_password = Str::random(12);
-                $user->account::update([
+                $user->account->update([
                     'password' => Hash::make($user_password),
                     'email_verified_at' => Carbon::now()
                 ]);
