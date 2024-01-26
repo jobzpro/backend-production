@@ -122,13 +122,7 @@ class Company extends Model
     {
         parent::boot();
         static::updated(function ($company) {
-            // if ($account->user_status == 'approved') {
-            //     (new AdminMailerController)->employerApproved($account->email);
-            // }
-
             if ($company->wasChanged('status') && $company->status == 'approved') {
-                // $userEmail = $company->userCompany->user->email;
-                // $userEmail = $company->userCompany->first()->user->account->email;
                 $company = $company;
                 $user = $company->userCompany->first()->user;
                 $user_password = Str::random(12);
@@ -136,12 +130,6 @@ class Company extends Model
                     'password' => Hash::make($user_password),
                     'email_verified_at' => Carbon::now()
                 ]);
-                // $companyWithUser = Company::query()
-                //     ->where('id', $company->id)
-                //     ->with(['userCompany.user'])
-                //     ->orderBy('id', 'DESC')
-                //     ->first();
-
                 (new MailerController)->employerApproved($company, $user, $user_password);
             }
         });
