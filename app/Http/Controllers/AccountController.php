@@ -97,11 +97,10 @@ class AccountController extends Controller
 
         $data = $request->all();
 
-        $account = Account::where('email', '=', $data['email'])->first();
+        $account = Account::with('user')->where('email', '=', $data['email'])->first();
 
         if ($account) {
             $user = User::where('account_id', $account->id)->first();
-
             $userRoles = UserRole::with('role')->where('user_id', $user->id)->first();
 
             if ($userRoles->role_id == 3 && $account->email_verified_at != null) {
