@@ -124,7 +124,7 @@ class Company extends Model
 
             if ($company->wasChanged('status') && $company->status == 'approved') {
                 // $userEmail = $company->userCompany->user->email;
-                $userEmail = $company->userCompany->first()->user->email;
+                $userEmail = $company->userCompany->first()->user->account->email;
 
                 // $companyWithUser = Company::query()
                 //     ->where('id', $company->id)
