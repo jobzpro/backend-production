@@ -70,7 +70,7 @@ class AccountController extends Controller
         event(new Registered($account));
 
         $result = [
-            'account' => $account,
+            'account' => $account->with('user'),
             'user_role' => $userRole,
             'message' => "Registration Successful",
             'token' => $token
