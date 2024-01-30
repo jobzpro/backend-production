@@ -89,9 +89,9 @@ class User extends Authenticatable
         return $this->hasMany(UserReference::class);
     }
 
-    public function userRoles(): HasMany
+    public function userRoles(): HasOne
     {
-        return $this->hasMany(UserRole::class);
+        return $this->hasOne(UserRole::class);
     }
 
     public function files(): HasMany
