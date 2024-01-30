@@ -203,7 +203,8 @@ class UserController extends Controller
 
     public function updateEducationalAttainments(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $useracc = User::with('account')->where('account_id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $useracc->id)->first();
 
         if ($request['educational_attainment_id']) {
             $attainment = $user->educational_attainments()->where('id', '=', $request["educational_attainment_id"]);
