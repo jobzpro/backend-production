@@ -164,7 +164,8 @@ class UserController extends Controller
 
     public function updateExperiences(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $useracc = User::with('account')->where('account_id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $useracc->id)->first();
 
         if ($request['experience_id']) {
             $experience = $user->experiences()->where('id', '=', $request["experience_id"]);
@@ -183,7 +184,7 @@ class UserController extends Controller
             }
         } else {
             if ($request->get('current', 0) === "1") {
-                UserExperience::where('current', true)->where('user_id', $id)->update(['current' => false]);
+                UserExperience::where('current', true)->where('user_id', $useracc->id)->update(['current' => false]);
             }
 
             $experience = UserExperience::create([
