@@ -131,7 +131,8 @@ class UserController extends Controller
 
     public function updateReferences(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $id)->first();
+        $useracc = User::with('account')->where('account_id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('id', $useracc->id)->first();
 
         if ($request['reference_id']) {
             $reference = $user->references()->where('id', '=', $request["reference_id"]);
@@ -239,7 +240,8 @@ class UserController extends Controller
 
     public function updateCertifications(Request $request, $id)
     {
-        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $id)->first();
+        $useracc = User::with('account')->where('account_id', $id)->first();
+        $user = User::with('references', 'files', 'experiences', 'certifications', 'educational_attainments')->where('account_id', $useracc->id)->first();
 
         if ($request['certification_id']) {
             $certification = $user->certifications()->where('id', '=', $request["certification_id"]);
