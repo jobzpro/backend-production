@@ -713,7 +713,7 @@ class AccountController extends Controller
           //   'default' => $choiceData['default'],
           // ]);
           DealbreakerChoice::create([
-            'dealbreaker_id' =>  $dealbreaker,
+            'dealbreaker_id' =>  $dealbreaker->id,
             'choice' => $choiceData['choice'],
             'default' => $choiceData['default'],
           ]);
