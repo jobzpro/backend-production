@@ -706,12 +706,7 @@ class AccountController extends Controller
           'company_id' =>  $company->id,
         ]);
         $choicesData = $dealbreaker['choices'];
-        // $dealbreaker->choices()->createMany($choicesData);
         foreach ($choicesData as $choiceData) {
-          // $dealbreaker->choices()->create([
-          //   'choice' => $choiceData['choice'],
-          //   'default' => $choiceData['default'],
-          // ]);
           DealbreakerChoice::create([
             'dealbreaker_id' =>  $dealbreaker->id,
             'choice' => $choiceData['choice'],

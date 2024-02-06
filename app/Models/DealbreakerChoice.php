@@ -23,6 +23,6 @@ class DealbreakerChoice extends Model
 
     public function dealbreaker(): BelongsTo
     {
-        return $this->belongsTo(Dealbreaker::class);
+        return $this->belongsTo(Dealbreaker::class, 'dealbreaker_id');
     }
 }
