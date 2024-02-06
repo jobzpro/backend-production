@@ -8,6 +8,7 @@ use App\Http\Controllers\UploadController as Uploader;
 use App\Models\Account;
 use App\Models\Company;
 use App\Models\Dealbreaker;
+use App\Models\DealbreakerChoice;
 use App\Models\PasswordResetTokens;
 use App\Models\Role;
 use App\Models\StaffInvite;
@@ -707,7 +708,12 @@ class AccountController extends Controller
         $choicesData = $dealbreaker['choices'];
         // $dealbreaker->choices()->createMany($choicesData);
         foreach ($choicesData as $choiceData) {
-          $dealbreaker->choices()->create([
+          // $dealbreaker->choices()->create([
+          //   'choice' => $choiceData['choice'],
+          //   'default' => $choiceData['default'],
+          // ]);
+          DealbreakerChoice::create([
+            'dealbreaker_id' =>  $dealbreaker,
             'choice' => $choiceData['choice'],
             'default' => $choiceData['default'],
           ]);
