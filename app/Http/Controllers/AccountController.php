@@ -671,46 +671,43 @@ class AccountController extends Controller
         [
           'question' => 'Are you authorized to work in the US?',
           'question_type' => 'Multiple Choice',
-          'default' => false,
           'choices' => [
-            ['choice' => 'Yes', 'default' => false],
-            ['choice' => 'No', 'default' => false],
+            ['choice' => 'Yes'],
+            ['choice' => 'No'],
           ],
         ],
         [
           'question' => 'Are you vaccinated with Booster?',
           'question_type' => 'Multiple Choice',
-          'default' => false,
           'choices' => [
-            ['choice' => 'Vaccinated with Booster', 'default' => false],
-            ['choice' => 'Vaccinated without Booster', 'default' => false],
-            ['choice' => 'Not vaccinated at all', 'default' => false],
+            ['choice' => 'Vaccinated with Booster'],
+            ['choice' => 'Vaccinated without Booster'],
+            ['choice' => 'Not vaccinated at all'],
           ],
         ],
         [
           'question' => 'Applicant should be able to',
           'question_type' => 'Multiple Choice',
-          'default' => false,
           'choices' => [
-            ['choice' => 'Reliably commute or planning to relocate before starting work', 'default' => false],
-            ['choice' => 'Reliably commute or willing to relocate with an employer-provided relocation package', 'default' => false],
+            ['choice' => 'Reliably commute or planning to relocate before starting work'],
+            ['choice' => 'Reliably commute or willing to relocate with an employer-provided relocation package'],
           ],
         ],
       ];
 
-      foreach ($dealbreakerDefault as $dealbreaker) {
-        $dealbreaker = Dealbreaker::create([
-          'question' => $dealbreaker['question'],
-          'question_type' => $dealbreaker['question_type'],
-          'default' => $dealbreaker['default'],
-          'company_id' =>  $company->id,
+      foreach ($dealbreakerDefault as $dealbreakerData) {
+        $dealbreakerModel = Dealbreaker::create([
+          'question' => $dealbreakerData['question'],
+          'question_type' => $dealbreakerData['question_type'],
+          'default' => false,
+          'company_id' => $company->id,
         ]);
-        $choicesData = $dealbreaker['choices'];
-        foreach ($choicesData as $choiceData) {
+
+        foreach ($dealbreakerData['choices'] as $choice) {
           DealbreakerChoice::create([
-            'dealbreaker_id' =>  $dealbreaker->id,
-            'choice' => $choiceData['choice'],
-            'default' => $choiceData['default'],
+            'dealbreaker_id' => $dealbreakerModel->id,
+            'choice' => $choice['choice'],
+            'default' => false,
           ]);
         }
       }
