@@ -14,6 +14,7 @@ class JobListDealbreaker extends Model
     protected $fillable = [
         'job_list_id',
         'dealbreaker_id',
+        'dealbreaker_choice_id',
         'required',
     ];
 
@@ -23,11 +24,16 @@ class JobListDealbreaker extends Model
 
     public function jobList(): BelongsTo
     {
-        return $this->belongsTo(JobList::class);
+        return $this->belongsTo(JobList::class, 'job_list_id');
     }
 
     public function dealbreaker(): BelongsTo
     {
-        return $this->belongsTo(Dealbreaker::class);
+        return $this->belongsTo(Dealbreaker::class, 'dealbreaker_id');
+    }
+
+    public function choice(): BelongsTo
+    {
+        return $this->belongsTo(DealbreakerChoice::class, 'dealbreaker_choice_id');
     }
 }
