@@ -81,6 +81,7 @@ class DealbreakerController extends Controller
                         'job_list_id' => $answer['job_list_id'],
                         'dealbreaker_id' => $answer['dealbreaker_id'],
                         'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                        'required' => false
                     ]);
                 }
                 return response()->json([
