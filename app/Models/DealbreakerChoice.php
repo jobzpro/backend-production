@@ -25,4 +25,9 @@ class DealbreakerChoice extends Model
     {
         return $this->belongsTo(Dealbreaker::class, 'dealbreaker_id');
     }
+
+    public function jobListDealbreaker(): BelongsTo
+    {
+        return $this->belongsTo(jobListDealbreaker::class, 'id');
+    }
 }

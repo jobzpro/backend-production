@@ -108,27 +108,37 @@ class JobList extends Model
     {
         return $this->hasMany(JobIndustrySpeciality::class);
     }
-    public function job_physical_settings():HasMany
+
+    public function job_physical_settings(): HasMany
     {
         return $this->hasMany(JobIndustryPhysicalSetting::class);
     }
+
+    // public function dealbreakers(): HasMany
+    // {
+    //     return $this->hasMany(Dealbreaker::class, 'id');
+    // }
+
     public function jobListDealbreakers(): HasMany
     {
-        return $this->hasMany(JobListDealbreaker::class);
+        return $this->hasMany(JobListDealbreaker::class, 'id');
     }
 
     public function reports()
     {
         return $this->morphMany(Report::class, 'reportable');
     }
+
     public function jobStandardShifts(): HasMany
     {
         return $this->hasMany(JobStandardShift::class);
     }
+
     public function jobWeeklySchedules(): HasMany
     {
         return $this->hasMany(JobWeeklySchedule::class);
     }
+
     public function jobSupplementalSchedules(): HasMany
     {
         return $this->hasMany(JobSupplementalSchedule::class);
@@ -144,7 +154,8 @@ class JobList extends Model
         return $this->morphToMany('App\Jobseeker', 'favoritable', 'favorites', 'favoritable_id', 'favoriter_id');
     }
 
-    public function user(): BelongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 }

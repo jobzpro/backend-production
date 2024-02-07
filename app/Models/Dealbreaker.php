@@ -23,6 +23,7 @@ class Dealbreaker extends Model
         'default' => 'boolean',
     ];
 
+    //display all choices
     public function choices(): HasMany
     {
         return $this->hasMany(DealbreakerChoice::class);
@@ -30,6 +31,11 @@ class Dealbreaker extends Model
 
     public function company(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function jobListDealbreaker(): HasMany
+    {
+        return $this->hasMany(JobListDealbreaker::class, 'id');
     }
 }

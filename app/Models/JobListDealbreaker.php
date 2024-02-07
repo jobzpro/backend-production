@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobListDealbreaker extends Model
@@ -32,8 +33,9 @@ class JobListDealbreaker extends Model
         return $this->belongsTo(Dealbreaker::class, 'dealbreaker_id');
     }
 
-    public function choice(): BelongsTo
+    // correct answer
+    public function choice(): HasOne
     {
-        return $this->belongsTo(DealbreakerChoice::class, 'dealbreaker_choice_id');
+        return $this->hasOne(DealbreakerChoice::class, 'dealbreaker_choice_id');
     }
 }
