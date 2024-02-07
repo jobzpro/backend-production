@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dealbreaker;
 use App\Models\DealbreakerChoice;
+use App\Models\JobListDealbreaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -68,5 +69,29 @@ class DealbreakerController extends Controller
             'dealbreaker' => $dealbreaker,
             'message' => "Dealbreaker added successfully."
         ], 200);
+    }
+
+    public function dealbreakerAnswerAsCompany(Request $request, string $job_list_id)
+    {
+        if ($job_list_id) {
+            $job_list_dealbreaker = $request->input('job_list_dealbreaker');
+            if ($job_list_dealbreaker) {
+                foreach ($job_list_dealbreaker as $answer) {
+                    JobListDealbreaker::create([
+                        'job_list_id' => $answer['job_list_id'],
+                        'dealbreaker_id' => $answer['dealbreaker_id'],
+                        'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                    ]);
+                }
+                return response()->json([
+                    'message' => 'success',
+                    'job_list_dealbreaker' => $job_list_dealbreaker,
+                ], 200);
+            }
+        } else {
+            return response([
+                'message' => "job list id is missing, try again"
+            ], 500);
+        }
     }
 }
