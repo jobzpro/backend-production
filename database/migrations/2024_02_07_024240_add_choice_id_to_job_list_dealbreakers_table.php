@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('first_name')->nullable()->change();
-            $table->string('last_name')->nullable()->change();
+        Schema::table('job_list_dealbreakers', function (Blueprint $table) {
+            $table->foreignId('choice_id');
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::table('job_list_dealbreakers', function (Blueprint $table) {
+            //
+        });
     }
 };
