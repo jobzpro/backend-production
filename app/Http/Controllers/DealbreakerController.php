@@ -78,7 +78,7 @@ class DealbreakerController extends Controller
             if ($job_list_dealbreaker) {
                 foreach ($job_list_dealbreaker as $answer) {
                     JobListDealbreaker::create([
-                        'job_list_id' => $answer['job_list_id'],
+                        'job_list_id' => $job_list_id,
                         'dealbreaker_id' => $answer['dealbreaker_id'],
                         'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
                         'required' => false
