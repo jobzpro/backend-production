@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyReviewController;
 use App\Http\Controllers\DealbreakerController;
+use App\Http\Controllers\ExperienceLevelController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobListController;
@@ -225,6 +226,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::apiResources([
     'company' => CompanyController::class,
+    'experience-levels' => ExperienceLevelController::class,
     'jobs' => JobListController::class,
     'industry' => IndustryController::class,
     'business-type' => BusinessTypeController::class,
