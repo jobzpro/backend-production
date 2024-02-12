@@ -65,7 +65,7 @@ class Company extends Model
 
     public function dealbreakers(): HasMany
     {
-        return $this->hasMany(Dealbreaker::class, 'id');
+        return $this->hasMany(Dealbreaker::class);
     }
 
     public function reports()
