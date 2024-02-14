@@ -25,7 +25,7 @@ class JobListDealbreaker extends Model
 
     public function jobList(): BelongsTo
     {
-        return $this->belongsTo(JobList::class);
+        return $this->belongsTo(JobList::class, 'job_list_id');
     }
 
     public function dealbreaker(): BelongsTo
