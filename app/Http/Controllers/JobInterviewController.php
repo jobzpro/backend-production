@@ -31,15 +31,15 @@ class JobInterviewController extends Controller
         $keyword = $request->query('keyword');
         // dd($user);
         // dd($user->userRoles->first()->role->role_name);
-        if ($user->userRoles->first()->role->role_name == "Jobseeker") {
-            $jobInterviews =  JobInterview::where('employer_id', $user->id)
+        if ($user->userRoles->role->role_name == "Jobseeker") {
+            $jobInterviews =  JobInterview::where('applicant_id', $user->id)
                 ->with('jobList')->get();
             return response([
                 'job_interviews' => $jobInterviews,
                 'message' => "Success",
             ]);
         } else {
-            $company_id = $user->userCompanies->first()->companies->first()->id;
+            $company_id = $user->userCompanies->first()->companies->id;
             // $jobInterviews = JobInterview::where('company_id', $company_id)
             //     ->where('employer_id', '!=' , $user->employer_id)
             //     ->where('status', 'for_interview')
