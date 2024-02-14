@@ -32,7 +32,7 @@ class JobInterviewController extends Controller
         // dd($user);
         // dd($user->userRoles->first()->role->role_name);
         if ($user->userRoles->first()->role->role_name == "Jobseeker") {
-            $jobInterviews =  JobInterview::where('applicant_id', $user->id)
+            $jobInterviews =  JobInterview::where('employer_id', $user->id)
                 ->with('jobList')->get();
             return response([
                 'job_interviews' => $jobInterviews,
