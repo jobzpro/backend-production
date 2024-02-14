@@ -26,7 +26,7 @@ class JobInterviewController extends Controller
     public function index(Request $request)
     {
 
-        $user = User::find(request()->user()->id);
+        $user = User::find($request->query('id'));
         $orderBy = $request->query('orderBy');
         $keyword = $request->query('keyword');
         // dd($user);
@@ -45,24 +45,24 @@ class JobInterviewController extends Controller
             //     ->where('status', 'for_interview')
             //     ->with('applicant', 'jobList', 'userRole', 'user')
             //     ->orderBy('interview_date', $orderBy);
-                // ->get();
+            // ->get();
 
             $jobInterviews = JobInterview::with('applicant', 'jobList', 'userRole', 'user')
-                ->where('employer_id', '!=' , $user->employer_id)
+                ->where('employer_id', '!=', $user->employer_id)
                 ->where('status', 'for_interview')
-                ->whereHas('jobList', function ($query) use ($company_id){
+                ->whereHas('jobList', function ($query) use ($company_id) {
                     $query->where('company_id', $company_id);
                 })
                 ->orderBy('interview_date', $orderBy);
 
-            if(!$keyword == null) {
+            if (!$keyword == null) {
                 $jobInterviews = $jobInterviews
-                ->whereHas('applicant', function ($q) use ($keyword){
-                    $q->where('first_name', 'LIKE', '%' . $keyword . '%');
-                })
-                ->orWhereHas('jobList', function ($q) use ($keyword){
-                    $q->where('job_title', 'LIKE', '%' . $keyword . '%');
-                });
+                    ->whereHas('applicant', function ($q) use ($keyword) {
+                        $q->where('first_name', 'LIKE', '%' . $keyword . '%');
+                    })
+                    ->orWhereHas('jobList', function ($q) use ($keyword) {
+                        $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+                    });
             }
             return response([
                 'job_interviews' => $jobInterviews->paginate(10),
@@ -141,7 +141,6 @@ class JobInterviewController extends Controller
             'message' => "Success",
         ], 200);
     }
-
 
     /**
      * Display the specified resource.
@@ -260,42 +259,50 @@ class JobInterviewController extends Controller
         }
     }
 
-    public function search(Request $request)
+    public function search(Request $request,  $emp_id)
     {
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
+        // $emp_id = $request->query('employer_id');
 
-        $jobInterviews = JobInterview::with('jobList');
+        if ($emp_id) {
+            $jobInterviews = JobInterview::with('jobList')->where('employer_id', $emp_id);
 
-        if (!$keyword == null) {
-            $jobInterviews = $jobInterviews->whereHas('jobList', function ($q) use ($keyword) {
-                $q->where('job_title', 'LIKE', '%' . $keyword . '%');
-            })
-                ->orWhereHas('applicant', function ($q) use ($keyword) {
-                    $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                });
-        }
-
-        if (!$sortFilter == null) {
-            if ($sortFilter == "Recent to Oldest") {
-                $jobInterviews = $jobInterviews->latest()->get();
-            } else if ($sortFilter == "Alphabetical") {
-                $jobInterviews = $jobInterviews->with(['applicant' => function ($q) {
-                    $q->orderBy('first_name');
-                }])->get();
+            if (!$keyword == null) {
+                $jobInterviews = $jobInterviews->whereHas('jobList', function ($q) use ($keyword) {
+                    $q->where('job_title', 'LIKE', '%' . $keyword . '%');
+                })
+                    ->orWhereHas('applicant', function ($q) use ($keyword) {
+                        $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                    });
             }
-        } else {
-            $jobInterviews = $jobInterviews->with('applicant')->get();
-        }
 
-        return response([
-            'interviews' => $jobInterviews->paginate(10),
-            'message' => "Success",
-        ], 200);
+            if (!$sortFilter == null) {
+                if ($sortFilter == "Recent to Oldest") {
+                    $jobInterviews = $jobInterviews->latest()->get();
+                } else if ($sortFilter == "Alphabetical") {
+                    $jobInterviews = $jobInterviews->with(['applicant' => function ($q) {
+                        $q->orderBy('first_name');
+                    }])->get();
+                }
+            } else {
+                $jobInterviews = $jobInterviews->with('applicant')->get();
+            }
+
+            return response([
+                'interviews' => $jobInterviews->paginate(10),
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => "employer id is missing",
+            ], 500);
+        }
     }
 
-    public function getUserInterviews(Request $request){
+    public function getUserInterviews(Request $request)
+    {
         $user = Auth::user();
         $user_id = $user->user->id;
         // $status = $request->query('status');
