@@ -121,7 +121,7 @@ class JobList extends Model
 
     public function jobListDealbreakers(): HasMany
     {
-        return $this->hasMany(JobListDealbreaker::class, 'id');
+        return $this->hasMany(JobListDealbreaker::class);
     }
 
     public function reports()
