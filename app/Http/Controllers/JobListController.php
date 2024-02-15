@@ -182,17 +182,17 @@ class JobListController extends Controller
                 }
             }
 
-            if ($request->filled('dealbreakers')) {
-                // $dealbreakers = explode(',', $data['dealbreakers']);
-                foreach ($request['dealbreakers'] as $dealbreaker) {
-                    // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
-                    JobListDealbreaker::create([
-                        'job_list_id' => $job_list->id,
-                        'dealbreaker_id' => $dealbreaker['id'],
-                        'required' => $dealbreaker['required'],
-                    ]);
-                }
-            }
+            // if ($request->filled('dealbreakers')) {
+            //     // $dealbreakers = explode(',', $data['dealbreakers']);
+            //     foreach ($request['dealbreakers'] as $dealbreaker) {
+            //         // for ($i = 0; $i < sizeof($$dealbreakers); $i++) {
+            //         JobListDealbreaker::create([
+            //             'job_list_id' => $job_list->id,
+            //             'dealbreaker_id' => $dealbreaker['id'],
+            //             'required' => $dealbreaker['required'],
+            //         ]);
+            //     }
+            // }
 
             $notification = CompanyNotification::create([
                 'title' => "Job Successfully Posted!",
