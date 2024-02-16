@@ -325,7 +325,10 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $users = User::with('experiences', 'certifications', 'account', 'references');
+        $users = User::with('experiences', 'certifications', 'account', 'references')
+            ->whereHas('userRoles', function ($q) {
+                $q->where('role_id', 3);
+            });
         // $users = User::orderBy('id', 'ASC');
 
         if (!empty($keyword)) {
@@ -333,10 +336,7 @@ class UserController extends Controller
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             })
                 ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
-                ->whereHas('userRoles', function ($q) {
-                    $q->where('role_id', 3);
-                });
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
         }
 
         if ($sortFilter == "Recent to Oldest") {
