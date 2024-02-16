@@ -333,7 +333,10 @@ class UserController extends Controller
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             })
                 ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
+                ->whereHas('userRoles', function ($q) {
+                    $q->where('role_id', 3);
+                });
         }
 
         if ($sortFilter == "Recent to Oldest") {
