@@ -75,7 +75,7 @@ class DealbreakerController extends Controller
     {
         if ($job_list_id) {
             $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->get();
-            $job_list_dealbreaker->trashed();
+            $job_list_dealbreaker->delete();
             return response()->json([
                 'message' => 'success',
             ], 200);
