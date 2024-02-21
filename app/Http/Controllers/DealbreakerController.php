@@ -71,6 +71,20 @@ class DealbreakerController extends Controller
         ], 200);
     }
 
+    public function softDeleteDealbreakerAnswer(Request $request, string $job_list_id)
+    {
+        if ($job_list_id) {
+            $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->get();
+            $job_list_dealbreaker->trashed();
+            return response()->json([
+                'message' => 'success',
+            ], 200);
+        } else {
+            return response([
+                'message' => "job list id is missing, try again"
+            ], 500);
+        }
+    }
     public function dealbreakerAnswerAsCompany(Request $request, string $job_list_id)
     {
         if ($job_list_id) {
