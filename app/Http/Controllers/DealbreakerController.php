@@ -74,8 +74,7 @@ class DealbreakerController extends Controller
     public function softDeleteDealbreakerAnswer(Request $request, string $job_list_id)
     {
         if ($job_list_id) {
-            $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->get();
-            $job_list_dealbreaker->each->delete();
+            $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->delete();
             return response()->json([
                 'message' => 'success',
             ], 200);
