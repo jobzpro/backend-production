@@ -159,7 +159,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'index');
             Route::post('/add', 'store');
             Route::post('/answer/{job_list_id}', 'dealbreakerAnswerAsCompany');
-            Route::get('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');
+            Route::post('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');
         });
 
         Route::prefix('/reports')->controller(ReportController::class)->group(function () {

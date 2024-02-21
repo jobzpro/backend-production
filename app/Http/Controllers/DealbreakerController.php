@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dealbreaker;
 use App\Models\DealbreakerChoice;
 use App\Models\JobListDealbreaker;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -74,7 +75,13 @@ class DealbreakerController extends Controller
     public function softDeleteDealbreakerAnswer(Request $request, string $job_list_id)
     {
         if ($job_list_id) {
-            $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->delete();
+            $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->get();
+            foreach ($job_list_dealbreaker as $remove) {
+                // ->delete()
+                $remove->update([
+                    'deleted_at' => Carbon::now()
+                ]);
+            }
             return response()->json([
                 'message' => 'success',
             ], 200);
