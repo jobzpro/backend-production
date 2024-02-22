@@ -16,7 +16,6 @@ class JobListDealbreakerController extends Controller
                 $jLDealbreaker->forceDelete();
                 return response()->json([
                     'message' => 'success',
-                    'count' => $jLDealbreaker
                 ], 200);
             } else {
                 return response()->json([
