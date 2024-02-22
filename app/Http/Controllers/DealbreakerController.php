@@ -78,9 +78,8 @@ class DealbreakerController extends Controller
             $job_list_dealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->get();
             foreach ($job_list_dealbreaker as $remove) {
                 // ->delete()
-                $remove->update([
-                    'deleted_at' => Carbon::now()
-                ]);
+                $remove->delete();
+                // $remove->forceDelete();
             }
             return response()->json([
                 'message' => 'success',
