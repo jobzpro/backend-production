@@ -76,17 +76,15 @@ class DealbreakerController extends Controller
     {
         if ($job_list_id) {
             $jLDealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id);
-            $deletedCount = $jLDealbreaker->delete();
+            $deletedCount = $jLDealbreaker->forceDelete();
 
-            if ($deletedCount > 0) {
+            if ($deletedCount == 0) {
                 return response()->json([
                     'message' => 'success',
-                    'deleted_count' => $jLDealbreaker,
                 ], 200);
             } else {
                 return response()->json([
                     'message' => 'No records found for soft deletion',
-                    'deleted_count' => $jLDealbreaker,
                 ], 400);
             }
         } else {
