@@ -81,9 +81,21 @@ class DealbreakerController extends Controller
                 $remove->delete();
                 // $remove->forceDelete();
             }
-            return response()->json([
-                'message' => 'success',
-            ], 200);
+
+            $deletedCount = $job_list_dealbreaker->filter(function ($remove) {
+                return $remove->trashed();
+            })->count();
+
+            if ($deletedCount > 0) {
+                return response()->json([
+                    'message' => 'success',
+                    'job_list_dealbreaker' => $job_list_dealbreaker
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'No records found for soft deletion',
+                ], 404);
+            }
         } else {
             return response([
                 'message' => "job list id is missing, try again"
