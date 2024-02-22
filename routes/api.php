@@ -18,6 +18,7 @@ use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\IndustryPhysicalSettingsController;
 use App\Http\Controllers\IndustrySpecialitiesController;
 use App\Http\Controllers\JobBenefitsController;
+use App\Http\Controllers\JobListDealbreakerController;
 use App\Http\Controllers\JobShiftController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\QualificationsController;
