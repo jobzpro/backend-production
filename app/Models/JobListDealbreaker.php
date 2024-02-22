@@ -23,7 +23,7 @@ class JobListDealbreaker extends Model
         'required' => 'boolean',
     ];
 
-    protected $hidden = ['deleted_at'];
+    // protected $hidden = ['deleted_at'];
 
     public function jobList(): BelongsTo
     {
