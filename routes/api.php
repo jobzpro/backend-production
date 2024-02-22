@@ -162,6 +162,10 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');
         });
 
+        Route::prefix('/job-list-dealbreakers')->controller(DealbreakerController::class)->group(function () {
+            Route::post('/reset/{job_list_id}', 'softDeleteDealbreakerAnswer');
+        });
+
         Route::prefix('/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'companyReports');
             Route::post('/', 'reportJobSeeker');
