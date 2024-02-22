@@ -72,15 +72,15 @@ class DealbreakerController extends Controller
         ], 200);
     }
 
-    public function softDeleteDealbreakerAnswer(Request $request, $job_list_id)
+    public function softDeleteDealbreakerAnswer($job_list_id)
     {
         if ($job_list_id) {
-            $jLDealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id);
-            $deletedCount = $jLDealbreaker->forceDelete();
+            $jLDealbreaker = JobListDealbreaker::where('job_list_id', $job_list_id)->forceDelete();
 
-            if ($deletedCount == 0) {
+            if ($jLDealbreaker > 0) {
                 return response()->json([
                     'message' => 'success',
+                    'count' => $jLDealbreaker
                 ], 200);
             } else {
                 return response()->json([
