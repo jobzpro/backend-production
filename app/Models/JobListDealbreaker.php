@@ -16,6 +16,7 @@ class JobListDealbreaker extends Model
         'job_list_id',
         'dealbreaker_id',
         'dealbreaker_choice_id',
+        'deleted_at',
         'required',
     ];
 

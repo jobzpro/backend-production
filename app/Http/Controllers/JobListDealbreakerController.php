@@ -9,9 +9,10 @@ class JobListDealbreakerController extends Controller
     public function softDeleteDealbreakerAnswer($job_list_id)
     {
         if ($job_list_id) {
-            $jLDealbreaker = JobListDealbreaker::where('job_list_id', '=', $job_list_id)->forceDelete();
-
-            if ($jLDealbreaker > 0) {
+            $jLDealbreaker = JobListDealbreaker::where('job_list_id', '=', $job_list_id);
+            $count = $jLDealbreaker->count();
+            if ($count > 0) {
+                $jLDealbreaker->forceDelete();
                 return response()->json([
                     'message' => 'success',
                     'count' => $jLDealbreaker
