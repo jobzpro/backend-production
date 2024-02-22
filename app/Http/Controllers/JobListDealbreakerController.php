@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobListDealbreaker;
+use Illuminate\Http\Request;
 
 class JobListDealbreakerController extends Controller
 {
-    public function softDeleteDealbreakerAnswer($job_list_id)
+    public function softDeleteDealbreakerAnswer(Request $request)
     {
-        if ($job_list_id) {
-            $jLDealbreaker = JobListDealbreaker::where('job_list_id', '=', $job_list_id);
+        if ($request->input('job_list_id')) {
+            $jLDealbreaker = JobListDealbreaker::where('job_list_id', '=', $request->input('job_list_id'));
             $count = $jLDealbreaker->count();
             dd($jLDealbreaker->get());
             // if ($count > 0) {
