@@ -164,7 +164,7 @@ Route::middleware(['auth:api'])->group(function () {
         });
 
         Route::prefix('/job-list-dealbreakers')->controller(JobListDealbreakerController::class)->group(function () {
-            Route::post('/reset/{job_list_id}', 'softDeleteDealbreakerAnswer');
+            Route::delete('/reset/{job_list_id}', 'softDeleteDealbreakerAnswer');
         });
 
         Route::prefix('/reports')->controller(ReportController::class)->group(function () {
