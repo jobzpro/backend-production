@@ -121,7 +121,7 @@ class JobList extends Model
 
     public function jobListDealbreakers(): HasMany
     {
-        return $this->hasMany(JobListDealbreaker::class);
+        return $this->hasMany(JobListDealbreaker::class)->where('deleted_at', null);
     }
 
     public function reports()
