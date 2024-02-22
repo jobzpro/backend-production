@@ -75,20 +75,17 @@ class DealbreakerController extends Controller
     public function softDeleteDealbreakerAnswer(Request $request, string $job_list_id)
     {
         if ($job_list_id) {
-            $job_list_dealbreaker = JobListDealbreaker::whereIn('job_list_id', $job_list_id)->delete();
-            $deletedCount = $job_list_dealbreaker->filter(function ($remove) {
-                return $remove->trashed();
-            })->count();
+            $deletedCount = JobListDealbreaker::whereIn('job_list_id', $job_list_id)->delete();
 
             if ($deletedCount > 0) {
                 return response()->json([
                     'message' => 'success',
-                    'job_list_dealbreaker' => $job_list_dealbreaker
+                    'deleted_count' => $deletedCount,
                 ], 200);
             } else {
                 return response()->json([
                     'message' => 'No records found for soft deletion',
-                ], 404);
+                ], 400);
             }
         } else {
             return response([
