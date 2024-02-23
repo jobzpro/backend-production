@@ -491,21 +491,21 @@ class JobListController extends Controller
                     ->delete();
             }
 
-            if ($request->filled('dealbreakers')) {
-                foreach ($request->input('dealbreakers') as $dealbreaker) {
-                    $dealbreakerId = $dealbreaker['id'];
-                    $dealbreakerData = JobListDealbreaker::Where('dealbreaker_id', $dealbreakerId)->Where('job_list_id', $job_list_id)->first();
-                    if ($dealbreakerData) {
-                        $dealbreakerData->update(['dealbreaker_id' => $dealbreakerId, 'required' => $dealbreaker['required']]);
-                    } else {
-                        JobListDealbreaker::create([
-                            'job_list_id' => $job_list_id,
-                            'dealbreaker_id' => $dealbreakerId,
-                            'required' => $dealbreaker['required']
-                        ]);
-                    }
-                }
-            }
+            // if ($request->filled('dealbreakers')) {
+            //     foreach ($request->input('dealbreakers') as $dealbreaker) {
+            //         $dealbreakerId = $dealbreaker['id'];
+            //         $dealbreakerData = JobListDealbreaker::Where('dealbreaker_id', $dealbreakerId)->Where('job_list_id', $job_list_id)->first();
+            //         if ($dealbreakerData) {
+            //             $dealbreakerData->update(['dealbreaker_id' => $dealbreakerId, 'required' => $dealbreaker['required']]);
+            //         } else {
+            //             JobListDealbreaker::create([
+            //                 'job_list_id' => $job_list_id,
+            //                 'dealbreaker_id' => $dealbreakerId,
+            //                 'required' => $dealbreaker['required']
+            //             ]);
+            //         }
+            //     }
+            // }
 
             $joblist = Joblist::where('id', $job_list_id)->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')->first();
             return response([
