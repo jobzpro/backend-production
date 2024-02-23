@@ -126,6 +126,29 @@ class CompanyController extends Controller
         ], 200);
     }
 
+    public function updateCompanyBasicDetailSettings(Request $request, $id)
+    {
+        $company = Company::find($id);
+        if (!$company) {
+            return response([
+                'message' => "Company not found"
+            ], 500);
+        } else if ($company) {
+            $company->update([
+                "name" => $request['name'],
+                "owner_full_name" => $request['owner_full_name'],
+                "owner_contact_no" => $request['owner_contact_no'],
+            ]);
+            return response([
+                'company' => $company,
+                'message' => "Successful"
+            ], 200);
+        } else {
+            return response([
+                'message' => "somethings wrong try again"
+            ], 400);
+        }
+    }
     public function addEmployerStaff(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
