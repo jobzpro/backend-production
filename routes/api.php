@@ -146,6 +146,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/send-invite', [CompanyController::class, 'sendStaffinvite']);
         Route::patch('/updateBasic', [CompanyController::class, 'updateBasicDetails']);
         Route::patch('/update-basic-information', [CompanyController::class, 'updateCompanyBasicDetailSettings']);
+        Route::post('/upload-company-logo', [CompanyController::class, 'uploadCompanyLogo']);
         Route::post('/updateAdmin', [CompanyController::class, 'updateAdminDetails']);
         Route::patch('/update', [CompanyController::class, 'updateCompanyDetails']);
         Route::post('/staffs/add', [CompanyController::class, 'addEmployerStaff']);

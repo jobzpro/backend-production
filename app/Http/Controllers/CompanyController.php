@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UploadController as Uploader;
 use App\Models\Account;
+use App\Models\Image;
 use App\Models\UserRole;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -43,6 +45,37 @@ class CompanyController extends Controller
         ], 200);
     }
 
+    public function uploadCompanyLogo(Request $request, $id)
+    {
+        $imageValidator = Validator::make($request->all(), [
+            'company_logo_path' => 'image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+        if ($imageValidator->fails()) {
+            return response([
+                'message' => "Invalid file.",
+                'errors' => $imageValidator->errors(),
+            ], 400);
+        } else {
+            $company_logo_path =  $this->uploadLogo($request['company_logo_path']);
+        }
+
+        $company = Company::find($id);
+
+        if ($company_logo_path == null) {
+            $fileName = $company->avatar_path;
+        } else {
+            $fileName = $company_logo_path->path;
+        }
+
+        $company->update([
+            'company_logo_path' => $fileName,
+        ]);
+
+        return response([
+            'company' => $company,
+            'message' => 'Upload Success.'
+        ], 200);
+    }
 
     public function updateBasicDetails(Request $request, $id)
     {
@@ -285,6 +318,33 @@ class CompanyController extends Controller
             return response([
                 'messsage' => "Email not found",
             ], 400);
+        }
+    }
+
+    private function uploadLogo($image)
+    {
+        $path = 'companies';
+
+        //!is_dir($path) && mkdir($path, 0777, true);
+
+        if ($file = $image) {
+            //Storage::disk('public')->put($path.$fileName, File::get($file));
+            $fileName = time() . $file->getClientOriginalName();
+            $filePath = Storage::disk('s3')->put($path, $file);
+            $filePath   = Storage::disk('s3')->url($filePath);
+            $file_type  = $file->getClientOriginalExtension();
+            $fileSize   = $this->fileSize($file);
+
+            $avatar = Image::create([
+                'name' => $fileName,
+                'type' => $file_type,
+                'path' => $filePath,
+                'size' => $fileSize,
+            ]);
+
+            return $avatar;
+        } else {
+            return $avatar = null;
         }
     }
 }
