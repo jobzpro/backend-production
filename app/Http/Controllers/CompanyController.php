@@ -333,13 +333,13 @@ class CompanyController extends Controller
             $filePath = Storage::disk('s3')->put($path, $file);
             $filePath   = Storage::disk('s3')->url($filePath);
             $file_type  = $file->getClientOriginalExtension();
-            // $fileSize   = $this->fileSize($file);
+            $fileSize   = $this->fileSize($file);
 
             $avatar = Image::create([
                 'name' => $fileName,
                 'type' => $file_type,
                 'path' => $filePath,
-                // 'size' => $fileSize,
+                'size' => $fileSize,
             ]);
 
             return $avatar;
