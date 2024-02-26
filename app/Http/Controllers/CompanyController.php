@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Storage;
 use App\Helper\FileManager;
+
 class CompanyController extends Controller
 {
     use FileManager;
@@ -333,8 +334,7 @@ class CompanyController extends Controller
             $filePath = Storage::disk('s3')->put($path, $file);
             $filePath   = Storage::disk('s3')->url($filePath);
             $file_type  = $file->getClientOriginalExtension();
-            // $fileSize   = $this->fileSize($file);
-            $fileSize = $this->fileSize($file)
+            $fileSize   = $this->fileSize($file);
 
             $avatar = Image::create([
                 'name' => $fileName,
