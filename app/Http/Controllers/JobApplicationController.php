@@ -162,6 +162,7 @@ class JobApplicationController extends Controller
             'notifier_id' => $company->id,
             'notifier_type' => get_class($company),
             'notif_type' => 'interview_scheduled',
+            'photo' => $job_list->company->company_logo_path,
             'content' => "You can review and see their profile to check if the applicant is qualified.",
             'title' => "A jobseeker has applied for " . $job_list->job_title,
         ]);
