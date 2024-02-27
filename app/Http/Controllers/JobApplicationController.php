@@ -37,17 +37,17 @@ class JobApplicationController extends Controller
         // $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
         $user = User::where('account_id', Auth::id())->first();
         $applications = JobApplication::with('jobList', 'jobInterviews', 'jobList.user', 'jobList.experience_level', 'user.user_experience')
-            ->whereHas('jobList', function ($q) use ($company_id, $keyword){
+            ->whereHas('jobList', function ($q) use ($company_id, $keyword) {
                 $q->where('company_id', $company_id);
             })
             ->orderBy('created_at', $order);
 
-        if(!$keyword == null) {
+        if (!$keyword == null) {
             $applications = $applications
-            ->whereHas('jobList', function ($query) use ($company_id,$keyword){
-                $query->where('company_id', $company_id)
-                ->where('job_title', 'LIKE', '%' . $keyword . '%');
-            });
+                ->whereHas('jobList', function ($query) use ($company_id, $keyword) {
+                    $query->where('company_id', $company_id)
+                        ->where('job_title', 'LIKE', '%' . $keyword . '%');
+                });
             // ->orWhereHas('user', function ($query) use ($keyword){
             //     $query->where('first_name', 'LIKE', '%' . $keyword . '%')
             //     ->orWhere('middle_name', 'LIKE', '%', '%' . $keyword . '%')
@@ -131,22 +131,39 @@ class JobApplicationController extends Controller
             'able_to_commute' => $request->able_to_commute ?? null
         ]);
 
-        UserNotification::create([
-            'job_application_id' => $job_application->id,
-            'user_id' => $user->id,
-            'title' => "Job Application Successfully submitted.",
-            'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
-            'is_Read' => false,
+        // UserNotification::create([
+        //     'job_application_id' => $job_application->id,
+        //     'user_id' => $user->id,
+        //     'title' => "Job Application Successfully submitted.",
+        //     'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+        //     'is_Read' => false,
+        // ]);
+        $notification = Notification::create([
+            'notifiable_id' => $job_application->user->id,
+            'notifiable_type' => get_class($job_application->user),
+            'notifier_id' => $job_application->id,
+            'notifier_type' => get_class($job_application),
+            'notif_type' => 'interview_scheduled',
+            'content' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+            'title' => 'Job Application Successfully submitted.',
         ]);
+        // CompanyNotification::create([
+        //     'company_id' => $company->id,
+        //     'job_list_id' => $job_list->id,
+        //     'title' => "A jobseeker has applied for " . $job_list->job_title,
+        //     'description' => "You can review and see their profile to check if the applicant is qualified.",
+        //     'is_Read' => false,
+        // ]);
 
-        CompanyNotification::create([
-            'company_id' => $company->id,
-            'job_list_id' => $job_list->id,
+        $notification = Notification::create([
+            'notifiable_id' => $company->id,
+            'notifiable_type' => get_class($company),
+            'notifier_id' => $company->id,
+            'notifier_type' => get_class($company),
+            'notif_type' => 'interview_scheduled',
+            'content' => "You can review and see their profile to check if the applicant is qualified.",
             'title' => "A jobseeker has applied for " . $job_list->job_title,
-            'description' => "You can review and see their profile to check if the applicant is qualified.",
-            'is_Read' => false,
         ]);
-
         if ($user_companies) {
             foreach ($user_companies as $employer) {
                 (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
@@ -240,7 +257,7 @@ class JobApplicationController extends Controller
 
     public function searchApplicantion(Request $request)
     {
-        echo('Test');
+        echo ('Test');
     }
 
     public function setStatus(Request $request, string $id)
@@ -249,10 +266,9 @@ class JobApplicationController extends Controller
         $job_application = JobApplication::with('jobList')->find($request->job_application_id);
         if ($job_application) {
             $job_application->update(['status' => $request->query('status')]);
-            if($job_application->jobList == null){
+            if ($job_application->jobList == null) {
                 $company_name = 'No company name';
-            }
-            else{
+            } else {
                 $company_name = $job_application->jobList->company->name;
             }
 
@@ -299,7 +315,8 @@ class JobApplicationController extends Controller
         }
     }
 
-    public function jobApplicationHistory(Request $request) {
+    public function jobApplicationHistory(Request $request)
+    {
         $account = Auth::user();
         $user_id = $account->user->id;
         $status = $request->query('status');
@@ -308,28 +325,23 @@ class JobApplicationController extends Controller
             // ->orderby('interview_date', $orderBy)
             ->get();
 
-        if(!$status == null)
-        {
+        if (!$status == null) {
             $jobseeker_applications = $jobseeker_applications->where('status', $status);
         }
-        if($jobseeker_applications)
-        {
+        if ($jobseeker_applications) {
             return response([
                 'applicationHistory' => $jobseeker_applications->paginate(10),
                 // 'user_id' => $user_id
             ], 200);
-        }
-        else
-        {
+        } else {
             return response([
                 'message' => 'Not found',
             ], 400);
         }
         return response([
-                'message' => 'test',
-                // 'user_id' => $user_id
-            ], 200);
-
+            'message' => 'test',
+            // 'user_id' => $user_id
+        ], 200);
     }
 
     public function delete()

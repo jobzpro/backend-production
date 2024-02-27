@@ -130,7 +130,7 @@ class JobInterviewController extends Controller
             'notifier_id' => $jobApplication->id,
             'notifier_type' => get_class($jobApplication),
             'notif_type' => 'interview_scheduled',
-            'content' => $company->name . 'has scheduled your interview.',
+            'content' => $company->name . ' has scheduled your interview.',
             'title' => 'Interview Scheduled',
         ]);
 

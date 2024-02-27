@@ -14,7 +14,7 @@ class NotificationController extends Controller
 
         if ($jobseeker) {
             return response([
-            'notifications' => $jobseeker->notifications,
+                'notifications' => $jobseeker->notifications,
                 'message' => "Success",
             ], 200);
         } else {
