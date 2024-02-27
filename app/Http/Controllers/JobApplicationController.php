@@ -144,6 +144,7 @@ class JobApplicationController extends Controller
             'notifier_id' => $job_application->id,
             'notifier_type' => get_class($job_application),
             'notif_type' => 'interview_scheduled',
+            'photo' => $job_list->company->company_logo_path,
             'content' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
             'title' => 'Job Application Successfully submitted.',
         ]);
