@@ -20,7 +20,7 @@ class Notification extends Model
         'title',
         'read'
     ];
-    public $table = "notifications";
+
     protected $casts = [
         'read' => 'boolean',
     ];
