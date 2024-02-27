@@ -138,6 +138,7 @@ class JobApplicationController extends Controller
         //     'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
         //     'is_Read' => false,
         // ]);
+
         $notification = Notification::create([
             'notifiable_id' => $job_application->user->id,
             'notifiable_type' => get_class($job_application->user),

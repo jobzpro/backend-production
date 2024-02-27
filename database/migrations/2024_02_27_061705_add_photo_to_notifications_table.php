@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('notifications', function (Blueprint $table) {
             $table->string('photo')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->integer('company_id')->nullable();
         });
     }
 
