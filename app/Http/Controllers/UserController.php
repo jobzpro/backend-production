@@ -325,38 +325,27 @@ class UserController extends Controller
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
 
-        $users = User::with('experiences', 'certifications', 'account', 'references')
-            ->whereHas('userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
-        // $users = User::orderBy('id', 'ASC');
+        $users = User::with('experiences', 'certifications', 'account', 'references');
 
         if (!empty($keyword)) {
-            $users = $users->whereHas('currentExperience', function ($q) use ($keyword) {
-                $q->where('position', 'LIKE', '%' . $keyword . '%');
-            })
-                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+            $users->where(function ($query) use ($keyword) {
+                $query->whereHas('currentExperience', function ($q) use ($keyword) {
+                    $q->where('position', 'LIKE', '%' . $keyword . '%');
+                })
+                    ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+            });
         }
 
-        if ($sortFilter == "Recent to Oldest") {
-            $users = $users->latest();
-        } elseif ($sortFilter == "Alphabetical") {
-            $users = $users->orderBy('first_name', 'ASC');
-        } elseif ($sortFilter == "Profile Completion") {
-            // dd($sortFilter);
-            $users = $users->get()->sortByDesc('profile_completion');
-        } else {
-            $users = $users->get()->sortByDesc('profile_completion');
-            // dd($users);
-        }
+        $users->whereHas('userRoles', function ($q) {
+            $q->where('role_id', 3);
+        });
 
-        // $users = $users->get();
-
+        $users = $this->applySortFilter($users, $sortFilter);
 
         return response([
             'users' => $users->paginate(10),
-            'message' => "Success",
+            'message' => 'Success',
         ], 200);
     }
 
@@ -385,6 +374,19 @@ class UserController extends Controller
             return $avatar;
         } else {
             return $avatar = null;
+        }
+    }
+    private function applySortFilter($users, $sortFilter)
+    {
+        switch ($sortFilter) {
+            case 'Recent to Oldest':
+                return $users->latest();
+            case 'Alphabetical':
+                return $users->orderBy('first_name', 'ASC');
+            case 'Profile Completion':
+                return $users->get()->sortByDesc('profile_completion');
+            default:
+                return $users->get()->sortByDesc('profile_completion');
         }
     }
 }
