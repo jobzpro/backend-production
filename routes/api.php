@@ -115,6 +115,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/{id}/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'jobSeekerNotifications');
+            Route::post('/read-all', 'readAllJobSeekerNotifications');
         });
 
         Route::prefix('/{id}/reviews')->controller(CompanyReviewController::class)->group(function () {
@@ -181,6 +182,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
             Route::get('/', 'companyNotifications');
+            Route::post('/read-all', 'readAllCompanyNotifications');
         });
 
         Route::prefix('/reviews')->controller(CompanyReviewController::class)->group(function () {

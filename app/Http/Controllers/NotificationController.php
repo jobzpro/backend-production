@@ -23,6 +23,22 @@ class NotificationController extends Controller
             ], 400);
         }
     }
+    public function readAllJobSeekerNotifications($id)
+    {
+        $company = User::with('notifications')->find($id);
+        if ($company) {
+            $company->notifications()->update(['read' => 1]);
+            $updatedCompany = User::with('notifications')->find($id);
+            return response([
+                'notifications' => $updatedCompany,
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
+    }
 
     public function companyNotifications($id)
     {
@@ -31,6 +47,23 @@ class NotificationController extends Controller
         if ($company) {
             return response([
                 'notifications' => $company->notifications,
+                'message' => "Success",
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Not found',
+            ], 400);
+        }
+    }
+
+    public function readAllCompanyNotifications($id)
+    {
+        $company = Company::with('notifications')->find($id);
+        if ($company) {
+            $company->notifications()->update(['read' => 1]);
+            $updatedCompany = Company::with('notifications')->find($id);
+            return response([
+                'notifications' => $updatedCompany,
                 'message' => "Success",
             ], 200);
         } else {
