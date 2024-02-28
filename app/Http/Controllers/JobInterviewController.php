@@ -92,7 +92,8 @@ class JobInterviewController extends Controller
         $jobApplication = JobApplication::find($job_application_id);
 
         if ($userCompanies && $userCompanies->count() > 0) {
-            $company = $userCompanies->first()->companies;
+            // $company = $userCompanies->first()->companies;
+            $company = $jobApplication->jobList->company;
 
             if ($company && $company->count() > 0) {
                 $company = $company->first();
@@ -123,7 +124,7 @@ class JobInterviewController extends Controller
             // 'status' => application_status::interview,
             'status' => 'Scheduled'
         ]);
-
+        // $jobApplication->jobList->company->name
         $notification = Notification::create([
             'notifiable_id' => $jobApplication->user->id,
             'notifiable_type' => get_class($jobApplication->user),
