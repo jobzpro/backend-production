@@ -91,6 +91,7 @@ class JobInterviewController extends Controller
         $company = $jobApplication->jobList->company;
         $applicant = $jobApplication->user;
 
+        dd($jobApplication->jobList);
         if (!$company) {
             return response([
                 'message' =>  "No company found for user",
