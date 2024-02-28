@@ -86,19 +86,10 @@ class JobInterviewController extends Controller
     {
         $data = $request->all();
         $employer = User::find(request()->user()->id);
-        $userRole = UserRole::with('role')->where('user_id', "=", $employer->id)->first();
-        $userCompanies = $employer->userCompanies;
         $company = null;
         $jobApplication = JobApplication::find($job_application_id);
-
-        if ($userCompanies && $userCompanies->count() > 0) {
-            // $company = $userCompanies->first()->companies;
-            $company = $jobApplication->jobList->company;
-
-            // if ($company && $company->count() > 0) {
-            //     $company = $company->first();
-            // }
-        }
+        $company = $jobApplication->jobList->company;
+        $applicant = $jobApplication->user;
 
         if (!$company) {
             return response([
@@ -106,12 +97,10 @@ class JobInterviewController extends Controller
             ], 404);
         }
 
-        // echo(Carbon::parse($data['interview_date'])->format("Y-m-d H:i:s"));
-
         $jobInterview = JobInterview::create([
             // 'employer_id' => $userRole->role_id,
             'employer_id' => $employer->id,
-            'applicant_id' => $jobApplication->user_id,
+            'applicant_id' => $applicant->account_id,
             'job_application_id' => $jobApplication->id,
             'job_list_id' => $jobApplication->job_list_id,
             'company_id' => $company->id,
