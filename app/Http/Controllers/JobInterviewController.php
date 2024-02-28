@@ -47,7 +47,7 @@ class JobInterviewController extends Controller
             //     ->orderBy('interview_date', $orderBy);
             // ->get();
 
-            $jobInterviews = JobInterview::with('applicant', 'jobList', 'userRole', 'user')
+            $jobInterviews = JobInterview::with('applicant', 'applicant.account', 'jobList', 'userRole', 'user')
                 ->where('employer_id', '!=', $user->employer_id)
                 ->where('status', 'for_interview')
                 ->whereHas('jobList', function ($query) use ($company_id) {
@@ -288,7 +288,7 @@ class JobInterviewController extends Controller
                 }])->get();
             }
         } else {
-            $jobInterviews = $jobInterviews->with('applicant')->get();
+            $jobInterviews = $jobInterviews->with('applicant', 'applicant.account')->get();
         }
 
         return response([
