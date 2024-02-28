@@ -95,9 +95,9 @@ class JobInterviewController extends Controller
             // $company = $userCompanies->first()->companies;
             $company = $jobApplication->jobList->company;
 
-            if ($company && $company->count() > 0) {
-                $company = $company->first();
-            }
+            // if ($company && $company->count() > 0) {
+            //     $company = $company->first();
+            // }
         }
 
         if (!$company) {
