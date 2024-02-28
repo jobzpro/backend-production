@@ -258,6 +258,7 @@ class JobInterviewController extends Controller
                 'content' => $company->name . ' has re-scheduled your interview.',
                 'title' => 'Interview Scheduled',
             ]);
+            (new MailerController)->sendInterviewInvite($company, $jobApplication);
 
             return response([
                 'interview' => $jobInterview,
