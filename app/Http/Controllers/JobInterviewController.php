@@ -247,6 +247,17 @@ class JobInterviewController extends Controller
                 'meeting_link' => $request['meeting_link'],
                 // 'notes' => $request['notes'],
             ]);
+            $jobApplication = JobInterview::find($interview_id);
+            $company = Company::find($jobApplication->company_id);
+            $notification = Notification::create([
+                'notifiable_id' => $jobApplication->applicant_id,
+                'notifiable_type' => get_class($jobApplication->user),
+                'notifier_id' => $jobApplication->id,
+                'notifier_type' => get_class($jobApplication),
+                'notif_type' => 'interview_scheduled',
+                'content' => $company->name . ' has re-scheduled your interview.',
+                'title' => 'Interview Scheduled',
+            ]);
 
             return response([
                 'interview' => $jobInterview,
