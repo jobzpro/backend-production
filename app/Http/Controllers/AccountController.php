@@ -483,7 +483,7 @@ class AccountController extends Controller
       return response([
         'message' => "User does not exist.",
       ], 400);
-    } else {
+    } else if ($role->role_name == "Jobseeker") {
       //create password tokens
       try {
         PasswordResetTokens::create([
@@ -518,7 +518,7 @@ class AccountController extends Controller
       return response([
         'message' => "User does not exist.",
       ], 400);
-    } else {
+    } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
       //create password tokens
       try {
         PasswordResetTokens::create([
