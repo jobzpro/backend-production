@@ -483,7 +483,11 @@ class AccountController extends Controller
       return response([
         'message' => "User does not exist.",
       ], 400);
-    } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
+    } else if ($role->role_name == "Employer Admin") {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
+    } else if ($role->role_name ==  "Employer Staff") {
       return response([
         'message' => "User does not exist.",
       ], 400);
