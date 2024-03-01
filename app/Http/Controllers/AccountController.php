@@ -514,7 +514,7 @@ class AccountController extends Controller
     $account = Account::where('email', '=', $data['email'])->first();
     $role = $account->user->userRoles->role;
 
-    if ($role->role_name != "Employer Admin" || $role->role_name != "Employer Staff") {
+    if ($role->role_name != ("Employer Admin" || "Employer Staff")) {
       return response([
         'message' => "User does not exist.",
       ], 400);
