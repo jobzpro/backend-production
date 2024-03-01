@@ -505,6 +505,14 @@ class AccountController extends Controller
           'message' => "A network error occured. Please try again.",
         ], 400);
       }
+    } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
+    } else {
+      return response([
+        'message' => "A network error occured. Please try again.",
+      ], 500);
     }
   }
 
@@ -540,6 +548,14 @@ class AccountController extends Controller
           'message' => "A network error occured. Please try again.",
         ], 400);
       }
+    } else if ($role->role_name == "Jobseeker") {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
+    } else {
+      return response([
+        'message' => "A network error occured. Please try again.",
+      ], 500);
     }
   }
 
