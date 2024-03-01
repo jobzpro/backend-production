@@ -483,6 +483,10 @@ class AccountController extends Controller
       return response([
         'message' => "User does not exist.",
       ], 400);
+    } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
     } else if ($role->role_name == "Jobseeker") {
       //create password tokens
       try {
@@ -505,10 +509,6 @@ class AccountController extends Controller
           'message' => "A network error occured. Please try again.",
         ], 400);
       }
-    } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
-      return response([
-        'message' => "User does not exist.",
-      ], 400);
     } else {
       return response([
         'message' => "A network error occured. Please try again.",
@@ -526,6 +526,10 @@ class AccountController extends Controller
       return response([
         'message' => "User does not exist.",
       ], 400);
+    } else if ($role->role_name == "Jobseeker") {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
     } else if ($role->role_name == ("Employer Admin" || "Employer Staff")) {
       //create password tokens
       try {
@@ -548,10 +552,6 @@ class AccountController extends Controller
           'message' => "A network error occured. Please try again.",
         ], 400);
       }
-    } else if ($role->role_name == "Jobseeker") {
-      return response([
-        'message' => "User does not exist.",
-      ], 400);
     } else {
       return response([
         'message' => "A network error occured. Please try again.",
