@@ -476,17 +476,45 @@ class AccountController extends Controller
   public function resetPasswordRequest(Request $request)
   {
     $data = $request->all();
-    // $user = Account::where('email', '=', $data['email'])->first();
-    // $user = Account::with(['user.userRoles' => function (Builder $query) use ($data) {
-    //     $query->where('role_id', $data['is_employer'] === "1" ? '2' : '3');
-    // }])->where('email', '=', $data['email'])->first();
-    // $user = Account::where('email', '=', $data['email'])->whereHas('user.userRoles', function ($q) use ($data) {
-    //     $q->where('role_id', "1" ? '2' : '3');
-    // })->with('user.userRoles')->get()->first();
+    $account = Account::where('email', '=', $data['email'])->first();
+    $role = $account->user->userRoles->role;
 
-    //tempo fix
-    $user = Account::where('email', '=', 'itookyourwaffles+32@gmail.com')->with('user.userRoles')->get()->first();
-    if (!$user) {
+    if ($role->role_name != "Jobseeker") {
+      return response([
+        'message' => "User does not exist.",
+      ], 400);
+    } else {
+      //create password tokens
+      try {
+        PasswordResetTokens::create([
+          'email' => $data['email'],
+          'token' => Str::random(60),
+          'created_at' => Carbon::now(),
+        ]);
+      } catch (\Exception $e) {
+      }
+
+      $tokenData = PasswordResetTokens::where("email", "=", $data['email'])->first();
+
+      if ($this->sendResetEmail($data['email'], $tokenData->token)) {
+        return response([
+          'message' => "A reset link has been sent to your email address.",
+        ], 200);
+      } else {
+        return response([
+          'message' => "A network error occured. Please try again.",
+        ], 400);
+      }
+    }
+  }
+
+  public function resetPasswordRequestAsEmployer(Request $request)
+  {
+    $data = $request->all();
+    $account = Account::where('email', '=', $data['email'])->first();
+    $role = $account->user->userRoles->role;
+
+    if ($role->role_name != "Employer Admin" || $role->role_name != "Employer Staff") {
       return response([
         'message' => "User does not exist.",
       ], 400);

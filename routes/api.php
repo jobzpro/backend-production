@@ -74,6 +74,7 @@ Route::prefix('auth')->controller(AccountController::class)->group(function () {
     });
 
     Route::post('/forget-password', 'resetPasswordRequest')->middleware(['guest'])->name('password.email');
+    Route::post('/forget-password-admin', 'resetPasswordRequestAsEmployer')->middleware(['guest'])->name('password.email');
     Route::post('/password-reset', 'resetPassword')->middleware(['guest'])->name('password.reset');
     Route::post('/current-user-password-reset', 'userResetPassword')->middleware(['auth:api'])->name('current-user-password.reset');
 
