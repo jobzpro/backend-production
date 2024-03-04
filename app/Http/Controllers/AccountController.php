@@ -995,9 +995,7 @@ class AccountController extends Controller
         'message' => "Account not found",
       ], 500);
     } else if ($account) {
-      $account->update([
-        'deleted_at' => Carbon::now(),
-      ]);
+      $account->delete();
       return response([
         'message' => "Account Deactivate Successfully",
       ], 200);
