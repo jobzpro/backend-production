@@ -51,6 +51,7 @@ Route::prefix('auth')->controller(AccountController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
     Route::get('/logout', 'logout')->middleware(['auth:api']);
+    Route::post('/deactivate', 'accountDeactivation')->middleware(['auth:api']);
 
 
     Route::prefix('/google')->group(function () {

@@ -986,4 +986,25 @@ class AccountController extends Controller
       ], 200);
     }
   }
+
+  public function accountDeactivation(Request $request)
+  {
+    $account = Account::find($request->id);
+    if (!$account) {
+      return response([
+        'message' => "Account not found",
+      ], 500);
+    } else if ($account) {
+      $account->update([
+        'deleted_at' => Carbon::now(),
+      ]);
+      return response([
+        'message' => "Account Deactivate Successfully",
+      ], 200);
+    } else {
+      return response([
+        'message' => "Something wrong please try again.",
+      ], 400);
+    }
+  }
 }
