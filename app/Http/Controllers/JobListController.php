@@ -222,7 +222,7 @@ class JobListController extends Controller
         // dd($job_list_id);
         // dd(JobList::all());
         $jobList = JobList::where('id', $job_list_id)
-            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices')
+            ->with('company', 'industry', 'jobStandardShifts', 'jobWeeklySchedules.weeklySchedule', 'jobSupplementalSchedules', 'job_location', 'job_types.type', 'job_benefits.benefits', 'qualifications', 'job_specialities.industrySpeciality', 'job_specialities', 'job_physical_settings', 'jobListDealbreakers.dealbreaker.choices', 'experience_level')
             ->first();
         return response([
             'job_list' => $jobList,
