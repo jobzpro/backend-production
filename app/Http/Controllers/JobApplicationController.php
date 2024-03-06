@@ -36,7 +36,7 @@ class JobApplicationController extends Controller
         $order = $request->query('orderBy');
         // $applications = JobApplication::with('jobList', 'jobInterviews', 'user');
         $user = User::where('account_id', Auth::id())->first();
-        $applications = JobApplication::with('jobList', 'jobInterviews', 'jobList.user', 'jobList.experience_level', 'user.user_experience', 'user.account', 'user.references')
+        $applications = JobApplication::with('jobList', 'jobInterviews', 'jobList.user', 'jobList.experience_level', 'user.user_experience', 'user.account', 'user.references', 'user.certifications')
             ->whereHas('jobList', function ($q) use ($company_id, $keyword) {
                 $q->where('company_id', $company_id);
             })
@@ -187,7 +187,7 @@ class JobApplicationController extends Controller
      */
     public function show(string $id, string $job_application_id)
     {
-        $application = JobApplication::with('jobList', 'user', 'user.account', 'jobInterviews', 'user.references')->find($job_application_id);
+        $application = JobApplication::with('jobList', 'user', 'user.account', 'jobInterviews', 'user.references', 'user.certifications')->find($job_application_id);
 
         if ($application) {
             return response([
@@ -324,7 +324,7 @@ class JobApplicationController extends Controller
         $user_id = $account->user->id;
         $status = $request->query('status');
         $orderBy = $request->query('orderBy');
-        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry', 'jobInterviews')
+        $jobseeker_applications = JobApplication::where('user_id', $user_id)->with('jobList.company', 'jobList.industry', 'jobInterviews', 'user.certifications')
             // ->orderby('interview_date', $orderBy)
             ->get();
 
