@@ -779,7 +779,7 @@ class JobListController extends Controller
                 'interview' => JobApplication::where('job_list_id', $job_list->id)->where('status', "Interview")->count(),
                 'accepted' => JobApplication::where('job_list_id', $job_list->id)->where('status', "Accepted")->count(),
                 'status' => $job_list->status,
-                'date_created' => Carbon::parse($job_list->created_at)->format('d/m/Y'),
+                'date_created' => Carbon::now(),
                 'job_types' => $types,
                 'dealbreakers' => $job_list->jobListDealbreakers,
                 // 'dealbreakers' => $job_list->jobListDealbreakers->with('dealbreakers')->get(),
