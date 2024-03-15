@@ -869,6 +869,7 @@ class JobListController extends Controller
                     $q->where('name', 'LIKE', '%' . $keyword . '%');
                 })
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
@@ -881,6 +882,7 @@ class JobListController extends Controller
                     ->orWhere('location', 'LIKE', '%' . $location . '%');
             })
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
@@ -892,6 +894,7 @@ class JobListController extends Controller
                 $q->where('name', 'LIKE', '%' . $industry . '%');
             })
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
@@ -910,6 +913,7 @@ class JobListController extends Controller
                     $q->where('name', 'LIKE', '%' . $keyword . '%');
                 })
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
@@ -917,7 +921,9 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } else {
-            $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')->get();
+            $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
+                ->get();
 
             return response([
                 'job_lists' => $job_lists->paginate(10),
