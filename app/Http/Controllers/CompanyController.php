@@ -197,47 +197,49 @@ class CompanyController extends Controller
         }
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
+        $emailchecker = Account::where('email', '=', $request->input('email'))->count();
+
         if ($company) {
-            // try {
-            // foreach ($staffs as $staff => $data) {
-            // if ($data) {
-            $account = Account::create([
-                'email' => $request->input('email'),
-                'password' => Hash::make(Str::random(12)),
-                'login_type' => "email",
-            ]);
+            if ($emailchecker > 0) {
+                return response()->json([
+                    'message' => 'Email Already Exist',
+                ], 400);
+            } else {
+                $user_password = Str::random(12);
+                $account = Account::create([
+                    'email' => $request->input('email'),
+                    'password' => Hash::make($user_password),
+                    'login_type' => "email",
+                    'email_verified_at' => Carbon::now()
+                ]);
 
-            $account->user()->create([
-                'account_id' => $account->id,
-                'first_name' => $request->input('first_name'),
-                // 'middle_name' => $data['middle_name'],
-                'last_name' => $request->input('last_name'),
-                //'email' => $data['email'],
-            ]);
+                $user = $account->user()->create([
+                    'account_id' => $account->id,
+                    'first_name' => $request->input('first_name'),
+                    // 'middle_name' => $data['middle_name'],
+                    'last_name' => $request->input('last_name'),
+                    //'email' => $data['email'],
+                ]);
 
-            $userRole = UserRole::create([
-                'user_id' => $account->user->id,
-                'role_id' => 4,
-            ]);
+                $userRole = UserRole::create([
+                    'user_id' => $account->user->id,
+                    'role_id' => 4,
+                ]);
 
-            $userCompany = UserCompany::create([
-                'user_id' => $account->user->id,
-                'company_id' => $company->id,
-            ]);
+                $userCompany = UserCompany::create([
+                    'user_id' => $account->user->id,
+                    'company_id' => $company->id,
+                ]);
 
-            event(new Registered($account));
-            // }
-            // }
+                // event(new Registered($account));
+                (new MailerController)->employerApproved($company, $user, $user_password);
+                $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
-            $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
-
-            return response()->json([
-                'company' => $company,
-                'message' => "Successful"
-            ], 200);
-            // } catch (Exception $e) {
-
-            // }
+                return response()->json([
+                    'company' => $company,
+                    'message' => "Successful"
+                ], 200);
+            }
         } else {
             return response()->json([
                 'message' => 'Something went wrong.',
