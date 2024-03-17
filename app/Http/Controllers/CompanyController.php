@@ -188,6 +188,8 @@ class CompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|unique:accounts',
         ]);
+        $data = $request->all();
+        dd($data);
 
         if ($validator->fails()) {
             return response([
@@ -198,8 +200,6 @@ class CompanyController extends Controller
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
-        $data = $request->all();
-        dd($data);
         try {
             // foreach ($staffs as $staff => $data) {
             // if ($data) {
