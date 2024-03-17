@@ -189,15 +189,15 @@ class CompanyController extends Controller
             'email' => 'required|unique:accounts',
         ]);
 
-        $data = $request->all();
-        // dd($data);
-
         if ($validator->fails()) {
-            return response([
+            return response()->json([
                 'message' => "Add Staff Unsuccessful",
                 'errors' => $validator->errors()
             ], 400);
         }
+
+        $data = $request->all();
+        // dd($data);
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
@@ -236,12 +236,12 @@ class CompanyController extends Controller
 
             $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
-            return response([
+            return response()->json([
                 'company' => $company,
                 'message' => "Successful"
             ], 200);
         } catch (Exception $e) {
-            return response([
+            return response()->json([
                 'error' => $e,
                 'message' => 'Something went wrong.',
             ], 400);
@@ -268,7 +268,7 @@ class CompanyController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response([
+                return response()->json([
                     'message' => 'Email exists or staff already invited',
                     'errors' => $validator->errors(),
                 ], 400);
@@ -286,11 +286,11 @@ class CompanyController extends Controller
 
             (new EmployerMailerController)->sendEmployerStaffInvite($company, $data['email'], $user, $link);
 
-            return response([
+            return response()->json([
                 'message' => 'User successfully invited.',
             ], 200);
         } else {
-            return response([
+            return response()->json([
                 'message' => 'Unauthorized'
             ], 400);
         }
@@ -313,11 +313,11 @@ class CompanyController extends Controller
 
             (new EmployerMailerController)->sendEmployerStaffInvite($company, $data['email'], $user, $link);
 
-            return response([
+            return response()->json([
                 'message' => 'Invite resent.',
             ], 200);
         } else {
-            return response([
+            return response()->json([
                 'messsage' => "Email not found",
             ], 400);
         }
