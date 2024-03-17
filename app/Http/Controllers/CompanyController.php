@@ -197,7 +197,6 @@ class CompanyController extends Controller
         // }
 
         $data = $request->all();
-        dd($data['email']);
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
@@ -205,7 +204,7 @@ class CompanyController extends Controller
             // foreach ($staffs as $staff => $data) {
             // if ($data) {
             $account = Account::create([
-                'email' => $data['email'],
+                'email' => $request->input('email'),
                 'password' => Hash::make(Str::random(12)),
                 'login_type' => "email",
                 'created_at' => Carbon::now(),
@@ -213,9 +212,9 @@ class CompanyController extends Controller
 
             $account->user()->create([
                 'account_id' => $account->id,
-                'first_name' => $data['first_name'],
+                'first_name' => $request->input('first_name'),
                 // 'middle_name' => $data['middle_name'],
-                'last_name' => $data['last_name'],
+                'last_name' => $request->input('last_name'),
                 //'email' => $data['email'],
                 'created_at' => Carbon::now(),
             ]);
