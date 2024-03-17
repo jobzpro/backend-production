@@ -199,7 +199,7 @@ class CompanyController extends Controller
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
         $data = $request->all();
-
+        dd($data);
         try {
             // foreach ($staffs as $staff => $data) {
             // if ($data) {
