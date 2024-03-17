@@ -189,25 +189,22 @@ class CompanyController extends Controller
             'email' => 'required|unique:accounts',
         ]);
 
-        // if ($validator->fails()) {
-        //     return response()->json([
-        //         'message' => "Add Staff Unsuccessful",
-        //         'errors' => $validator->errors()
-        //     ], 400);
-        // }
-
-        $data = $request->all();
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => "Add Staff Unsuccessful",
+                'errors' => $validator->errors()
+            ], 401);
+        }
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
-
-        try {
+        if ($company) {
+            // try {
             // foreach ($staffs as $staff => $data) {
             // if ($data) {
             $account = Account::create([
                 'email' => $request->input('email'),
                 'password' => Hash::make(Str::random(12)),
                 'login_type' => "email",
-                'created_at' => Carbon::now(),
             ]);
 
             $account->user()->create([
@@ -216,7 +213,6 @@ class CompanyController extends Controller
                 // 'middle_name' => $data['middle_name'],
                 'last_name' => $request->input('last_name'),
                 //'email' => $data['email'],
-                'created_at' => Carbon::now(),
             ]);
 
             $userRole = UserRole::create([
@@ -239,9 +235,11 @@ class CompanyController extends Controller
                 'company' => $company,
                 'message' => "Successful"
             ], 200);
-        } catch (Exception $e) {
+            // } catch (Exception $e) {
+
+            // }
+        } else {
             return response()->json([
-                'error' => $e,
                 'message' => 'Something went wrong.',
             ], 400);
         }
