@@ -189,15 +189,15 @@ class CompanyController extends Controller
             'email' => 'required|unique:accounts',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => "Add Staff Unsuccessful",
-                'errors' => $validator->errors()
-            ], 400);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'message' => "Add Staff Unsuccessful",
+        //         'errors' => $validator->errors()
+        //     ], 400);
+        // }
 
         $data = $request->all();
-        // dd($data);
+        dd($data['email']);
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
 
