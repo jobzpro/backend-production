@@ -188,8 +188,9 @@ class CompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|unique:accounts',
         ]);
+
         $data = $request->all();
-        dd($data);
+        // dd($data);
 
         if ($validator->fails()) {
             return response([
