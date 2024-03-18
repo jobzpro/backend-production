@@ -183,6 +183,17 @@ class CompanyController extends Controller
             ], 400);
         }
     }
+
+    public function displayStaff($id)
+    {
+        $staffs = UserCompany::where('company_id', $id)->with('user', 'user.account', 'user.userRoles')->get();
+
+        return response([
+            'company' => $staffs,
+            'message' => 'Successful'
+        ], 200);
+    }
+
     public function addEmployerStaff(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
