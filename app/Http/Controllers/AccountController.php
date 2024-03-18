@@ -841,7 +841,7 @@ class AccountController extends Controller
       $userCompany = UserCompany::where('user_id', $user->id)->first();
       $incorrect_signin_attempts = 1;
 
-      if ($userRole->role_id == 2) {
+      if ($userRole->role_id == 2 || $userRole->role_id == 4) {
         $company = Company::where('id', $userCompany->company_id)->first();
         if ($company->status == 'approved') {
           if (Hash::check($data['password'], $account['password'])) {
