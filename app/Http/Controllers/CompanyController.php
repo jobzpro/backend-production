@@ -186,7 +186,7 @@ class CompanyController extends Controller
 
     public function displayStaff($id)
     {
-        $staffs = UserCompany::where('company_id', $id)->with('user', 'user.account', 'user.userRoles')->get();
+        $staffs = UserCompany::withTrashed()->where('company_id', $id)->with('user', 'user.account', 'user.userRoles')->get();
 
         return response([
             'company' => $staffs,
@@ -258,10 +258,43 @@ class CompanyController extends Controller
         }
     }
 
-    public function destroy(Company $company)
+    public function accountDeactivation(Request $request)
     {
+        $account = Account::find($request->id);
+        if (!$account) {
+            return response([
+                'message' => "Account not found",
+            ], 500);
+        } else if ($account) {
+            $account->delete();
+            return response([
+                'message' => "Account Deactivate Successfully",
+            ], 200);
+        } else {
+            return response([
+                'message' => "Something wrong please try again.",
+            ], 400);
+        }
     }
 
+    public function accountReactivation(Request $request)
+    {
+        $account = Account::withTrashed()->find($request->id);
+        if (!$account) {
+            return response([
+                'message' => "Account not found",
+            ], 500);
+        } else if ($account) {
+            $account->restore();
+            return response([
+                'message' => "Account Reactivate Successfully",
+            ], 200);
+        } else {
+            return response([
+                'message' => "Something wrong please try again.",
+            ], 400);
+        }
+    }
 
     public function sendStaffinvite(Request $request)
     {
