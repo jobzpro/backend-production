@@ -186,7 +186,16 @@ class CompanyController extends Controller
 
     public function displayStaff($id)
     {
-        $staffs = UserCompany::withTrashed()->where('company_id', $id)->with('user', 'user.account', 'user.userRoles')->get();
+        $staffs = UserCompany::withTrashed()
+            ->where('company_id', $id)
+            ->with([
+                'user',
+                'user.account' => function ($query) {
+                    $query->withTrashed();
+                },
+                'user.userRoles'
+            ])
+            ->get();
 
         return response([
             'company' => $staffs,
