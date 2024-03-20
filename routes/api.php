@@ -155,6 +155,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/staffs', [CompanyController::class, 'displayStaff']);
         Route::post('/staffs/add', [CompanyController::class, 'addEmployerStaff']);
         Route::post('/staffs/deactivate', [CompanyController::class, 'accountDeactivation']);
+        Route::post('/staffs/activate', [CompanyController::class, 'accountReactivation']);
 
         Route::prefix('/applications')->controller(JobApplicationController::class)->group(function () {
             Route::get('/', 'index');
