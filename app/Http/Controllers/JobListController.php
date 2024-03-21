@@ -525,19 +525,21 @@ class JobListController extends Controller
     public function destroy(string $id, $job_list_id)
     {
         $jobList = JobList::find($job_list_id);
-
-        if ($jobList) {
-            // $jobList->delete();
-            $jobList->status = "deleted";
-            $jobList->save();
-
+        if (!$jobList) {
+            return response([
+                'message' => "Not found",
+            ], 400);
+        } else if ($jobList) {
+            $jobList->delete();
+            // $jobList->status = "deleted";
+            // $jobList->save();
             return response([
                 'message' => "Success",
             ], 200);
         } else {
             return response([
-                'message' => "Not found",
-            ], 401);
+                'message' => "Please try again...",
+            ], 500);
         }
     }
 

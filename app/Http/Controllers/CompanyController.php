@@ -269,7 +269,7 @@ class CompanyController extends Controller
 
     public function accountDeactivation(Request $request)
     {
-        $account = Account::find($request->id);
+        $account = Account::find($request->account_id);
         if (!$account) {
             return response([
                 'message' => "Account not found",
@@ -288,7 +288,7 @@ class CompanyController extends Controller
 
     public function accountReactivation(Request $request)
     {
-        $account = Account::withTrashed()->find($request->id);
+        $account = Account::withTrashed()->find($request->account_id);
         if (!$account) {
             return response([
                 'message' => "Account not found",
