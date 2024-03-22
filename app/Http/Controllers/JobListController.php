@@ -872,6 +872,7 @@ class JobListController extends Controller
         // ->endOfDay()
         $date_now = Carbon::today();
         $date_selected = Carbon::parse($date);
+        $endOfDay = Carbon::parse($date_selected)->endOfDay();
 
         // $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00:00',  $date_selected . ' 23:59:59'])->get();
         // $job_lists = JobList::whereDate('created_at', '>=', $date_now . ' 00:00:00')
@@ -941,7 +942,7 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!$date == null) {
-            $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00',  $date_selected . ' 23:59'])
+            $job_lists = JobList::whereBetween('created_at',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()])
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
@@ -968,7 +969,7 @@ class JobListController extends Controller
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%');
 
             if ($date_now && $date_selected) {
-                $job_lists->whereBetween('created_at', [$date_now,  $date_selected]);
+                $job_lists->whereBetween('created_at',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()]);
             }
 
             $res = $job_lists->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
