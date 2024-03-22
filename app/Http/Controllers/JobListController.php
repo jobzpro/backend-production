@@ -873,7 +873,10 @@ class JobListController extends Controller
         $date_now = Carbon::today();
         $date_selected = Carbon::parse($date);
 
-        $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00:00',  $date_selected . ' 23:59:59'])->get();
+        // $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00:00',  $date_selected . ' 23:59:59'])->get();
+        $job_lists = JobList::whereDate('created_at', '>=', $date_now . ' 00:00:00')
+            ->whereDate('created_at', '<=',  $date_selected . ' 23:59:59')
+            ->get();
         // dd($date_now);
         // dd($date_selected);
         dd($job_lists);
