@@ -968,7 +968,7 @@ class JobListController extends Controller
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%');
 
             if ($date_now && $date_selected) {
-                $job_lists->whereBetween('created_at', [$date_now . ' 00:00',  $date_selected . ' 23:59']);
+                $job_lists->whereBetween('created_at', [$date_now,  $date_selected]);
             }
 
             $res = $job_lists->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
