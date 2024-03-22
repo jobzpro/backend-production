@@ -931,7 +931,7 @@ class JobListController extends Controller
         } elseif (!$date == null) {
             $date_selected = Carbon::parse($date);
             $date_now = Carbon::now();
-            $job_lists = JobList::whereDate('created_at', 'LIKE', '%' . $date_selected->format('Y-m-d') . '%')
+            $job_lists = JobList::whereDate('created_at', '<=', $date_selected->format('Y-m-d'))
                 ->whereDate('created_at', '>=', $date_now->format('Y-m-d'))
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
@@ -958,7 +958,7 @@ class JobListController extends Controller
                     $q->where('name', 'LIKE', '%' . $job_type . '%');
                 })
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%')
-                ->orWhereDate('created_at', 'LIKE', '%' . $date_selected->format('Y-m-d') . '%')
+                ->orWhereDate('created_at', '<=', $date_selected->format('Y-m-d'))
                 ->orWhereDate('created_at', '>=', $date_now->format('Y-m-d'))
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
