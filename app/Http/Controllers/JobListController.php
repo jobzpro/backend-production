@@ -929,7 +929,8 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!$date == null) {
-            $date_selected = Carbon::parse($date);
+            // $date_selected = Carbon::parse($date);
+            $date_selected = new Carbon($date);
             $date_now = Carbon::now();
             $job_lists = JobList::whereBetween('created_at', [$date_now->format('Y-m-d'),  $date_selected->format('Y-m-d')])
                 // whereDate('created_at', '<=', $date_selected->format('Y-m-d'))
@@ -943,7 +944,8 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!($keyword == null && $location == null && $industry == null && $job_type == null && $qualifications == null && $date == null)) {
-            $date_selected = Carbon::parse($date);
+            // $date_selected = Carbon::parse($date);
+            $date_selected = new Carbon($date);
             $date_now = Carbon::now();
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('job_location', function ($q) use ($location) {
