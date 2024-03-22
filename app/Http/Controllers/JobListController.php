@@ -24,6 +24,7 @@ use App\Models\Industry;
 use App\Http\Controllers\UploadController as Uploader;
 use App\Models\JobListDealbreaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class JobListController extends Controller
 {
@@ -870,9 +871,8 @@ class JobListController extends Controller
 
         // ->startOfDay()
         // ->endOfDay()
-        $date_now = Carbon::today();
-        $date_selected = Carbon::parse($date);
-        $endOfDay = Carbon::parse($date_selected)->endOfDay();
+        $startOfDay = Carbon::parse($date)->startOfDay()->format('Y-m-d');
+        $endOfDay = Carbon::today()->endOfDay()->format('Y-m-d');
 
         // $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00:00',  $date_selected . ' 23:59:59'])->get();
         // $job_lists = JobList::whereDate('created_at', '>=', $date_now . ' 00:00:00')
@@ -942,7 +942,9 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!$date == null) {
-            $job_lists = JobList::whereBetween('time_limit',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()])
+            // DATEFILTER
+            $job_lists = JobList::whereBetween(DB::raw('DATE(time_limit)'), [$startOfDay, $endOfDay])
+                // whereBetween('time_limit',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()])
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
@@ -968,11 +970,12 @@ class JobListController extends Controller
                 })
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%');
 
-            if ($date_now && $date_selected) {
-                $job_lists->whereBetween('time_limit',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()]);
+            if ($startOfDay && $endOfDay) {
+                // DATEFILTER
+                $job_listss = $job_lists->whereBetween(DB::raw('DATE(time_limit)'), [$startOfDay, $endOfDay]);
             }
 
-            $res = $job_lists->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+            $res = $job_listss->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
 
