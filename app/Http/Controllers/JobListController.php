@@ -870,7 +870,7 @@ class JobListController extends Controller
 
         $date_now = Carbon::today()->startOfDay();
         $date_selected = Carbon::parse($date)->endOfDay();
-
+        dd($date_selected);
         if (!$keyword == null) {
             $job_lists = JobList::where('job_title', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('company', function ($q) use ($keyword) {
