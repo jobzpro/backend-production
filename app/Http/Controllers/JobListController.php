@@ -931,27 +931,24 @@ class JobListController extends Controller
         } elseif (!$date == null) {
             // $date_selected = Carbon::parse($date);
             $date_selected = new Carbon($date);
-            $date_now = Carbon::now();
-            // $job_lists = JobList::whereBetween('created_at', [
-            //     $date_now->format('Y-m-d'),
-            //     $date_selected->format('Y-m-d')
-            // ])
-            //     ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
-            //     ->orderBy('updated_at', 'DESC')
-            //     ->get();
-            $job_lists = JobList::whereBetween('created_at', [
-                $date_now->format('Y-m-d'),
-                $date_selected->format('Y-m-d')
-            ])->toSql();
-            dd($job_lists);
-            // return response([
-            //     'job_lists' => $job_lists->paginate(10),
-            //     'message' => "Success",
-            // ], 200);
+            $date_now = Carbon::today();
+            $job_lists = JobList::whereDate('created_at', '>=', $date_now)
+                ->whereDate('created_at', '<=', $date_selected)
+                // whereBetween('created_at', [
+                //         $date_now->format('Y-m-d'),
+                //         $date_selected->format('Y-m-d')
+                //     ])
+                ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
+                ->get();
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ], 200);
         } elseif (!($keyword == null && $location == null && $industry == null && $job_type == null && $qualifications == null && $date == null)) {
             // $date_selected = Carbon::parse($date);
             $date_selected = new Carbon($date);
-            $date_now = Carbon::now();
+            $date_now = Carbon::today();
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('job_location', function ($q) use ($location) {
                     $q->where('name', 'LIKE', '%' . $location . '%');
@@ -966,9 +963,9 @@ class JobListController extends Controller
                     $q->where('name', 'LIKE', '%' . $job_type . '%');
                 })
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%')
-                ->orWhereBetween('created_at', [$date_now->format('Y-m-d'),  $date_selected->format('Y-m-d')])
-                // ->orWhereDate('created_at', '<=', $date_selected->format('Y-m-d'))
-                // ->orWhereDate('created_at', '>=', $date_now->format('Y-m-d'))
+                // ->orWhereBetween('created_at', [$date_now->format('Y-m-d'),  $date_selected->format('Y-m-d')])
+                ->whereDate('created_at', '>=', $date_now)
+                ->whereDate('created_at', '<=', $date_selected)
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
