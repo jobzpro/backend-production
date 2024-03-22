@@ -868,6 +868,11 @@ class JobListController extends Controller
         $qualifications = $request->query('qualifications');
         $date = $request->query('date');
 
+        // $date_selected = Carbon::parse($date);
+        $date_now = Carbon::today();
+        // $date_selected = new Carbon($date);
+        $date_selected = Carbon::createFromFormat('Y-m-d', $date)->endOfDay();
+
         if (!$keyword == null) {
             $job_lists = JobList::where('job_title', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('company', function ($q) use ($keyword) {
@@ -929,15 +934,7 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!$date == null) {
-            // $date_selected = Carbon::parse($date);
-            $date_selected = new Carbon($date);
-            $date_now = Carbon::today();
-            $job_lists = JobList::whereDate('created_at', '>=', $date_now)
-                ->whereDate('created_at', '<=', $date_selected)
-                // whereBetween('created_at', [
-                //         $date_now->format('Y-m-d'),
-                //         $date_selected->format('Y-m-d')
-                //     ])
+            $job_lists = JobList::whereBetween('created_at', [$date_now,  $date_selected])
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
@@ -947,8 +944,7 @@ class JobListController extends Controller
             ], 200);
         } elseif (!($keyword == null && $location == null && $industry == null && $job_type == null && $qualifications == null && $date == null)) {
             // $date_selected = Carbon::parse($date);
-            $date_selected = new Carbon($date);
-            $date_now = Carbon::today();
+
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('job_location', function ($q) use ($location) {
                     $q->where('name', 'LIKE', '%' . $location . '%');
@@ -962,16 +958,18 @@ class JobListController extends Controller
                 ->orWhereHas('job_types.type', function ($q) use ($job_type) {
                     $q->where('name', 'LIKE', '%' . $job_type . '%');
                 })
-                ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%')
-                // ->orWhereBetween('created_at', [$date_now->format('Y-m-d'),  $date_selected->format('Y-m-d')])
-                ->whereDate('created_at', '>=', $date_now)
-                ->whereDate('created_at', '<=', $date_selected)
-                ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%');
+
+            if ($date_now && $date_selected) {
+                $job_lists->whereBetween('created_at', [$date_now, $date_selected]);
+            }
+
+            $res = $job_lists->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
-                'job_lists' => $job_lists->paginate(10),
+                'job_lists' => $res->paginate(10),
                 'message' => "Success",
             ], 200);
         } else {
