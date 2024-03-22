@@ -869,18 +869,9 @@ class JobListController extends Controller
         $qualifications = $request->query('qualifications');
         $date = $request->query('date');
 
-        // ->startOfDay()
-        // ->endOfDay()
         $startOfDay = Carbon::parse($date)->startOfDay()->format('Y-m-d');
         $endOfDay = Carbon::today()->endOfDay()->format('Y-m-d');
 
-        // $job_lists = JobList::whereBetween('created_at', [$date_now . ' 00:00:00',  $date_selected . ' 23:59:59'])->get();
-        // $job_lists = JobList::whereDate('created_at', '>=', $date_now . ' 00:00:00')
-        //     ->whereDate('created_at', '<=',  $date_selected . ' 23:59:59')
-        //     ->get();
-        // dd($date_now);
-        // dd($date_selected);
-        // dd($job_lists);
         if (!$keyword == null) {
             $job_lists = JobList::where('job_title', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('company', function ($q) use ($keyword) {
@@ -944,7 +935,6 @@ class JobListController extends Controller
         } elseif (!$date == null) {
             // DATEFILTER
             $job_lists = JobList::whereBetween(DB::raw('DATE(time_limit)'), [$startOfDay, $endOfDay])
-                // whereBetween('time_limit',  [$date_now->toDateTimeString(),  $endOfDay->toDateTimeString()])
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
@@ -953,8 +943,6 @@ class JobListController extends Controller
                 'message' => "Success",
             ], 200);
         } elseif (!($keyword == null && $location == null && $industry == null && $job_type == null && $qualifications == null && $date == null)) {
-            // $date_selected = Carbon::parse($date);
-
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('job_location', function ($q) use ($location) {
                     $q->where('name', 'LIKE', '%' . $location . '%');
@@ -971,7 +959,6 @@ class JobListController extends Controller
                 ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%');
 
             if ($startOfDay && $endOfDay) {
-                // DATEFILTER
                 $job_listss = $job_lists->whereBetween(DB::raw('DATE(time_limit)'), [$startOfDay, $endOfDay]);
             }
 
