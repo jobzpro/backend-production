@@ -864,6 +864,9 @@ class JobListController extends Controller
         $location = $request->query('location');
         $keyword = $request->query('keyword');
         $industry = $request->query('industry');
+        $job_type = $request->query('job_type');
+        $qualifications = $request->query('qualifications');
+        $date = $request->query('date');
 
         if (!$keyword == null) {
             $job_lists = JobList::where('job_title', 'LIKE', '%' . $keyword . '%')
@@ -903,7 +906,44 @@ class JobListController extends Controller
                 'job_lists' => $job_lists->paginate(10),
                 'message' => "Success",
             ], 200);
-        } elseif (!($keyword == null && $location == null && $industry == null)) {
+        } elseif (!$job_type == null) {
+            $job_lists = JobList::whereHas('job_types.type', function ($q) use ($job_type) {
+                $q->where('name', 'LIKE', '%' . $job_type . '%');
+            })
+                ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
+                ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ], 200);
+        } elseif (!$qualifications == null) {
+            $job_lists = JobList::where('qualification_id', 'LIKE', '%' . $qualifications . '%')
+                ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
+                ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ], 200);
+        } elseif (!$date == null) {
+            $date_selected = Carbon::parse($date);
+            $date_now = Carbon::now();
+            $job_lists = JobList::whereDate('created_at', 'LIKE', '%' . $date_selected->format('Y-m-d') . '%')
+                ->whereDate('created_at', '>=', $date_now->format('Y-m-d'))
+                ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+                ->orderBy('updated_at', 'DESC')
+                ->get();
+
+            return response([
+                'job_lists' => $job_lists->paginate(10),
+                'message' => "Success",
+            ], 200);
+        } elseif (!($keyword == null && $location == null && $industry == null && $job_type == null && $qualifications == null && $date == null)) {
+            $date_selected = Carbon::parse($date);
+            $date_now = Carbon::now();
             $job_lists = JobList::orWhereHas('name', 'LIKE', '%' . $keyword . '%')
                 ->orWhereHas('job_location', function ($q) use ($location) {
                     $q->where('name', 'LIKE', '%' . $location . '%');
@@ -914,6 +954,12 @@ class JobListController extends Controller
                 ->orWhereHas('company', function ($q) use ($keyword) {
                     $q->where('name', 'LIKE', '%' . $keyword . '%');
                 })
+                ->orWhereHas('job_types.type', function ($q) use ($job_type) {
+                    $q->where('name', 'LIKE', '%' . $job_type . '%');
+                })
+                ->orWhereHas('qualification_id', 'LIKE', '%' . $qualifications . '%')
+                ->orWhereDate('created_at', 'LIKE', '%' . $date_selected->format('Y-m-d') . '%')
+                ->orWhereDate('created_at', '>=', $date_now->format('Y-m-d'))
                 ->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
                 ->orderBy('updated_at', 'DESC')
                 ->get();
