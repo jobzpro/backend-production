@@ -868,8 +868,8 @@ class JobListController extends Controller
         $qualifications = $request->query('qualifications');
         $date = $request->query('date');
 
-        $date_now = Carbon::today();
-        $date_selected = Carbon::parse('Y-m-d', $date)->endOfDay();
+        $date_now = Carbon::today()->startOfDay();
+        $date_selected = Carbon::parse($date)->endOfDay();
 
         if (!$keyword == null) {
             $job_lists = JobList::where('job_title', 'LIKE', '%' . $keyword . '%')
