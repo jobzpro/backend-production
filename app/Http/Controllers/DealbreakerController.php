@@ -103,7 +103,6 @@ class DealbreakerController extends Controller
             'question' => 'required',
             'question_type' => 'required',
             'company_id' => 'required',
-            'id' => 'required',
         ]);
 
         if ($validator->fails()) {
