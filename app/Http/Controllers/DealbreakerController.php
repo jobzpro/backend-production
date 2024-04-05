@@ -112,7 +112,7 @@ class DealbreakerController extends Controller
             ], 400);
         }
 
-        $dealbreaker = Dealbreaker::find($dealbreaker_id);
+        $dealbreaker = Dealbreaker::findOrFail($dealbreaker_id);
 
         $dealbreaker->update([
             'question' => $request['question'],
@@ -120,13 +120,9 @@ class DealbreakerController extends Controller
             'company_id' => $request['company_id'],
         ]);
 
-        $choices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id);
-
-        if ($choices->count() > 0) {
-            $choices->forceDelete();
-        }
-
         if ($request->filled('choices')) {
+            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->delete();
+
             foreach ($request['choices'] as $choiceData) {
                 if (isset($choiceData['choice'])) {
                     DealbreakerChoice::create([
@@ -141,7 +137,7 @@ class DealbreakerController extends Controller
 
         return response([
             'dealbreaker' => $res,
-            'message' => "Dealbreaker added successfully."
+            'message' => "Dealbreaker edited successfully."
         ], 200);
     }
 }
