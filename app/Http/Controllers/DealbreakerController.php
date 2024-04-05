@@ -145,9 +145,7 @@ class DealbreakerController extends Controller
     public function editDealbreakerChoices(Request $request, $dealbreaker_id)
     {
         if ($request->filled('choices')) {
-            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->update([
-                'deleted_at' => Carbon::now()
-            ]);
+            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->forceDelete();
 
             foreach ($request['choices'] as $choiceData) {
                 if (isset($choiceData['choice'])) {
