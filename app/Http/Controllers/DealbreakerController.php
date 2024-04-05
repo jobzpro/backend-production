@@ -144,33 +144,30 @@ class DealbreakerController extends Controller
 
     public function editDealbreakerChoices(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'dealbreaker_id' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response([
-                'message' => "Update Dealbreaker Unsuccessful.",
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-        if ($request->filled('choices')) {
-            DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
+        if ($request->input('job_list_id')) {
+            if ($request->filled('choices')) {
+                DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
 
-            foreach ($request['choices'] as $choiceData) {
-                if (isset($choiceData['choice'])) {
-                    DealbreakerChoice::create([
-                        'dealbreaker_id' => $request->input('dealbreaker_id'),
-                        'choice' => $choiceData['choice'],
-                    ]);
+                foreach ($request['choices'] as $choiceData) {
+                    if (isset($choiceData['choice'])) {
+                        DealbreakerChoice::create([
+                            'dealbreaker_id' => $request->input('dealbreaker_id'),
+                            'choice' => $choiceData['choice'],
+                        ]);
+                    }
                 }
             }
+
+            $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
+
+            return response([
+                'dealbreaker' => $res,
+                'message' => "Dealbreaker Choices edited successfully."
+            ], 200);
+        } else {
+            return response([
+                'message' => "dealbreaker_id is missing, try again"
+            ], 500);
         }
-
-        $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
-
-        return response([
-            'dealbreaker' => $res,
-            'message' => "Dealbreaker Choices edited successfully."
-        ], 200);
     }
 }
