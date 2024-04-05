@@ -97,7 +97,7 @@ class DealbreakerController extends Controller
         }
     }
 
-    public function editDealbreakerAndChoices(Request $request, $id)
+    public function editDealbreakerAndChoices(Request $request, $dealbreaker_id)
     {
         $validator = Validator::make($request->all(), [
             'question' => 'required',
@@ -113,7 +113,7 @@ class DealbreakerController extends Controller
             ], 400);
         }
 
-        $dealbreaker = Dealbreaker::find($id);
+        $dealbreaker = Dealbreaker::find($dealbreaker_id);
 
         $dealbreaker->update([
             'question' => $request['question'],
@@ -121,7 +121,7 @@ class DealbreakerController extends Controller
             'company_id' => $request['company_id'],
         ]);
 
-        DealbreakerChoice::where('dealbreaker_id', $id)->forceDelete();
+        DealbreakerChoice::where('dealbreaker_id', $dealbreaker_id)->forceDelete();
 
         if ($request->filled('choices')) {
             foreach ($request['choices'] as $choiceData) {
