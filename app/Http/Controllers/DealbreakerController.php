@@ -121,21 +121,20 @@ class DealbreakerController extends Controller
         ]);
 
         if ($request->filled('choices')) {
-            $delete = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->update([
+            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->update([
                 'deleted_at' => Carbon::now()
             ]);
-            $choices = collect($request->input('choices', []));
-            $choices->each(function ($choiceData) use ($dealbreaker) {
+            foreach ($request['choices'] as $choiceData) {
                 if (isset($choiceData['choice'])) {
                     DealbreakerChoice::create([
-                        'dealbreaker_id' => $dealbreaker->id,
+                        'dealbreaker_id' => $dealbreaker_id,
                         'choice' => $choiceData['choice'],
                     ]);
                 }
-            });
+            }
         }
 
-        $res = Dealbreaker::with('choices')->find($dealbreaker->id);
+        $res = Dealbreaker::with('choices')->find($dealbreaker_id);
 
         return response([
             'dealbreaker' => $res,
