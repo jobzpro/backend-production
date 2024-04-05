@@ -97,7 +97,7 @@ class DealbreakerController extends Controller
         }
     }
 
-    public function editDealbreakerAndChoices(Request $request, $dealbreaker_id)
+    public function editDealbreakers(Request $request, $dealbreaker_id)
     {
         $validator = Validator::make($request->all(), [
             'question' => 'required',
@@ -139,6 +139,31 @@ class DealbreakerController extends Controller
         return response([
             'dealbreaker' => $res,
             'message' => "Dealbreaker edited successfully."
+        ], 200);
+    }
+
+    public function editDealbreakerChoices(Request $request, $dealbreaker_id)
+    {
+        if ($request->filled('choices')) {
+            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->update([
+                'deleted_at' => Carbon::now()
+            ]);
+
+            foreach ($request['choices'] as $choiceData) {
+                if (isset($choiceData['choice'])) {
+                    DealbreakerChoice::create([
+                        'dealbreaker_id' => $dealbreaker_id,
+                        'choice' => $choiceData['choice'],
+                    ]);
+                }
+            }
+        }
+
+        $res = Dealbreaker::with('choices')->find($dealbreaker_id);
+
+        return response([
+            'dealbreaker' => $res,
+            'message' => "Dealbreaker Choices edited successfully."
         ], 200);
     }
 }
