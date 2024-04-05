@@ -120,7 +120,11 @@ class DealbreakerController extends Controller
             'company_id' => $request['company_id'],
         ]);
 
-        DealbreakerChoice::where('dealbreaker_id', $dealbreaker_id)->delete();
+        $choices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id);
+
+        if ($choices->count() > 0) {
+            $choices->forceDelete();
+        }
 
         if ($request->filled('choices')) {
             foreach ($request['choices'] as $choiceData) {
