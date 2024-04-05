@@ -122,15 +122,16 @@ class DealbreakerController extends Controller
 
         if ($request->filled('choices')) {
             DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->delete();
+            $choices = collect($request->input('choices', []));
 
-            foreach ($request['choices'] as $choiceData) {
+            $choices->each(function ($choiceData) use ($dealbreaker) {
                 if (isset($choiceData['choice'])) {
                     DealbreakerChoice::create([
                         'dealbreaker_id' => $dealbreaker->id,
                         'choice' => $choiceData['choice'],
                     ]);
                 }
-            }
+            });
         }
 
         $res = Dealbreaker::with('choices')->find($dealbreaker->id);
