@@ -144,7 +144,7 @@ class DealbreakerController extends Controller
 
     public function editDealbreakerChoices(Request $request)
     {
-        if ($request->input('job_list_id')) {
+        if ($request->input('dealbreaker_id')) {
             if ($request->filled('choices')) {
                 DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
 
