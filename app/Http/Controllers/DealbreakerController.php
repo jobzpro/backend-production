@@ -96,4 +96,49 @@ class DealbreakerController extends Controller
             ], 500);
         }
     }
+
+    public function editDealbreakerAndChoices(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'question' => 'required',
+            'question_type' => 'required',
+            'company_id' => 'required',
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Update Dealbreaker Unsuccessful.",
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $dealbreaker = Dealbreaker::find($id);
+
+        $dealbreaker->update([
+            'question' => $request['question'],
+            'question_type' => $request['question_type'],
+            'company_id' => $request['company_id'],
+        ]);
+
+        DealbreakerChoice::where('dealbreaker_id', $id)->forceDelete();
+
+        if ($request->filled('choices')) {
+            foreach ($request['choices'] as $choiceData) {
+                if (isset($choiceData['choice'])) {
+                    DealbreakerChoice::create([
+                        'dealbreaker_id' => $dealbreaker->id,
+                        'choice' => $choiceData['choice'],
+                    ]);
+                }
+            }
+        }
+
+        $res = Dealbreaker::with('choices')->find($dealbreaker->id);
+
+        return response([
+            'dealbreaker' => $res,
+            'message' => "Dealbreaker added successfully."
+        ], 200);
+    }
 }
