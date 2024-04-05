@@ -154,19 +154,19 @@ class DealbreakerController extends Controller
             ], 400);
         }
         if ($request->filled('choices')) {
-            DealbreakerChoice::where('dealbreaker_id', '=',  $request['dealbreaker_id'])->forceDelete();
+            DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
 
             foreach ($request['choices'] as $choiceData) {
                 if (isset($choiceData['choice'])) {
                     DealbreakerChoice::create([
-                        'dealbreaker_id' => $request['dealbreaker_id'],
+                        'dealbreaker_id' => $request->input('dealbreaker_id'),
                         'choice' => $choiceData['choice'],
                     ]);
                 }
             }
         }
 
-        $res = Dealbreaker::with('choices')->find($request['dealbreaker_id']);
+        $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
 
         return response([
             'dealbreaker' => $res,
