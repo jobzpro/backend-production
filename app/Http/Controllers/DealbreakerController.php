@@ -170,4 +170,12 @@ class DealbreakerController extends Controller
             ], 500);
         }
     }
+
+    public function deleteDealbreakers($dealbreaker_id)
+    {
+        $dealbreaker = Dealbreaker::findOrFail($dealbreaker_id);
+        $dealbreakerChoices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id);
+        $dealbreaker->forceDelete();
+        $dealbreakerChoices->forceDelete();
+    }
 }
