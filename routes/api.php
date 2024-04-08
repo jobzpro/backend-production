@@ -168,6 +168,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'index');
             Route::post('/add', 'store');
             Route::post('/answer/{job_list_id}', 'dealbreakerAnswerAsCompany');
+            Route::get('/{dealbreaker_id}', 'getDealbreaker');
             Route::post('/{dealbreaker_id}/edit', 'editDealbreakers');
             Route::post('/{dealbreaker_id}/edit-choices', 'editDealbreakerChoices');
             Route::post('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');

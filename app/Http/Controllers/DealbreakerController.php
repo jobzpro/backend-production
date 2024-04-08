@@ -97,6 +97,22 @@ class DealbreakerController extends Controller
         }
     }
 
+    public function getDealbreaker(Request $request, $dealbreaker_id)
+    {
+        $res = Dealbreaker::with('choices')->find($dealbreaker_id);
+        if ($res) {
+            return response([
+                'dealbreaker' => $res,
+                'message' => "Success."
+            ], 200);
+        } else {
+            return response([
+                'dealbreaker' => $res,
+                'message' => "Success."
+            ], 500);
+        }
+    }
+
     public function editDealbreakers(Request $request, $dealbreaker_id)
     {
         $validator = Validator::make($request->all(), [
