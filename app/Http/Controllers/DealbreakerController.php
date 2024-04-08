@@ -179,6 +179,13 @@ class DealbreakerController extends Controller
             $dealbreakerChoices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreakerID);
             $dealbreaker->forceDelete();
             $dealbreakerChoices->forceDelete();
+            return response([
+                'message' => "Delete Success"
+            ], 200);
+        } else {
+            return response([
+                'message' => "ID not found"
+            ], 400);
         }
     }
 }
