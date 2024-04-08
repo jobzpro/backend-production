@@ -172,6 +172,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/{dealbreaker_id}/edit-choices', 'editDealbreakerChoices');
             Route::post('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');
             Route::delete('/permanent-delete-dealbreaker/{dealbreaker_id}', 'deleteDealbreakers');
+            Route::delete('/permanent-delete-dealbreaker-choices/{dealbreaker_id}', 'deleteDealbreakerChoices');
         });
 
         Route::prefix('/job-list-dealbreakers')->controller(JobListDealbreakerController::class)->group(function () {

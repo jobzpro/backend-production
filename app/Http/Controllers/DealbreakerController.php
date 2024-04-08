@@ -176,8 +176,25 @@ class DealbreakerController extends Controller
         $dealbreakerID = $request->input('dealbreaker_id');
         if ($request->input('dealbreaker_id')) {
             $dealbreaker = Dealbreaker::findOrFail($dealbreakerID);
-            $dealbreakerChoices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreakerID);
+            // $dealbreakerChoices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreakerID);
             $dealbreaker->forceDelete();
+            // $dealbreakerChoices->forceDelete();
+            return response([
+                'message' => "Delete Success"
+            ], 200);
+        } else {
+            return response([
+                'message' => "ID not found"
+            ], 400);
+        }
+    }
+    public function deleteDealbreakerChoices(Request $request, $dealbreaker_id)
+    {
+        $dealbreakerID = $request->input('dealbreaker_id');
+        if ($request->input('dealbreaker_id')) {
+            // $dealbreaker = Dealbreaker::where('dealbreaker_id', '=',$dealbreakerID);
+            $dealbreakerChoices = DealbreakerChoice::where('dealbreaker_id', '=', $dealbreakerID);
+            // $dealbreaker->forceDelete();
             $dealbreakerChoices->forceDelete();
             return response([
                 'message' => "Delete Success"
