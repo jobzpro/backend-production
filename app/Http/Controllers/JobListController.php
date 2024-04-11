@@ -759,6 +759,7 @@ class JobListController extends Controller
         $company_id = $id;
         $keyword = $request->query('keyword');
         $status = $request->query('status');
+        $orderBy = $request->query('orderBy');
         $company = Company::find($company_id);
         $company_industry = Industry::find($company->industry_id);
         $job_lists = JobList::with('job_types', 'jobListDealbreakers')
@@ -766,6 +767,7 @@ class JobListController extends Controller
             ->where('job_title', 'LIKE', '%' . $keyword . '%')
             ->where('status', 'LIKE', '%' . $status . '%')
             ->where('status', '!=', 'deleted')
+            ->orderBy('created_at', $orderBy)
             ->get();
         $results = [];
         $types = [];
