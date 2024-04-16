@@ -99,7 +99,7 @@ class DealbreakerController extends Controller
 
     public function getDealbreaker(Request $request, $dealbreaker_id)
     {
-        $res = Dealbreaker::with('choices')->find($dealbreaker_id);
+        $res = Dealbreaker::with('choices')->find($request['dealbreaker']);
         if ($res) {
             return response([
                 'dealbreaker' => $res,
