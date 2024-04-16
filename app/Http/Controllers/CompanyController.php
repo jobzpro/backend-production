@@ -213,7 +213,7 @@ class CompanyController extends Controller
             return response()->json([
                 'message' => "Add Staff Unsuccessful",
                 'errors' => $validator->errors()
-            ], 401);
+            ], 400);
         }
 
         $company = Company::with('userCompany.user.account', 'businessType', 'industry')->where('id', $id)->first();
