@@ -97,9 +97,12 @@ class DealbreakerController extends Controller
         }
     }
 
-    public function getDealbreaker(Request $request, $dealbreaker_id)
+    public function getDealbreaker(Request $request, $id, $dealbreaker_id)
     {
-        $res = Dealbreaker::with('choices')->find($request['dealbreaker']);
+        $res = Dealbreaker::with('choices')
+            ->where('company_id', $id)
+            ->where('id', $dealbreaker_id)
+            ->first();
         if ($res) {
             return response([
                 'dealbreaker' => $res,
