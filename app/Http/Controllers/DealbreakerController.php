@@ -119,6 +119,7 @@ class DealbreakerController extends Controller
             'question' => 'required',
             'question_type' => 'required',
             'company_id' => 'required',
+            'dealbreaker_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -128,29 +129,31 @@ class DealbreakerController extends Controller
             ], 400);
         }
 
-        $dealbreaker = Dealbreaker::findOrFail($dealbreaker_id);
+        // $dealbreaker = Dealbreaker::findOrFail($dealbreaker_id);
+        $dealbreaker = Dealbreaker::findOrFail($request['dealbreaker_id']);
 
         $dealbreaker->update([
             'question' => $request['question'],
             'question_type' => $request['question_type'],
             'company_id' => $request['company_id'],
+            'dealbreaker_id' => $request['dealbreaker_id'],
         ]);
 
         if ($request->filled('choices')) {
-            DealbreakerChoice::where('dealbreaker_id', '=', $dealbreaker_id)->update([
+            DealbreakerChoice::where('dealbreaker_id', '=', $request['dealbreaker_id'])->update([
                 'deleted_at' => Carbon::now()
             ]);
             foreach ($request['choices'] as $choiceData) {
                 if (isset($choiceData['choice'])) {
                     DealbreakerChoice::create([
-                        'dealbreaker_id' => $dealbreaker_id,
+                        'dealbreaker_id' => $request['dealbreaker_id'],
                         'choice' => $choiceData['choice'],
                     ]);
                 }
             }
         }
 
-        $res = Dealbreaker::with('choices')->find($dealbreaker_id);
+        $res = Dealbreaker::with('choices')->find($request['dealbreaker_id']);
 
         return response([
             'dealbreaker' => $res,
