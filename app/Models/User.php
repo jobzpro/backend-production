@@ -204,25 +204,15 @@ class User extends Authenticatable
         //     ->get();
 
         return Favorite::with(['favoriter', 'favoritable' => function ($query) {
-            $query->withTrashed(); // Load the favoritable even if it's soft deleted
+            $query->withTrashed();
         }])
             ->where('favoriter_type', 'App\Models\User')
             ->where('favoriter_id', $this->id)
             ->whereHasMorph('favoritable', [JobList::class], function ($query) {
-                $query->whereNull('deleted_at'); // Check if the related JobList is not soft deleted
+                $query->whereNull('deleted_at');
             })
             ->orderBy('created_at', $orderBy)
             ->get();
-
-
-        // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
-        // return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
-        //     $morphTo->morphWith([
-        //         JobList::class => ['company'],
-        //     ]);
-        // }])->get();
-        // Favorite::whereHasMorph('favoritable', [App\Models\JobList::class], function(Builder $query) { $query->with('company'); })->with('favoriter', 'favoritable.company')->get();
-        // return $this->morphedByMany('App\Models\JobList', 'favoritable', 'favorites', 'favoriter_id', 'favoritable_id');
     }
 
     public function notifications()
