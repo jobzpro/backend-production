@@ -209,7 +209,7 @@ class User extends Authenticatable
             ->where('favoriter_type', 'App\Models\User')
             ->where('favoriter_id', $this->id)
             ->whereHasMorph('favoritable', [JobList::class], function ($query) {
-                $query->whereNull('deleted_at');
+                $query->with('company', 'industry')->whereNull('deleted_at');
             })
             ->orderBy('created_at', $orderBy)
             ->get();
