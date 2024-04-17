@@ -19,7 +19,9 @@ class Favorite extends Model
 
     public function favoritable()
     {
-        return $this->morphTo();
+        return $this->morphTo()->morphWith([
+            JobList::class => ['company', 'industry']
+        ]);;
     }
 
     public function favoriter()
