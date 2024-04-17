@@ -194,15 +194,27 @@ class User extends Authenticatable
     public function favoritedJobListings($orderBy)
     {
 
-        return Favorite::with(['favoriter', 'favoritable' => function (MorphTo $morphTo) {
-            $morphTo->morphWith([
-                JobList::class => ['company', 'industry'],
-            ]);
-        }])->where('favoriter_type', 'App\Models\User')
+        // return Favorite::with(['favoriter', 'favoritable' => function (MorphTo $morphTo) {
+        //     $morphTo->morphWith([
+        //         JobList::class => ['company', 'industry'],
+        //     ]);
+        // }])->where('favoriter_type', 'App\Models\User')
+        //     ->where('favoriter_id', $this->id)
+        //     ->orderBy('created_at', $orderBy)
+        //     ->get();
+
+        return Favorite::with(['favoriter', 'favoritable' => function ($query) {
+            $query->withTrashed(); // Load the favoritable even if it's soft deleted
+        }])
+            ->where('favoriter_type', 'App\Models\User')
             ->where('favoriter_id', $this->id)
-            ->whereNotNull('favoritable')
+            ->whereHasMorph('favoritable', [JobList::class], function ($query) {
+                $query->whereNull('deleted_at'); // Check if the related JobList is not soft deleted
+            })
             ->orderBy('created_at', $orderBy)
             ->get();
+
+
         // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
         // return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
         //     $morphTo->morphWith([
