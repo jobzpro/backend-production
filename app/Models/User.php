@@ -198,7 +198,11 @@ class User extends Authenticatable
             $morphTo->morphWith([
                 JobList::class => ['company', 'industry'],
             ]);
-        }])->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->orderBy('created_at', $orderBy)->get();
+        }])->where('favoriter_type', 'App\Models\User')
+            ->where('favoriter_id', $this->id)
+            ->whereNotNull('favoritable')
+            ->orderBy('created_at', $orderBy)
+            ->get();
 
         // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
         // return Favorite::with('favoriter')->with(['favoritable' => function (MorphTo $morphTo) {
