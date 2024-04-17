@@ -208,8 +208,8 @@ class User extends Authenticatable
             ->where('favoriter_id', $this->id)
             ->whereNotNull('favoritable')
             ->orderBy('created_at', $orderBy)
-            ->whereHasMorph('favoritable', [JobList::class], function (MorphTo $morphTo) {
-                $morphTo->with(['company', 'industry']);
+            ->whereHasMorph('favoritable', [JobList::class], function ($query) {
+                $query->with(['company', 'industry']);
             })
             ->get();
         // return Favorite::with('favoriter', 'favoritable')->where('favoriter_type', 'App\Models\User')->where('favoriter_id', $this->id)->get();
