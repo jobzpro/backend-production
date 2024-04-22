@@ -72,56 +72,98 @@ class DealbreakerController extends Controller
         ], 200);
     }
 
-    public function dealbreakerAnswerAsCompany(Request $request, string $job_list_id)
+    // public function dealbreakerAnswerAsCompany(Request $request, string $job_list_id)
+    // {
+    //     if ($job_list_id) {
+    //         $job_list_dealbreaker = $request->input('job_list_dealbreaker');
+    //         if ($job_list_dealbreaker) {
+    //             foreach ($job_list_dealbreaker as $answer) {
+    //                 JobListDealbreaker::create([
+    //                     'job_list_id' => $answer['job_list_id'],
+    //                     'dealbreaker_id' => $answer['dealbreaker_id'],
+    //                     'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+    //                     'required' => false
+    //                 ]);
+    //             }
+    //             return response()->json([
+    //                 'message' => 'success',
+    //                 'job_list_dealbreaker' => $job_list_dealbreaker,
+    //             ], 200);
+    //         }
+    //     } else {
+    //         return response([
+    //             'message' => "job list id is missing, try again"
+    //         ], 500);
+    //     }
+    // }
+
+    // public function editDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
+    // {
+    //     if ($job_list_id) {
+    //         $job_list_dealbreaker = $request->input('job_list_dealbreaker');
+    //         $id = $request->input('job_list_dealbreaker_id');
+    //         if ($job_list_dealbreaker) {
+    //             foreach ($job_list_dealbreaker as $answer) {
+    //                 JobListDealbreaker::where('id', $id)
+    //                     ->where('job_list_id', $answer['job_list_id'])
+    //                     ->where('dealbreaker_id', $answer['dealbreaker_id'])
+    //                     ->update([
+    //                         'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+    //                         'required' => false
+    //                     ]);
+    //             }
+    //             return response()->json([
+    //                 'message' => 'success',
+    //                 'job_list_dealbreaker' => $job_list_dealbreaker,
+    //             ], 200);
+    //         }
+    //     } else {
+    //         return response([
+    //             'message' => "job list id is missing, try again"
+    //         ], 500);
+    //     }
+    // }
+
+    public function manageDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
     {
-        if ($job_list_id) {
-            $job_list_dealbreaker = $request->input('job_list_dealbreaker');
-            if ($job_list_dealbreaker) {
-                foreach ($job_list_dealbreaker as $answer) {
-                    JobListDealbreaker::create([
-                        'job_list_id' => $answer['job_list_id'],
-                        'dealbreaker_id' => $answer['dealbreaker_id'],
+        if (empty($job_list_id)) {
+            return response()->json(['message' => 'Job list id is missing, try again'], 500);
+        }
+
+        $job_list_dealbreaker = $request->input('job_list_dealbreaker');
+
+        if (empty($job_list_dealbreaker)) {
+            return response()->json(['message' => 'No dealbreaker answers provided'], 400);
+        }
+
+        foreach ($job_list_dealbreaker as $answer) {
+            $dealbreakerData = [
+                'job_list_id' => $answer['job_list_id'],
+                'dealbreaker_id' => $answer['dealbreaker_id'],
+                'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                'required' => false
+            ];
+
+            if ($request->has('job_list_dealbreaker_id')) {
+                // If job_list_dealbreaker_id is present, update existing records
+                $id = $request->input('job_list_dealbreaker_id');
+                JobListDealbreaker::where('id', $id)
+                    ->where('job_list_id', $job_list_id)
+                    ->where('dealbreaker_id', $answer['dealbreaker_id'])
+                    ->update([
                         'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
                         'required' => false
                     ]);
-                }
-                return response()->json([
-                    'message' => 'success',
-                    'job_list_dealbreaker' => $job_list_dealbreaker,
-                ], 200);
+            } else {
+                // Otherwise, create new records
+                JobListDealbreaker::create($dealbreakerData);
             }
-        } else {
-            return response([
-                'message' => "job list id is missing, try again"
-            ], 500);
         }
-    }
 
-    public function editDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
-    {
-        if ($job_list_id) {
-            $job_list_dealbreaker = $request->input('job_list_dealbreaker');
-            $id = $request->input('job_list_dealbreaker_id');
-            if ($job_list_dealbreaker) {
-                foreach ($job_list_dealbreaker as $answer) {
-                    JobListDealbreaker::where('id', $id)
-                        ->where('job_list_id', $answer['job_list_id'])
-                        ->where('dealbreaker_id', $answer['dealbreaker_id'])
-                        ->update([
-                            'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
-                            'required' => false
-                        ]);
-                }
-                return response()->json([
-                    'message' => 'success',
-                    'job_list_dealbreaker' => $job_list_dealbreaker,
-                ], 200);
-            }
-        } else {
-            return response([
-                'message' => "job list id is missing, try again"
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Success',
+            'job_list_dealbreaker' => $job_list_dealbreaker,
+        ], 200);
     }
 
     public function getDealbreaker(Request $request, $id, $dealbreaker_id)

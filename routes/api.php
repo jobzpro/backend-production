@@ -167,8 +167,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/dealbreakers')->controller(DealbreakerController::class)->group(function () {
             Route::get('/', 'index');
             Route::post('/add', 'store');
-            Route::post('/answer/{job_list_id}', 'dealbreakerAnswerAsCompany');
-            Route::post('/edit-answer/{job_list_id}', 'editDealbreakerAnswerAsCompany');
+            Route::post('/answer/{job_list_id}', 'manageDealbreakerAnswerAsCompany');
+            // Route::post('/edit-answer/{job_list_id}', 'editDealbreakerAnswerAsCompany');
             Route::get('/{dealbreaker_id}', 'getDealbreaker');
             Route::post('/{dealbreaker_id}/edit', 'editDealbreakers');
             Route::post('/{dealbreaker_id}/edit-choices', 'editDealbreakerChoices');
