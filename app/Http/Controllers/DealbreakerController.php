@@ -102,15 +102,15 @@ class DealbreakerController extends Controller
         if ($job_list_id) {
             $job_list_dealbreaker = $request->input('job_list_dealbreaker');
             $id = $request->input('job_list_dealbreaker_id');
-            $answer = JobListDealbreaker::find($id);
-            if ($job_list_dealbreaker && $answer) {
+            if ($job_list_dealbreaker) {
                 foreach ($job_list_dealbreaker as $answer) {
-                    $answer->update([
-                        // 'job_list_id' => $answer['job_list_id'],
-                        // 'dealbreaker_id' => $answer['dealbreaker_id'],
-                        'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
-                        'required' => false
-                    ]);
+                    JobListDealbreaker::where('id', $id)
+                        ->where('job_list_id', $answer['job_list_id'])
+                        ->where('dealbreaker_id', $answer['dealbreaker_id'])
+                        ->update([
+                            'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                            'required' => false
+                        ]);
                 }
                 return response()->json([
                     'message' => 'success',
