@@ -97,6 +97,33 @@ class DealbreakerController extends Controller
         }
     }
 
+    public function editDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
+    {
+        if ($job_list_id) {
+            $job_list_dealbreaker = $request->input('job_list_dealbreaker');
+            $id = $request->input('job_list_dealbreaker_id');
+            $answer = JobListDealbreaker::find($id);
+            if ($job_list_dealbreaker && $answer) {
+                foreach ($job_list_dealbreaker as $answer) {
+                    $answer->update([
+                        // 'job_list_id' => $answer['job_list_id'],
+                        // 'dealbreaker_id' => $answer['dealbreaker_id'],
+                        'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                        'required' => false
+                    ]);
+                }
+                return response()->json([
+                    'message' => 'success',
+                    'job_list_dealbreaker' => $job_list_dealbreaker,
+                ], 200);
+            }
+        } else {
+            return response([
+                'message' => "job list id is missing, try again"
+            ], 500);
+        }
+    }
+
     public function getDealbreaker(Request $request, $id, $dealbreaker_id)
     {
         $res = Dealbreaker::with('choices')
