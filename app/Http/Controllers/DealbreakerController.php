@@ -206,20 +206,20 @@ class DealbreakerController extends Controller
 
         // Process each choice in the request
         foreach ($choicesData as $choice) {
-            // if (isset($choice['id'])) {
-            $existingChoice = DealbreakerChoice::find($choice['id']);
-            if ($existingChoice) {
-                $existingChoice->update([
-                    'choice' => $choice['choice'],
-                ]);
-            } else {
-                DealbreakerChoice::create([
-                    'dealbreaker_id' => $dealbreakerId,
-                    'choice' => $choice['choice'],
-                ]);
+            if (isset($choice['id'])) {
+                $existingChoice = DealbreakerChoice::find($choice['id']);
+                if ($existingChoice) {
+                    $existingChoice->update([
+                        'choice' => $choice['choice'],
+                    ]);
+                } else {
+                    DealbreakerChoice::create([
+                        'dealbreaker_id' => $dealbreakerId,
+                        'choice' => $choice['choice'],
+                    ]);
+                }
             }
         }
-        // }
 
         $idsToDelete = collect($choicesData)->pluck('id')->filter();
         DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
