@@ -127,7 +127,8 @@ class DealbreakerController extends Controller
     public function manageDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
     {
         $validator = Validator::make($request->all(), [
-            'job_list_dealbreaker' => 'required|array',
+            'job_list_dealbreaker' => 'array',
+            'job_list_dealbreaker.*.job_list_dealbreaker_id' => 'sometimes|integer',
             'job_list_dealbreaker.*.job_list_id' => 'required|integer',
             'job_list_dealbreaker.*.dealbreaker_id' => 'required|integer',
             'job_list_dealbreaker.*.dealbreaker_choice_id' => 'required|integer',
