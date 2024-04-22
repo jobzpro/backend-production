@@ -166,40 +166,11 @@ class DealbreakerController extends Controller
 
     public function editDealbreakerChoices(Request $request)
     {
-        // if ($request->input('dealbreaker_id')) {
-        //     if ($request->filled('choices')) {
-        //         // DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
-
-        //         foreach ($request['choices'] as $choiceData) {
-        //             if ($request->input('id')) {
-        //                 if (isset($choiceData['choice'])) {
-        //                     DealbreakerChoice::create([
-        //                         'dealbreaker_id' => $request->input('dealbreaker_id'),
-        //                         'choice' => $choiceData['choice'],
-        //                     ]);
-        //                 }
-        //             } else {
-        //                 // DealbreakerChoice delete id
-        //             }
-        //         }
-        //     }
-
-        //     $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
-
-        //     return response([
-        //         'dealbreaker' => $res,
-        //         'message' => "Dealbreaker Choices edited successfully."
-        //     ], 200);
-        // } else {
-        //     return response([
-        //         'message' => "dealbreaker_id is missing, try again"
-        //     ], 500);
-        // }
         $request->validate([
             'dealbreaker_id' => 'required|exists:dealbreakers,id',
-            'choices' => 'nullable|array', // Allow empty or missing 'choices' array
-            'choices.*.id' => 'nullable|exists:dealbreaker_choices,id', // Validate 'id' if provided
-            'choices.*.choice' => 'required_if:choices.*.id,null|string', // 'choice' is required if 'id' is null
+            'choices' => 'nullable|array',
+            'choices.*.id' => 'nullable|exists:dealbreaker_choices,id',
+            'choices.*.choice' => 'required_if:choices.*.id,null|string',
         ]);
         $dealbreakerId = $request->input('dealbreaker_id');
         $choicesData = $request->input('choices', []);
@@ -209,7 +180,6 @@ class DealbreakerController extends Controller
             ->whereNotIn('id', $idsToDelete)
             ->delete();
 
-        // Process each choice in the request
         foreach ($choicesData as $choice) {
             if (isset($choice['id'])) {
                 $existingChoice = DealbreakerChoice::find($choice['id']);
