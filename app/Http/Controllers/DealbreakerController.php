@@ -148,7 +148,7 @@ class DealbreakerController extends Controller
                 // If job_list_dealbreaker_id is present, update existing records
                 $id = $request->input('job_list_dealbreaker_id');
                 JobListDealbreaker::where('id', $id)
-                    ->where('job_list_id', $job_list_id)
+                    ->where('job_list_id', $answer['job_list_id'])
                     ->where('dealbreaker_id', $answer['dealbreaker_id'])
                     ->update([
                         'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
