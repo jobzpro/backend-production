@@ -126,44 +126,39 @@ class DealbreakerController extends Controller
 
     public function manageDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
     {
-        if (empty($job_list_id)) {
-            return response()->json(['message' => 'Job list id is missing, try again'], 500);
+        $validator = Validator::make($request->all(), [
+            'job_list_dealbreaker' => 'required|array',
+            'job_list_dealbreaker.*.job_list_id' => 'required|integer',
+            'job_list_dealbreaker.*.dealbreaker_id' => 'required|integer',
+            'job_list_dealbreaker.*.dealbreaker_choice_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 400);
         }
 
-        $job_list_dealbreaker = $request->input('job_list_dealbreaker');
-
-        if (empty($job_list_dealbreaker)) {
-            return response()->json(['message' => 'No dealbreaker answers provided'], 400);
-        }
-
-        foreach ($job_list_dealbreaker as $answer) {
-
-            $id = $request->input('job_list_dealbreaker_id');
-            // $existAnswer = JobListDealbreaker::where('id', $id)
-            //     ->where('job_list_id', $answer['job_list_id'])
-            //     ->where('dealbreaker_id', $answer['dealbreaker_id'])
-            //     ->first();
+        foreach ($request['job_list_dealbreaker'] as $dealbreakerData) {
+            $id = $dealbreakerData['job_list_dealbreaker_id'];
             $existAnswer = JobListDealbreaker::find($id);
+
             if ($existAnswer !== null) {
                 $existAnswer->update([
-                    'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                    'dealbreaker_choice_id' => $dealbreakerData['dealbreaker_choice_id'],
                     'required' => false
                 ]);
             } else {
-                $dealbreakerData = [
-                    'job_list_id' => $answer['job_list_id'],
-                    'dealbreaker_id' => $answer['dealbreaker_id'],
-                    'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                JobListDealbreaker::create([
+                    'job_list_id' => $dealbreakerData['job_list_id'],
+                    'dealbreaker_id' => $dealbreakerData['dealbreaker_id'],
+                    'dealbreaker_choice_id' => $dealbreakerData['dealbreaker_choice_id'],
                     'required' => false
-                ];
-
-                JobListDealbreaker::create($dealbreakerData);
+                ]);
             }
         }
 
         return response()->json([
             'message' => 'Success',
-            'job_list_dealbreaker' => $job_list_dealbreaker,
+            'job_list_dealbreaker' => $request['job_list_dealbreaker'], // Return the processed data
         ], 200);
     }
 
