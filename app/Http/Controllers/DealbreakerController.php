@@ -212,12 +212,12 @@ class DealbreakerController extends Controller
                     $existingChoice->update([
                         'choice' => $choice['choice'],
                     ]);
-                } else {
-                    DealbreakerChoice::create([
-                        'dealbreaker_id' => $dealbreakerId,
-                        'choice' => $choice['choice'],
-                    ]);
                 }
+            } else {
+                DealbreakerChoice::create([
+                    'dealbreaker_id' => $dealbreakerId,
+                    'choice' => $choice['choice'],
+                ]);
             }
         }
 
