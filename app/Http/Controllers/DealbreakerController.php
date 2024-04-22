@@ -137,24 +137,26 @@ class DealbreakerController extends Controller
         }
 
         foreach ($job_list_dealbreaker as $answer) {
-            $dealbreakerData = [
-                'job_list_id' => $answer['job_list_id'],
-                'dealbreaker_id' => $answer['dealbreaker_id'],
-                'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
-                'required' => false
-            ];
 
             $id = $request->input('job_list_dealbreaker_id');
-            $existAnswer = JobListDealbreaker::where('id', $id)
-                ->where('job_list_id', $answer['job_list_id'])
-                ->where('dealbreaker_id', $answer['dealbreaker_id'])
-                ->first();
+            // $existAnswer = JobListDealbreaker::where('id', $id)
+            //     ->where('job_list_id', $answer['job_list_id'])
+            //     ->where('dealbreaker_id', $answer['dealbreaker_id'])
+            //     ->first();
+            $existAnswer = JobListDealbreaker::find($id);
             if ($existAnswer !== null) {
                 $existAnswer->update([
                     'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
                     'required' => false
                 ]);
             } else {
+                $dealbreakerData = [
+                    'job_list_id' => $answer['job_list_id'],
+                    'dealbreaker_id' => $answer['dealbreaker_id'],
+                    'dealbreaker_choice_id' => $answer['dealbreaker_choice_id'],
+                    'required' => false
+                ];
+
                 JobListDealbreaker::create($dealbreakerData);
             }
         }
