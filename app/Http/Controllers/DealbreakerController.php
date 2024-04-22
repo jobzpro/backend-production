@@ -195,6 +195,12 @@ class DealbreakerController extends Controller
         //         'message' => "dealbreaker_id is missing, try again"
         //     ], 500);
         // }
+        $request->validate([
+            'dealbreaker_id' => 'required|exists:dealbreakers,id',
+            'choices' => 'nullable|array', // Allow empty or missing 'choices' array
+            'choices.*.id' => 'nullable|exists:dealbreaker_choices,id', // Validate 'id' if provided
+            'choices.*.choice' => 'required_if:choices.*.id,null|string', // 'choice' is required if 'id' is null
+        ]);
         $dealbreakerId = $request->input('dealbreaker_id');
         $choicesData = $request->input('choices', []);
 
