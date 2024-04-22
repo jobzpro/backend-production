@@ -221,10 +221,10 @@ class DealbreakerController extends Controller
             }
         }
 
-        $idsToDelete = collect($choicesData)->pluck('id')->filter();
-        DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
-            ->whereNotIn('id', $idsToDelete)
-            ->delete();
+        // $idsToDelete = collect($choicesData)->pluck('id')->filter();
+        // DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
+        //     ->whereNotIn('id', $idsToDelete)
+        //     ->delete();
 
         $updatedDealbreaker = Dealbreaker::with('choices')->find($dealbreakerId);
 
