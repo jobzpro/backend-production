@@ -204,6 +204,11 @@ class DealbreakerController extends Controller
         $dealbreakerId = $request->input('dealbreaker_id');
         $choicesData = $request->input('choices', []);
 
+        $idsToDelete = collect($choicesData)->pluck('id')->filter();
+        DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
+            ->whereNotIn('id', $idsToDelete)
+            ->delete();
+
         // Process each choice in the request
         foreach ($choicesData as $choice) {
             if (isset($choice['id'])) {
@@ -220,11 +225,6 @@ class DealbreakerController extends Controller
                 ]);
             }
         }
-
-        $idsToDelete = collect($choicesData)->pluck('id')->filter();
-        DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
-            ->whereNotIn('id', $idsToDelete)
-            ->delete();
 
         $updatedDealbreaker = Dealbreaker::with('choices')->find($dealbreakerId);
 
