@@ -166,31 +166,66 @@ class DealbreakerController extends Controller
 
     public function editDealbreakerChoices(Request $request)
     {
-        if ($request->input('dealbreaker_id')) {
-            if ($request->filled('choices')) {
-                DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
+        // if ($request->input('dealbreaker_id')) {
+        //     if ($request->filled('choices')) {
+        //         // DealbreakerChoice::where('dealbreaker_id', '=',  $request->input('dealbreaker_id'))->forceDelete();
 
-                foreach ($request['choices'] as $choiceData) {
-                    if (isset($choiceData['choice'])) {
-                        DealbreakerChoice::create([
-                            'dealbreaker_id' => $request->input('dealbreaker_id'),
-                            'choice' => $choiceData['choice'],
-                        ]);
-                    }
+        //         foreach ($request['choices'] as $choiceData) {
+        //             if ($request->input('id')) {
+        //                 if (isset($choiceData['choice'])) {
+        //                     DealbreakerChoice::create([
+        //                         'dealbreaker_id' => $request->input('dealbreaker_id'),
+        //                         'choice' => $choiceData['choice'],
+        //                     ]);
+        //                 }
+        //             } else {
+        //                 // DealbreakerChoice delete id
+        //             }
+        //         }
+        //     }
+
+        //     $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
+
+        //     return response([
+        //         'dealbreaker' => $res,
+        //         'message' => "Dealbreaker Choices edited successfully."
+        //     ], 200);
+        // } else {
+        //     return response([
+        //         'message' => "dealbreaker_id is missing, try again"
+        //     ], 500);
+        // }
+        $dealbreakerId = $request->input('dealbreaker_id');
+        $choicesData = $request->input('choices', []);
+
+        // Process each choice in the request
+        foreach ($choicesData as $choice) {
+            if (isset($choice['id'])) {
+                $existingChoice = DealbreakerChoice::find($choice['id']);
+                if ($existingChoice) {
+                    $existingChoice->update([
+                        'choice' => $choice['choice'],
+                    ]);
                 }
+            } else {
+                DealbreakerChoice::create([
+                    'dealbreaker_id' => $dealbreakerId,
+                    'choice' => $choice['choice'],
+                ]);
             }
-
-            $res = Dealbreaker::with('choices')->find($request->input('dealbreaker_id'));
-
-            return response([
-                'dealbreaker' => $res,
-                'message' => "Dealbreaker Choices edited successfully."
-            ], 200);
-        } else {
-            return response([
-                'message' => "dealbreaker_id is missing, try again"
-            ], 500);
         }
+
+        $idsToDelete = collect($choicesData)->pluck('id')->filter();
+        DealbreakerChoice::where('dealbreaker_id', $dealbreakerId)
+            ->whereNotIn('id', $idsToDelete)
+            ->delete();
+
+        $updatedDealbreaker = Dealbreaker::with('choices')->find($dealbreakerId);
+
+        return response()->json([
+            'dealbreaker' => $updatedDealbreaker,
+            'message' => 'Dealbreaker choices updated successfully.',
+        ], 200);
     }
 
     public function deleteDealbreakers(Request $request, $dealbreaker_id)
