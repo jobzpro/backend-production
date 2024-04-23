@@ -194,7 +194,7 @@ class DealbreakerController extends Controller
         ], 200);
     }
 
-    public function editDealbreakerChoices(Request $request)
+    public function editDealbreakerChoices(Request $request, $dealbreaker_id)
     {
         $request->validate([
             'dealbreaker_id' => 'required|exists:dealbreakers,id',
@@ -213,7 +213,7 @@ class DealbreakerController extends Controller
         foreach ($choicesData as $choice) {
             if (isset($choice['id'])) {
                 $existingChoice = DealbreakerChoice::find($choice['id']);
-                if ($existingChoice) {
+                if ($existingChoice !== null) {
                     $existingChoice->update([
                         'choice' => $choice['choice'],
                     ]);

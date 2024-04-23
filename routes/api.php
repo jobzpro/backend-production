@@ -172,7 +172,7 @@ Route::middleware(['auth:api'])->group(function () {
             // Route::post('/edit-answer/{job_list_id}', 'editDealbreakerAnswerAsCompany');
             Route::get('/{dealbreaker_id}', 'getDealbreaker');
             Route::post('/{dealbreaker_id}/edit', 'editDealbreakers');
-            Route::post('/edit-choices/{dealbreaker_id}', 'editDealbreakerChoices');
+            Route::post('/{dealbreaker_id}/edit-choices', 'editDealbreakerChoices');
             Route::post('/soft-delete/{job_list_id}', 'softDeleteDealbreakerAnswer');
             Route::delete('/permanent-delete-dealbreaker/{dealbreaker_id}', 'deleteDealbreakers');
             Route::delete('/permanent-delete-dealbreaker-choices/{dealbreaker_id}', 'deleteDealbreakerChoices');
