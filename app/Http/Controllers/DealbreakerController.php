@@ -126,17 +126,17 @@ class DealbreakerController extends Controller
 
     public function manageDealbreakerAnswerAsCompany(Request $request, string $job_list_id)
     {
-        $validator = Validator::make($request->all(), [
-            'job_list_dealbreaker' => 'array',
-            'job_list_dealbreaker.*.job_list_dealbreaker_id' => 'sometimes|integer',
-            'job_list_dealbreaker.*.job_list_id' => 'required|integer',
-            'job_list_dealbreaker.*.dealbreaker_id' => 'required|integer',
-            'job_list_dealbreaker.*.dealbreaker_choice_id' => 'required|integer',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'job_list_dealbreaker' => 'array',
+        //     'job_list_dealbreaker.*.job_list_dealbreaker_id' => 'sometimes|integer',
+        //     'job_list_dealbreaker.*.job_list_id' => 'required|integer',
+        //     'job_list_dealbreaker.*.dealbreaker_id' => 'required|integer',
+        //     'job_list_dealbreaker.*.dealbreaker_choice_id' => 'required|integer',
+        // ]);
 
-        if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()->first()], 400);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json(['message' => $validator->errors()->first()], 400);
+        // }
 
         foreach ($request['job_list_dealbreaker'] as $dealbreakerData) {
             $id = $dealbreakerData['job_list_dealbreaker_id'];
