@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\AppReviewController;
 use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
@@ -201,6 +202,11 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'reviewsForCompany');
             Route::post('/', 'postAReview');
             Route::post('/{review_id}/pin', 'pinReview');
+        });
+
+        Route::prefix('/followers')->controller(FollowController::class)->group(function () {
+            // Route::get('/', 'companyFavorites');
+            Route::post('/follow', 'follow');
         });
     });
 

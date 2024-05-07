@@ -239,4 +239,34 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserExperience::class);
     }
+
+    public function followers()
+    {
+        return $this->hasMany(Follower::class, 'user_id');
+    }
+
+    public function following()
+    {
+        return $this->hasMany(Follower::class, 'following_id');
+    }
+
+    public function unfollow(User $user)
+    {
+        return $this->followers()->where('user_id', auth()->id())->where('following_id', $user->id)->delete();
+    }
+
+    public function follow($following_id)
+    {
+        if (!$this->isFollowing($following_id)) {
+            $this->followers()->create([
+                // 'user_id' => $user_id,
+                'following_id' => $following_id
+            ]);
+        }
+    }
+
+    public function isFollowing(User $user)
+    {
+        return $this->following()->where('users.id', $user->id)->exists();
+    }
 }
