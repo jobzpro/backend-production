@@ -16,11 +16,11 @@ class FollowerController extends Controller
         $checker = $current_user->isFollowing($following_id);
         if ($current_user) {
             if (!$checker) {
-                // Follower::create([
-                //     'user_id' => $request->input('user_id'),
-                //     'following_id' => $request->input('following_id')
-                // ]);
-                $current_user->follow($following_id);
+                Follower::create([
+                    'user_id' => $request->input('user_id'),
+                    'following_id' => $request->input('following_id')
+                ]);
+                // $current_user->follow($following_id);
                 return response()->json($current_user, 200);
             } else {
                 Follower::where('user_id', $current_user)->where('following_id', $following_id)->delete();
