@@ -129,6 +129,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/{id}/app-reviews')->controller(AppReviewController::class)->group(function () {
             Route::post('/', 'addReview');
         });
+
+        Route::prefix('/followers')->controller(FollowController::class)->group(function () {
+            // Route::get('/', 'companyFavorites');
+            Route::post('/follow', 'follow');
+        });
     });
 
     Route::prefix('/company/{id}')->group(function () {
@@ -202,11 +207,6 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/', 'reviewsForCompany');
             Route::post('/', 'postAReview');
             Route::post('/{review_id}/pin', 'pinReview');
-        });
-
-        Route::prefix('/followers')->controller(FollowController::class)->group(function () {
-            // Route::get('/', 'companyFavorites');
-            Route::post('/follow', 'follow');
         });
     });
 
