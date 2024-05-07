@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class FollowController extends Controller
+class FollowerController extends Controller
 {
     public function follow(Request $request)
     {

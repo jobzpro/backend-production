@@ -2,7 +2,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\Api\FollowController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\AppReviewController;
 use App\Http\Controllers\BusinessTypeController;
 use App\Http\Controllers\VerifyEmailController;
@@ -130,7 +130,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/', 'addReview');
         });
 
-        Route::prefix('/followers')->controller(FollowController::class)->group(function () {
+        Route::prefix('/followers')->controller(FollowerController::class)->group(function () {
             // Route::get('/', 'companyFavorites');
             Route::post('/follow', 'follow');
         });
