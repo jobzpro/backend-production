@@ -130,7 +130,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('/', 'addReview');
         });
 
-        Route::prefix('/followers')->controller(FollowerController::class)->group(function () {
+        Route::prefix('{id}/followers')->controller(FollowerController::class)->group(function () {
             // Route::get('/', 'companyFavorites');
             Route::post('/follow', 'follow');
         });
