@@ -133,6 +133,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('{id}/followers')->controller(FollowerController::class)->group(function () {
             Route::post('/follow', 'follow');
             Route::get('/all', 'allUser');
+            Route::get('/follow-list', 'followUsers');
         });
     });
 
