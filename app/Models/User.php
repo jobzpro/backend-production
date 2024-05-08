@@ -250,16 +250,16 @@ class User extends Authenticatable
         return $this->hasMany(Follower::class, 'user_id');
     }
 
-    public function unfollow(User $user)
+    public function unfollow($following_id)
     {
-        return $this->followers()->where('user_id', auth()->id())->where('following_id', $user->id)->forceDelete();
+        return $this->following()->where('user_id', $this->id)->where('following_id', $following_id)->forceDelete();
     }
 
     public function follow($following_id)
     {
         if (!$this->isFollowing($following_id)) {
-            $this->followers()->create([
-                // 'user_id' => $user_id,
+            $this->following()->create([
+                'user_id' => $this->id,
                 'following_id' => $following_id
             ]);
         }
