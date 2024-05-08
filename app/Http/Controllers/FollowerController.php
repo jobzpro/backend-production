@@ -54,7 +54,7 @@ class FollowerController extends Controller
             $q->where('role_id', 3);
         });
 
-        $users = $this->applySortFilter($current_user, $sortFilter);
+        $users = $current_user->applySortFilter($current_user, $sortFilter);
 
         return response([
             'users' => $users->following()->paginate(10),
