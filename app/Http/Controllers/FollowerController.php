@@ -54,11 +54,25 @@ class FollowerController extends Controller
             $q->where('role_id', 3);
         });
 
-        $users = $current_user->applySortFilter($current_user, $sortFilter);
+        $current_user = $this->applySortFilter($current_user, $sortFilter);
 
         return response([
-            'users' => $users->following()->paginate(10),
+            'users' => $current_user->following()->paginate(10),
             'message' => 'Success',
         ], 200);
+    }
+
+    private function applySortFilter($users, $sortFilter)
+    {
+        switch ($sortFilter) {
+            case 'Recent to Oldest':
+                return $users->latest();
+            case 'Alphabetical':
+                return $users->orderBy('first_name', 'ASC');
+            case 'Profile Completion':
+                return $users->get()->sortByDesc('profile_completion');
+            default:
+                return $users->get()->sortByDesc('profile_completion');
+        }
     }
 }
