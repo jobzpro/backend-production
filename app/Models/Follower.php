@@ -14,4 +14,14 @@ class Follower extends Model
         'user_id',
         'following_id'
     ];
+
+    public function followerUser()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function followingUser()
+    {
+        return $this->belongsTo(User::class, 'following_id', 'id');
+    }
 }
