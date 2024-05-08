@@ -252,7 +252,7 @@ class User extends Authenticatable
 
     public function unfollow(User $user)
     {
-        return $this->followers()->where('user_id', auth()->id())->where('following_id', $user->id)->delete();
+        return $this->followers()->where('user_id', auth()->id())->where('following_id', $user->id)->forceDelete();
     }
 
     public function follow($following_id)
@@ -267,6 +267,6 @@ class User extends Authenticatable
 
     public function isFollowing($user_id)
     {
-        return $this->following()->where('users.id', $user_id)->exists();
+        return $this->following()->where('follower.following_id', $user_id)->exists();
     }
 }

@@ -20,10 +20,9 @@ class FollowerController extends Controller
                     'user_id' => $request->input('user_id'),
                     'following_id' => $request->input('following_id')
                 ]);
-                // $current_user->follow($following_id);
                 return response()->json($current_user, 200);
             } else {
-                Follower::where('user_id', $current_user)->where('following_id', $following_id)->delete();
+                Follower::where('user_id', $current_user)->where('following_id', $following_id)->forceDelete();
             }
         } else {
             return response([
