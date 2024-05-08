@@ -72,7 +72,7 @@ class FollowerController extends Controller
         // $current_user = User::with('experiences', 'certifications', 'account', 'references');
         if ($filter == "following") {
             $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followingUser')->get();
+            $followingUser = $following->with('followingUser');
 
             if (!empty($keyword)) {
                 $followingUser->where(function ($query) use ($keyword) {
@@ -83,13 +83,18 @@ class FollowerController extends Controller
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
+            $followingUser->whereHas('userRoles', function ($q) {
+                $q->where('role_id', 3);
+            });
+
+            $current_user = $this->applySortFilter($followingUser, $sortFilter);
             return response([
-                'users' => $followingUser->paginate(10),
+                'users' => $current_user->paginate(10),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
             $follower = Follower::where('following_id', $id);
-            $followerUser = $follower->with('followerUser')->get();
+            $followerUser = $follower->with('followerUser');
             if (!empty($keyword)) {
                 $followerUser->where(function ($query) use ($keyword) {
                     $query->whereHas('followerUser.currentExperience', function ($q) use ($keyword) {
@@ -99,8 +104,13 @@ class FollowerController extends Controller
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
+            $followerUser->whereHas('userRoles', function ($q) {
+                $q->where('role_id', 3);
+            });
+
+            $current_user = $this->applySortFilter($followerUser, $sortFilter);
             return response([
-                'users' => $followerUser->paginate(10),
+                'users' => $current_user->paginate(10),
                 'message' => 'Success',
             ], 200);
         }
