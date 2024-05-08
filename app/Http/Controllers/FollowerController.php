@@ -33,7 +33,7 @@ class FollowerController extends Controller
         }
     }
 
-    public function allFollowing(Request $request, $id, $following_id)
+    public function allUser(Request $request, $id)
     {
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
@@ -57,7 +57,7 @@ class FollowerController extends Controller
         $current_user = $this->applySortFilter($current_user, $sortFilter);
 
         return response([
-            'users' => $current_user->following()->paginate(10),
+            'users' => $current_user->paginate(10),
             'message' => 'Success',
         ], 200);
     }
