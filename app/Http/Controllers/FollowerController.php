@@ -68,7 +68,7 @@ class FollowerController extends Controller
         $current_user = $this->applySortFilter($current_user, $sortFilter);
 
         return response([
-            'users' => $current_user->find($id)->paginate(10),
+            'users' => $current_user->paginate(10),
             'message' => 'Success',
         ], 200);
     }
