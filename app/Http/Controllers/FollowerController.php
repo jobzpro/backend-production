@@ -53,7 +53,7 @@ class FollowerController extends Controller
 
         if ($filter == "following") {
             $current_user->whereHas('following', function ($q) use ($id) {
-                $q->where('user_id', $id);
+                $q->where('following_id', $id);
             });
         } else if ($filter == "follower") {
             $current_user->whereHas('follower', function ($q) use ($id) {
