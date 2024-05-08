@@ -19,9 +19,9 @@ class FollowerController extends Controller
                 // Follower::create([
                 //     'user_id' => $request->input('user_id'),
                 //     'following_id' => $request->input('following_id')
+                // test
                 // ]);
                 $current_user->follow($following_id);
-                return response()->json($current_user, 200);
                 return response([
                     'message' => "followed!",
                 ], 200);
