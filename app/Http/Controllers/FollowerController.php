@@ -52,16 +52,12 @@ class FollowerController extends Controller
         }
 
         if ($filter == "following") {
-            $current_user->where(function ($query) use ($keyword) {
-                $query->whereHas('following', function ($q) use ($keyword) {
-                    $q->where('user_id', $q->id);
-                });
+            $current_user->whereHas('following', function ($q) use ($id) {
+                $q->where('user_id', $id);
             });
         } else if ($filter == "follower") {
-            $current_user->where(function ($query) use ($keyword) {
-                $query->whereHas('follower', function ($q) use ($keyword) {
-                    $q->where('following_id', $q->id);
-                });
+            $current_user->whereHas('follower', function ($q) use ($id) {
+                $q->where('following_id', $id);
             });
         }
 
