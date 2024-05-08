@@ -281,27 +281,27 @@ class User extends Authenticatable
         });
     }
 
-    public function keywordFollowingSearch($keyword)
-    {
-        return $this->whereHas('followingUser', function ($query) use ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                $q->where('position', 'LIKE', '%' . $keyword . '%');
-            });
-        });
-    }
+    // public function keywordFollowingSearch($keyword)
+    // {
+    //     return $this->whereHas('followingUser', function ($query) use ($keyword) {
+    //         $query->where(function ($q) use ($keyword) {
+    //             $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+    //                 ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+    //         })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+    //             $q->where('position', 'LIKE', '%' . $keyword . '%');
+    //         });
+    //     });
+    // }
 
-    public function keywordFollowerSearch($keyword)
-    {
-        return $this->whereHas('followerUser', function ($query) use ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                    ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                $q->where('position', 'LIKE', '%' . $keyword . '%');
-            });
-        });
-    }
+    // public function keywordFollowerSearch($keyword)
+    // {
+    //     return $this->whereHas('followerUser', function ($query) use ($keyword) {
+    //         $query->where(function ($q) use ($keyword) {
+    //             $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+    //                 ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+    //         })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+    //             $q->where('position', 'LIKE', '%' . $keyword . '%');
+    //         });
+    //     });
+    // }
 }

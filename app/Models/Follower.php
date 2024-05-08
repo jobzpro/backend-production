@@ -31,7 +31,7 @@ class Follower extends Model
             $query->where(function ($q) use ($keyword) {
                 $q->where('first_name', 'LIKE', '%' . $keyword . '%')
                     ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+            })->orWhereHas('followingUser.currentExperience', function ($q) use ($keyword) {
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             });
         });
@@ -43,7 +43,7 @@ class Follower extends Model
             $query->where(function ($q) use ($keyword) {
                 $q->where('first_name', 'LIKE', '%' . $keyword . '%')
                     ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+            })->orWhereHas('followingUser.currentExperience', function ($q) use ($keyword) {
                 $q->where('position', 'LIKE', '%' . $keyword . '%');
             });
         });
