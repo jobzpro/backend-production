@@ -16,17 +16,13 @@ class FollowerController extends Controller
         $checker = $current_user->isFollowing($following_id);
         if ($current_user) {
             if (!$checker) {
-                // Follower::create([
-                //     'user_id' => $request->input('user_id'),
-                //     'following_id' => $request->input('following_id')
-                // test
-                // ]);
                 $current_user->follow($following_id);
                 return response([
                     'message' => "followed!",
                 ], 200);
             } else if ($checker) {
-                Follower::where('user_id', $user_id)->where('following_id', $following_id)->forceDelete();
+                $current_user->unfollow($following_id);
+                // Follower::where('user_id', $user_id)->where('following_id', $following_id)->forceDelete();
                 return response([
                     'message' => "unfollowed!",
                 ], 200);
