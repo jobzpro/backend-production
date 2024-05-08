@@ -77,10 +77,10 @@ class FollowerController extends Controller
             if (!empty($keyword)) {
                 $followingUser->where(function ($query) use ($keyword) {
                     $query->whereHas('followingUser.currentExperience', function ($q) use ($keyword) {
-                        $q->where('followingUser.position', 'LIKE', '%' . $keyword . '%');
+                        $q->where('position', 'LIKE', '%' . $keyword . '%');
                     })
-                        ->orWhere('followingUser.first_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('followingUser.last_name', 'LIKE', '%' . $keyword . '%');
+                        ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
             $followingUser->whereHas('followingUser.userRoles', function ($q) {
