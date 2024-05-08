@@ -64,7 +64,8 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "following") {
             $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followingUser');
+            // $followingUser = $following->with('followingUser');
+            $followingUser = $following->with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
                 $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
@@ -81,13 +82,17 @@ class FollowerController extends Controller
             });
 
             $current_user = $this->applySortFilter($followingUser, $sortFilter);
+            $following = $current_user->pluck('followingUser');
+
             return response([
-                'users' => $current_user->paginate(10),
+                'users' => $following->paginate(10),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
             $follower = Follower::where('following_id', $id);
-            $followerUser = $follower->with('followerUser');
+            // $followerUser = $follower->with('followerUser');
+            $followerUser = $follower->with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
+
             if (!empty($keyword)) {
                 $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
                     $query->where(function ($q) use ($keyword) {
@@ -103,8 +108,9 @@ class FollowerController extends Controller
             });
 
             $current_user = $this->applySortFilter($followerUser, $sortFilter);
+            $follower = $current_user->pluck('followerUser');
             return response([
-                'users' => $current_user->paginate(10),
+                'users' => $follower->paginate(10),
                 'message' => 'Success',
             ], 200);
         }
