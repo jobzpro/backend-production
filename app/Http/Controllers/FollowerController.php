@@ -39,7 +39,7 @@ class FollowerController extends Controller
         $sortFilter = $request->query('sort');
         $filter = $request->query('filter');
 
-        $current_user = User::with('experiences', 'certifications', 'account', 'references')->find($id);
+        $current_user = User::with('experiences', 'certifications', 'account', 'references');
 
         if (!empty($keyword)) {
             $current_user->where(function ($query) use ($keyword) {
@@ -68,7 +68,7 @@ class FollowerController extends Controller
         $current_user = $this->applySortFilter($current_user, $sortFilter);
 
         return response([
-            'users' => $current_user->paginate(10),
+            'users' => $current_user->find($id)->paginate(10),
             'message' => 'Success',
         ], 200);
     }
