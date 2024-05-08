@@ -22,8 +22,14 @@ class FollowerController extends Controller
                 // ]);
                 $current_user->follow($following_id);
                 return response()->json($current_user, 200);
-            } else {
+                return response([
+                    'message' => "followed!",
+                ], 200);
+            } else if ($checker) {
                 Follower::where('user_id', $current_user)->where('following_id', $following_id)->forceDelete();
+                return response([
+                    'message' => "unfollowed!",
+                ], 200);
             }
         } else {
             return response([
