@@ -43,14 +43,13 @@ class FollowerController extends Controller
             $current_user = User::with('experiences', 'certifications', 'account', 'references');
 
             if (!empty($keyword)) {
-                // $current_user->where(function ($query) use ($keyword) {
-                //     $query->whereHas('currentExperience', function ($q) use ($keyword) {
-                //         $q->where('position', 'LIKE', '%' . $keyword . '%');
-                //     })
-                //         ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                //         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                // });
-                $current_user->keywordSearch($keyword);
+                $current_user->where(function ($query) use ($keyword) {
+                    $query->whereHas('currentExperience', function ($q) use ($keyword) {
+                        $q->where('position', 'LIKE', '%' . $keyword . '%');
+                    })
+                        ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                });
             }
 
             $current_user->whereHas('userRoles', function ($q) {
