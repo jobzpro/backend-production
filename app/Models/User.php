@@ -242,12 +242,12 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->hasMany(Follower::class, 'following_id');
+        return $this->hasMany(Follower::class, 'following_id', 'id');
     }
 
     public function following()
     {
-        return $this->hasMany(Follower::class, 'user_id');
+        return $this->hasMany(Follower::class, 'user_id', 'id');
     }
 
     public function unfollow($following_id)
