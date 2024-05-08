@@ -37,6 +37,7 @@ class FollowerController extends Controller
     {
         $keyword = $request->query('keyword');
         $sortFilter = $request->query('sort');
+        $filter = $request->query('filter');
 
         $current_user = User::with('experiences', 'certifications', 'account', 'references')->find($id);
 
@@ -47,6 +48,20 @@ class FollowerController extends Controller
                 })
                     ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
                     ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+            });
+        }
+
+        if ($filter == "following") {
+            $current_user->where(function ($query) use ($keyword) {
+                $query->whereHas('following', function ($q) use ($keyword) {
+                    $q->where('user_id', $q->id);
+                });
+            });
+        } else if ($filter == "follower") {
+            $current_user->where(function ($query) use ($keyword) {
+                $query->whereHas('follower', function ($q) use ($keyword) {
+                    $q->where('following_id', $q->id);
+                });
             });
         }
 
