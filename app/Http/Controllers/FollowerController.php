@@ -82,14 +82,14 @@ class FollowerController extends Controller
         // $current_user = User::with('experiences', 'certifications', 'account', 'references');
         if ($filter == "following") {
             $following = Follower::where('user_id', $id);
-            $res = $following::with('followingUser')->get();
+            $res = $following->with('followingUser')->get();
             return response([
                 'users' => $res->paginate(10),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
             $follower = Follower::where('user_id', $id);
-            $res = $follower::with('followerUser')->get();
+            $res = $follower->with('followerUser')->get();
             return response([
                 'users' => $res->paginate(10),
                 'message' => 'Success',
