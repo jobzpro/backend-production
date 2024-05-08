@@ -88,7 +88,7 @@ class FollowerController extends Controller
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
-            $follower = Follower::where('user_id', $id);
+            $follower = Follower::where('following_id', $id);
             $res = $follower->with('followerUser')->get();
             return response([
                 'users' => $res->paginate(10),
