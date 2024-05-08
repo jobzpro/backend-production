@@ -83,7 +83,7 @@ class FollowerController extends Controller
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
-            $followingUser->whereHas('userRoles', function ($q) {
+            $followingUser->whereHas('followingUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
 
@@ -104,7 +104,7 @@ class FollowerController extends Controller
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
-            $followerUser->whereHas('userRoles', function ($q) {
+            $followerUser->whereHas('followingUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
 
