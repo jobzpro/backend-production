@@ -43,13 +43,14 @@ class FollowerController extends Controller
             $current_user = User::with('experiences', 'certifications', 'account', 'references');
 
             if (!empty($keyword)) {
-                $current_user->where(function ($query) use ($keyword) {
-                    $query->whereHas('currentExperience', function ($q) use ($keyword) {
-                        $q->where('position', 'LIKE', '%' . $keyword . '%');
-                    })
-                        ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                });
+                // $current_user->where(function ($query) use ($keyword) {
+                //     $query->whereHas('currentExperience', function ($q) use ($keyword) {
+                //         $q->where('position', 'LIKE', '%' . $keyword . '%');
+                //     })
+                //         ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                //         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                // });
+                $current_user->keywordSearch($keyword);
             }
 
             $current_user->whereHas('userRoles', function ($q) {
@@ -67,14 +68,15 @@ class FollowerController extends Controller
             $followingUser = $following->with('followingUser');
 
             if (!empty($keyword)) {
-                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                    })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                        $q->where('position', 'LIKE', '%' . $keyword . '%');
-                    });
-                });
+                // $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
+                //     $query->where(function ($q) use ($keyword) {
+                //         $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                //             ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                //     })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                //         $q->where('position', 'LIKE', '%' . $keyword . '%');
+                //     });
+                // });
+                $followingUser->keywordFollowingSearch($keyword);
             }
             $followingUser->whereHas('followingUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
@@ -89,14 +91,15 @@ class FollowerController extends Controller
             $follower = Follower::where('following_id', $id);
             $followerUser = $follower->with('followerUser');
             if (!empty($keyword)) {
-                $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                    })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                        $q->where('position', 'LIKE', '%' . $keyword . '%');
-                    });
-                });
+                // $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
+                //     $query->where(function ($q) use ($keyword) {
+                //         $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                //             ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                //     })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                //         $q->where('position', 'LIKE', '%' . $keyword . '%');
+                //     });
+                // });
+                $followerUser->keywordFollowerSearch($keyword);
             }
             $followerUser->whereHas('followerUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
@@ -110,60 +113,6 @@ class FollowerController extends Controller
         }
     }
 
-    public function followUsers(Request $request, $id)
-    {
-        $keyword = $request->query('keyword');
-        $sortFilter = $request->query('sort');
-        $filter = $request->query('filter');
-
-        // $current_user = User::with('experiences', 'certifications', 'account', 'references');
-        if ($filter == "following") {
-            $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followingUser');
-
-            if (!empty($keyword)) {
-                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                    })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                        $q->where('position', 'LIKE', '%' . $keyword . '%');
-                    });
-                });
-            }
-            $followingUser->whereHas('followingUser.userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
-
-            $current_user = $this->applySortFilter($followingUser, $sortFilter);
-            return response([
-                'users' => $current_user->paginate(10),
-                'message' => 'Success',
-            ], 200);
-        } else if ($filter == "follower") {
-            $follower = Follower::where('following_id', $id);
-            $followerUser = $follower->with('followerUser');
-            if (!empty($keyword)) {
-                $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-                            ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-                    })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                        $q->where('position', 'LIKE', '%' . $keyword . '%');
-                    });
-                });
-            }
-            $followerUser->whereHas('followerUser.userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
-
-            $current_user = $this->applySortFilter($followerUser, $sortFilter);
-            return response([
-                'users' => $current_user->paginate(10),
-                'message' => 'Success',
-            ], 200);
-        }
-    }
     private function applySortFilter($users, $sortFilter)
     {
         switch ($sortFilter) {

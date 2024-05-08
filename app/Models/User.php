@@ -269,4 +269,39 @@ class User extends Authenticatable
     {
         return $this->following()->where('following_id', $user_id)->exists();
     }
+
+    public function keywordSearch($keyword)
+    {
+        return $this->where(function ($query) use ($keyword) {
+            $query->whereHas('currentExperience', function ($q) use ($keyword) {
+                $q->where('position', 'LIKE', '%' . $keyword . '%');
+            })
+                ->orWhere('first_name', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+        });
+    }
+
+    public function keywordFollowingSearch($keyword)
+    {
+        return $this->whereHas('followingUser', function ($query) use ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                $q->where('position', 'LIKE', '%' . $keyword . '%');
+            });
+        });
+    }
+
+    public function keywordFollowerSearch($keyword)
+    {
+        return $this->whereHas('followerUser', function ($query) use ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('first_name', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+            })->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                $q->where('position', 'LIKE', '%' . $keyword . '%');
+            });
+        });
+    }
 }
