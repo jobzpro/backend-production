@@ -45,7 +45,6 @@ class FollowerController extends Controller
                     'is_follow' => true,
                 ], 200);
             } else if ($checker) {
-                $current_user->unfollow($following_id);
                 return response([
                     'is_follow' => false,
                 ], 200);
