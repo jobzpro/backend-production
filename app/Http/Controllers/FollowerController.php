@@ -55,7 +55,6 @@ class FollowerController extends Controller
             $current_user->whereHas('userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
-            $current_user->whereBetween('profile_completion', [20, 100]);
 
             $current_user = $this->applySortFilter($current_user, $sortFilter);
 
@@ -81,9 +80,7 @@ class FollowerController extends Controller
             $followingUser->whereHas('followingUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
-            $followingUser->whereHas('followingUser', function ($query) {
-                $query->whereBetween('profile_completion', [20, 100]);
-            });
+
             $current_user = $this->applySortFilter($followingUser, $sortFilter);
             $following = $current_user->pluck('followingUser');
 
@@ -109,9 +106,7 @@ class FollowerController extends Controller
             $followerUser->whereHas('followerUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
-            $followerUser->whereHas('followerUser', function ($query) {
-                $query->whereBetween('profile_completion', [20, 100]);
-            });
+
             $current_user = $this->applySortFilter($followerUser, $sortFilter);
             $follower = $current_user->pluck('followerUser');
             return response([
