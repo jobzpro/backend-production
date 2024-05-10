@@ -79,7 +79,7 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user->whereHas('following', function ($q) use ($id) {
+            $current_user->whereHas('followers', function ($q) use ($id) {
                 $q->where('user_id', $id);
             });
 
