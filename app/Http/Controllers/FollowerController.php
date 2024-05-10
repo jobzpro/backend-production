@@ -46,10 +46,12 @@ class FollowerController extends Controller
         $isFollowing = $current_user->isFollowing($following_id);
         if (!$isFollowing) {
             return response([
+                'user_id' => $following_id,
                 'is_following' => false,
             ], 200);
         } else {
             return response([
+                'user_id' => $following_id,
                 'is_following' => true,
             ], 200);
         }
