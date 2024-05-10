@@ -33,10 +33,8 @@ class FollowerController extends Controller
         }
     }
 
-    public function isFollowChecker(Request $request, $id)
+    public function isFollowChecker(Request $request, $id, $following_id)
     {
-        $user_id = $request->input('user_id');
-        $following_id = $request->input('following_id');
         $current_user = User::find($id);
 
         if (!$current_user) {
