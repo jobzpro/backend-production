@@ -33,13 +33,12 @@ class FollowerController extends Controller
         }
     }
 
-    public function isFollowChecker(Request $request)
+    public function isFollowChecker(Request $request, $id)
     {
         $user_id = $request->input('user_id');
         $following_id = $request->input('following_id');
-        $current_user = User::find($user_id);
+        $current_user = User::find($id);
 
-        dd($user_id);
         if (!$current_user) {
             return response([
                 'message' => 'User not found.',
