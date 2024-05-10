@@ -79,6 +79,10 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
+            $current_user->whereHas('followers', function ($q) use ($id) {
+                $q->where('user_id', $id);
+            });
+
             $current_user = $this->applySortFilter($current_user, $sortFilter);
 
             return response([
