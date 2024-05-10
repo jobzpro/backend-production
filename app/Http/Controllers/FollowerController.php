@@ -33,7 +33,7 @@ class FollowerController extends Controller
         }
     }
 
-    public function isFollowChecker(Request $request, $id, $following_id)
+    public function isFollowChecker($id, $following_id)
     {
         $current_user = User::find($id);
 
@@ -63,7 +63,7 @@ class FollowerController extends Controller
         $filter = $request->query('filter');
 
         if (empty($filter)) {
-            $current_user = User::with('experiences', 'certifications', 'account', 'references');
+            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'following');
 
             if (!empty($keyword)) {
                 $current_user->where(function ($query) use ($keyword) {
