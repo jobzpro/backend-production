@@ -39,6 +39,7 @@ class FollowerController extends Controller
         $following_id = $request->input('following_id');
         $current_user = User::find($user_id);
 
+        dd($user_id);
         if (!$current_user) {
             return response([
                 'message' => 'User not found.',
