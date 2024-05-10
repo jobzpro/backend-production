@@ -63,7 +63,7 @@ class FollowerController extends Controller
         $filter = $request->query('filter');
 
         if (empty($filter)) {
-            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'followers');
+            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'followerOne');
 
             if (!empty($keyword)) {
                 $current_user->where(function ($query) use ($keyword) {
@@ -79,8 +79,8 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user->whereHas('followers', function ($q) use ($id) {
-                $q->where('user_id', $id);
+            $current_user->whereHas('followerOne', function ($q) use ($id) {
+                $q->where('user_id', 3);
             });
 
             $current_user = $this->applySortFilter($current_user, $sortFilter);
