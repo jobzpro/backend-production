@@ -38,21 +38,22 @@ class FollowerController extends Controller
         $user_id = $request->input('user_id');
         $following_id = $request->input('following_id');
         $current_user = User::find($user_id);
-        $checker = $current_user->isFollowing($following_id);
-        if ($current_user) {
-            if (!$checker) {
-                return response([
-                    'is_follow' => true,
-                ], 200);
-            } else if ($checker) {
-                return response([
-                    'is_follow' => false,
-                ], 200);
-            }
+
+        if (!$current_user) {
+            return response([
+                'message' => 'User not found.',
+            ], 404);
+        }
+
+        $isFollowing = $current_user->isFollowing($following_id);
+        if (!$isFollowing) {
+            return response([
+                'is_following' => false,
+            ], 200);
         } else {
             return response([
-                'message' => "Error",
-            ], 400);
+                'is_following' => true,
+            ], 200);
         }
     }
     public function allUser(Request $request, $id)
