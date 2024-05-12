@@ -143,13 +143,13 @@ class FollowerController extends Controller
     {
         switch ($sortFilter) {
             case 'desc':
-                return $users->latest();
+                return $users->orderBy('first_name', 'DESC');
             case 'asc':
                 return $users->orderBy('first_name', 'ASC');
             case 'Profile Completion':
                 return $users->get()->sortByDesc('profile_completion');
             default:
-                return $users->get()->sortByDesc('profile_completion');
+                return $users->orderBy('first_name', 'DESC');
         }
     }
 }
