@@ -142,9 +142,9 @@ class FollowerController extends Controller
     private function applySortFilter($users, $sortFilter)
     {
         switch ($sortFilter) {
-            case 'Recent to Oldest':
+            case 'desc':
                 return $users->latest();
-            case 'Alphabetical':
+            case 'asc':
                 return $users->orderBy('first_name', 'ASC');
             case 'Profile Completion':
                 return $users->get()->sortByDesc('profile_completion');
