@@ -153,12 +153,16 @@ class FollowerController extends Controller
             // $current_user = $this->applySortFilter($followingUser, $sortFilter, $id);
             // $followingRes = $followingUser->pluck('followingUser');
 
+            // Paginate the results
+            $followingPaginated = $followingUser->paginate(10);
 
-            $followingUser->getCollection()->transform(function ($follower) {
+            // Extract the User models from the followingUser relation
+            $followingUsers = $followingPaginated->map(function ($follower) {
                 return $follower->followingUser;
             });
+
             return response([
-                'users' => $followingUser->paginate(10),
+                'users' => $followingPaginated->setCollection($followingUsers),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
