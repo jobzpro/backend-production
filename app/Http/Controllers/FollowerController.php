@@ -137,18 +137,18 @@ class FollowerController extends Controller
             // $followingUser = Follower::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references')
             //     ->where('user_id', $id);
 
-            // if (!empty($keyword)) {
-            //     $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
-            //         $query->where('first_name', 'LIKE', '%' . $keyword . '%')
-            //             ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
-            //             ->orWhereHas('currentExperience', function ($q) use ($keyword) {
-            //                 $q->where('position', 'LIKE', '%' . $keyword . '%');
-            //             });
-            //     });
-            // }
-            // $followingUser->whereHas('followingUser.userRoles', function ($q) {
-            //     $q->where('role_id', 3);
-            // });
+            if (!empty($keyword)) {
+                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
+                    $query->where('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                            $q->where('position', 'LIKE', '%' . $keyword . '%');
+                        });
+                });
+            }
+            $followingUser->whereHas('followingUser.userRoles', function ($q) {
+                $q->where('role_id', 3);
+            });
 
             // $current_user = $this->applySortFilter($followingUser, $sortFilter, $id);
             // $followingRes = $followingUser->pluck('followingUser');
