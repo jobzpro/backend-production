@@ -151,10 +151,10 @@ class FollowerController extends Controller
             });
 
             $current_user = $this->applySortFilter($followingUser, $sortFilter, $id);
-            $following = $current_user->pluck('followingUser');
+            $followingRes = $followingUser->pluck('followingUser');
 
             return response([
-                'users' => $following->paginate(10),
+                'users' => $followingRes->paginate(10),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "follower") {
@@ -177,9 +177,9 @@ class FollowerController extends Controller
             });
 
             $current_user = $this->applySortFilter($followerUser, $sortFilter, $id);
-            $follower = $current_user->pluck('followerUser');
+            $followerRes = $followerUser->pluck('followerUser');
             return response([
-                'users' => $follower->paginate(10),
+                'users' => $followerRes->paginate(10),
                 'message' => 'Success',
             ], 200);
         }
