@@ -40,15 +40,15 @@ class FollowerController extends Controller
         $current_user = User::find($user_id);
         $checker = $current_user->isFollowing($following_id);
         if ($current_user) {
-            if (!$checker) {
+            if ($checker) {
                 $current_user->follow($following_id);
                 return response([
                     'message' => "followed!",
                 ], 200);
             } else if ($checker) {
-                $current_user->unfollow($following_id);
+                $current_user->declineFollow($following_id);
                 return response([
-                    'message' => "unfollowed!",
+                    'message' => "add!",
                 ], 200);
             }
         } else {
@@ -58,6 +58,25 @@ class FollowerController extends Controller
         }
     }
 
+    public function declineFriend(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $following_id = $request->input('following_id');
+        $current_user = User::find($user_id);
+        $checker = $current_user->isFollowing($following_id);
+        if ($current_user) {
+            if ($checker) {
+                $current_user->declineFollow($following_id);
+                return response([
+                    'message' => "decline!",
+                ], 200);
+            }
+        } else {
+            return response([
+                'message' => "Error",
+            ], 400);
+        }
+    }
     public function isFollowChecker($id, $following_id)
     {
         $current_user = User::find($id);
