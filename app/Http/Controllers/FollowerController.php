@@ -151,7 +151,7 @@ class FollowerController extends Controller
             });
 
             // $current_user = $this->applySortFilter($followingUser, $sortFilter, $id);
-            // $followingRes = $followingUser->pluck('followingUser');
+            $followingRes = $followingUser->pluck('followingUser');
 
             return response([
                 'users' => $followingUser->paginate(10),
