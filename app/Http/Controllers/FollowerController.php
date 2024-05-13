@@ -143,13 +143,13 @@ class FollowerController extends Controller
     {
         switch ($sortFilter) {
             case 'desc':
-                return $users->orderBy('first_name', 'DESC');
+                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name');
             case 'asc':
-                return $users->orderBy('first_name', 'ASC');
+                return $users->orderBy('first_name', 'ASC')->whereNotNull('first_name')->whereNotNull('last_name');
             case 'Profile Completion':
-                return $users->get()->sortByDesc('profile_completion');
+                return $users->get()->sortByDesc('profile_completion')->whereNotNull('first_name')->whereNotNull('last_name');
             default:
-                return $users->orderBy('first_name', 'DESC');
+                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name');
         }
     }
 }
