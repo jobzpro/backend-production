@@ -159,10 +159,10 @@ class FollowerController extends Controller
         } else if ($filter == "follower") {
             // $follower = Follower::where('following_id', $id);
             // $followerUser = $follower->with('followerUser');
-            $followerUser = Follower::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references')->where('following_id', $id);;
+            $followerUser = Follower::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references')->where('following_id', $id);
 
             if (!empty($keyword)) {
-                $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
+                $followerUser->whereHas('followingUser', function ($query) use ($keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('first_name', 'LIKE', '%' . $keyword . '%')
                             ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
