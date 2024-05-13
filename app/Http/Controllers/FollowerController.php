@@ -143,13 +143,13 @@ class FollowerController extends Controller
     {
         switch ($sortFilter) {
             case 'desc':
-                return $users->orderBy('first_name', 'DESC');
+                return $users->orderBy('first_name', 'DESC')->whereBetween('profile_completion', [20, 100]);
             case 'asc':
-                return $users->orderBy('first_name', 'ASC');
+                return $users->orderBy('first_name', 'ASC')->whereBetween('profile_completion', [20, 100]);
             case 'Profile Completion':
                 return $users->get()->sortByDesc('profile_completion');
             default:
-                return $users->orderBy('first_name', 'DESC');
+                return $users->orderBy('first_name', 'DESC')->whereBetween('profile_completion', [20, 100]);
         }
     }
 }
