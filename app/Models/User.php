@@ -269,6 +269,16 @@ class User extends Authenticatable
         }
     }
 
+    public function addFollow($following_id)
+    {
+        if (!$this->isFollowing($following_id)) {
+            $this->following()->create([
+                'user_id' => $this->id,
+                'following_id' => $following_id
+            ]);
+        }
+    }
+
     public function isFollowing($user_id)
     {
         return $this->following()->where('following_id', $user_id)->exists();

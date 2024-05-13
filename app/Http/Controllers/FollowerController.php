@@ -33,6 +33,31 @@ class FollowerController extends Controller
         }
     }
 
+    public function addFriend(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $following_id = $request->input('following_id');
+        $current_user = User::find($user_id);
+        $checker = $current_user->isFollowing($following_id);
+        if ($current_user) {
+            if (!$checker) {
+                $current_user->follow($following_id);
+                return response([
+                    'message' => "followed!",
+                ], 200);
+            } else if ($checker) {
+                $current_user->unfollow($following_id);
+                return response([
+                    'message' => "unfollowed!",
+                ], 200);
+            }
+        } else {
+            return response([
+                'message' => "Error",
+            ], 400);
+        }
+    }
+
     public function isFollowChecker($id, $following_id)
     {
         $current_user = User::find($id);
@@ -56,6 +81,7 @@ class FollowerController extends Controller
             ], 200);
         }
     }
+
     public function allUser(Request $request, $id)
     {
         $keyword = $request->query('keyword');
@@ -79,7 +105,7 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user = $this->applySortFilter($current_user, $sortFilter);
+            $current_user = $this->applySortFilter($current_user, $sortFilter, $id);
 
             return response([
                 'users' => $current_user->paginate(10),
@@ -104,7 +130,7 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user = $this->applySortFilter($followingUser, $sortFilter);
+            $current_user = $this->applySortFilter($followingUser, $sortFilter, $id);
             $following = $current_user->pluck('followingUser');
 
             return response([
@@ -130,7 +156,7 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user = $this->applySortFilter($followerUser, $sortFilter);
+            $current_user = $this->applySortFilter($followerUser, $sortFilter, $id);
             $follower = $current_user->pluck('followerUser');
             return response([
                 'users' => $follower->paginate(10),
@@ -139,17 +165,17 @@ class FollowerController extends Controller
         }
     }
 
-    private function applySortFilter($users, $sortFilter)
+    private function applySortFilter($users, $sortFilter, $id)
     {
         switch ($sortFilter) {
             case 'desc':
-                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name');
+                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
             case 'asc':
-                return $users->orderBy('first_name', 'ASC')->whereNotNull('first_name')->whereNotNull('last_name');
+                return $users->orderBy('first_name', 'ASC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
             case 'Profile Completion':
-                return $users->get()->sortByDesc('profile_completion')->whereNotNull('first_name')->whereNotNull('last_name');
+                return $users->get()->sortByDesc('profile_completion')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
             default:
-                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name');
+                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
         }
     }
 }
