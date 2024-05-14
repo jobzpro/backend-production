@@ -126,22 +126,11 @@ class FollowerController extends Controller
             });
 
             $current_user->paginate(10);
-            $allJobseekers = $current_user->getCollection()->map(function ($connections) {
-                return array_merge(
-                    $connections->toArray(),
-                    [
-                        'follower' => [
-                            'id' => $connections->follower_one->id,
-                            'user_id' => $connections->follower_one->user_id,
-                            'following_id' => $connections->follower_one->following_id,
-                        ],
-                    ]
-                );
-            });
-            $allJobseekersResult = $this->applySortFilter($allJobseekers, $sortFilter, $id);
+
+            $allJobseekersResult = $this->applySortFilter($current_user, $sortFilter, $id);
 
             return response([
-                'users' => $current_user->setCollection($allJobseekersResult),
+                'users' => $allJobseekersResult,
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "following") {
