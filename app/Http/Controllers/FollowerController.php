@@ -159,7 +159,7 @@ class FollowerController extends Controller
                 return array_merge(
                     $follower->followingUser->toArray(),
                     [
-                        'follower' => [
+                        'followers' => [
                             'id' => $follower->id,
                             'user_id' => $follower->user_id,
                             'following_id' => $follower->following_id,
@@ -168,10 +168,10 @@ class FollowerController extends Controller
                 );
             });
 
-            // $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
+            $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
 
             return response([
-                'users' => $followingPaginated->setCollection($followingUsers),
+                'users' => $followingPaginated->setCollection($current_user),
                 'message' => 'Success',
             ], 200);
         }
