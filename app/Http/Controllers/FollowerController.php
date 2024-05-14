@@ -156,24 +156,22 @@ class FollowerController extends Controller
             // });
 
             $followingUsers = $followingPaginated->map(function ($follower) {
-                return [
-                    'user' => array_merge(
-                        $follower->followingUser->toArray(),
-                        [
-                            'follower' => [
-                                'id' => $follower->id,
-                                'user_id' => $follower->user_id,
-                                'following_id' => $follower->following_id,
-                            ],
-                        ]
-                    ),
-                ];
+                return array_merge(
+                    $follower->followingUser->toArray(),
+                    [
+                        'follower' => [
+                            'id' => $follower->id,
+                            'user_id' => $follower->user_id,
+                            'following_id' => $follower->following_id,
+                        ],
+                    ]
+                );
             });
 
-            $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
+            // $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
 
             return response([
-                'users' => $followingPaginated->setCollection($current_user),
+                'users' => $followingPaginated->setCollection($followingUsers),
                 'message' => 'Success',
             ], 200);
         }
