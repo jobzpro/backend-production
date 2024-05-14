@@ -133,7 +133,7 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "following") {
             $following = Follower::where('following_id', $id);
-            $followingUser = $following->with('followerUser');
+            $followingUser = $following->with('followerUser, followingUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
@@ -176,7 +176,7 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "follower") {
             $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followerUser');
+            $followingUser = $following->with('followerUser, followingUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
