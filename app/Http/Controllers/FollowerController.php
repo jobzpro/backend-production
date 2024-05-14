@@ -151,12 +151,23 @@ class FollowerController extends Controller
 
             $followingPaginated = $followingUser->paginate(10);
 
+            // $followingUsers = $followingPaginated->map(function ($follower) {
+            //     return $follower->followingUser;
+            // });
+
             $followingUsers = $followingPaginated->map(function ($follower) {
                 return [
-                    "user" => $follower->followingUser,
-                    "follower" => $follower
+                    'user' => array_merge(
+                        $follower->followingUser->toArray(),
+                        [
+                            'follower' => [
+                                'id' => $follower->id,
+                                'user_id' => $follower->user_id,
+                                'following_id' => $follower->following_id,
+                            ],
+                        ]
+                    ),
                 ];
-                // return $follower->followingUser;
             });
 
             $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
