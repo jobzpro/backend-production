@@ -125,12 +125,10 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user->paginate(10);
-
-            $allJobseekersResult = $this->applySortFilter($current_user, $sortFilter, $id);
+            $current_user = $this->applySortFilter($current_user, $sortFilter, $id);
 
             return response([
-                'users' => $allJobseekersResult,
+                'users' => $current_user->paginate(10),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "following") {
