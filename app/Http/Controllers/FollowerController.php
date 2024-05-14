@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class FollowerController extends Controller
 {
@@ -156,7 +157,7 @@ class FollowerController extends Controller
                 return $follower->followingUser;
             });
 
-            $current_user = $this->applySortFilter($followingUsers, $sortFilter, $id);
+            $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
 
             return response([
                 'users' => $followingPaginated->setCollection($current_user),
@@ -204,17 +205,23 @@ class FollowerController extends Controller
         }
     }
 
-    private function followApplySortFilter($users, $sortFilter, $id)
+    private function followApplySortFilter(Collection $users, $sortFilter, $id)
     {
+        // Filter out users with null first_name, last_name and exclude current user
+        $filteredUsers = $users->filter(function ($user) use ($id) {
+            return !is_null($user->first_name) && !is_null($user->last_name) && $user->account_id != $id;
+        });
+
+        // Apply sorting based on the sort filter
         switch ($sortFilter) {
             case 'desc':
-                return $users->orderBy('first_name', 'DESC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
+                return $filteredUsers->sortByDesc('first_name')->values();
             case 'asc':
-                return $users->orderBy('first_name', 'ASC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
+                return $filteredUsers->sortBy('first_name')->values();
             case 'Profile Completion':
-                return $users->get()->sortByDesc('profile_completion')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
+                return $filteredUsers->sortByDesc('profile_completion')->values();
             default:
-                return $users->orderBy('first_name', 'ASC')->whereNotNull('first_name')->whereNotNull('last_name')->whereNot('account_id', $id);
+                return $filteredUsers->sortBy('first_name')->values();
         }
     }
 }
