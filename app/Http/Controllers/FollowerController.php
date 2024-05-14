@@ -227,7 +227,7 @@ class FollowerController extends Controller
     {
         // Filter out users with null first_name, last_name and exclude current user
         $filteredUsers = $users->filter(function ($user) use ($id) {
-            return !is_null($user->first_name) && !is_null($user->last_name) && $user->account_id != $id;
+            return !is_null($user['first_name']) && !is_null($user['last_name']) && $user['account_id'] != $id;
         });
 
         // Apply sorting based on the sort filter
