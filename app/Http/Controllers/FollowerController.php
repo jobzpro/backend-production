@@ -125,10 +125,23 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user = $this->applySortFilter($current_user, $sortFilter, $id);
+            $current_user->paginate(10);
+            $allJobseekers = $current_user->map(function ($connections) {
+                return array_merge(
+                    $connections->toArray(),
+                    [
+                        'follower' => [
+                            'id' => $connections->follower_one->id,
+                            'user_id' => $connections->follower_one->user_id,
+                            'following_id' => $connections->follower_one->following_id,
+                        ],
+                    ]
+                );
+            });
+            $allJobseekersResult = $this->applySortFilter($allJobseekers, $sortFilter, $id);
 
             return response([
-                'users' => $current_user->paginate(10),
+                'users' => $allJobseekersResult,
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "following") {
