@@ -172,7 +172,7 @@ class FollowerController extends Controller
                 return array_merge(
                     $follower->followingUser->toArray(),
                     [
-                        'followers' => [
+                        'follower' => [
                             'id' => $follower->id,
                             'user_id' => $follower->user_id,
                             'following_id' => $follower->following_id,
