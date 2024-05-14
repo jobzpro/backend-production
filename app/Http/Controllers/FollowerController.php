@@ -133,10 +133,8 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "following") {
             $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followingUser');
-            // $followingUser = Follower::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references')->where('user_id', $id);
-            // $followingUser = Follower::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references')
-            //     ->where('user_id', $id);
+            // $followingUser = $following->with('followingUser');
+            $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
                 $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
@@ -165,8 +163,8 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "follower") {
             $follower = Follower::where('following_id', $id);
-            $followerUser = $follower->with('followerUser');
-            // $followerUser = Follower::with('followerUser.experiences', 'followerUser.certifications', 'followerUser.account', 'followerUser.references')->where('following_id', $id);
+            // $followerUser = $follower->with('followerUser');
+            $followerUser = $follower::with('followerUser.experiences', 'followerUser.certifications', 'followerUser.account', 'followerUser.references');
 
             if (!empty($keyword)) {
                 $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
@@ -182,10 +180,16 @@ class FollowerController extends Controller
                 $q->where('role_id', 3);
             });
 
-            $current_user = $this->applySortFilter($followerUser, $sortFilter, $id);
-            $followerRes = $followerUser->pluck('followerUser');
+            $followerPaginated = $followerUser->paginate(10);
+
+            $followerUsers = $followerPaginated->map(function ($follower) {
+                return $follower->followingUser;
+            });
+
+            $current_user = $this->followApplySortFilter($followerUsers, $sortFilter, $id);
+
             return response([
-                'users' => $followerRes->paginate(10),
+                'users' =>  $followerPaginated->setCollection($current_user),
                 'message' => 'Success',
             ], 200);
         }
