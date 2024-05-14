@@ -145,9 +145,9 @@ class FollowerController extends Controller
                         });
                 });
             }
-            $followingUser->whereHas('followingUser.userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
+            // $followingUser->whereHas('followingUser.userRoles', function ($q) {
+            //     $q->where('role_id', 3);
+            // });
 
             $followingPaginated = $followingUser->paginate(10);
 
@@ -188,9 +188,9 @@ class FollowerController extends Controller
                         });
                 });
             }
-            $followingUser->whereHas('followingUser.userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
+            // $followingUser->whereHas('followingUser.userRoles', function ($q) {
+            //     $q->where('role_id', 3);
+            // });
 
             $followingPaginated = $followingUser->paginate(10);
 
