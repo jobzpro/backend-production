@@ -253,6 +253,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Follower::class, 'user_id', 'id');
     }
+    public function followingOne()
+    {
+        return $this->hasOne(Follower::class, 'user_id', 'id');
+    }
 
     public function unfollow($following_id)
     {

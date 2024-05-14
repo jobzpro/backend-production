@@ -109,7 +109,7 @@ class FollowerController extends Controller
         $filter = $request->query('filter');
 
         if (empty($filter)) {
-            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'followers');
+            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'followingOne');
 
             if (!empty($keyword)) {
                 $current_user->where(function ($query) use ($keyword) {
