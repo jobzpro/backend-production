@@ -132,7 +132,7 @@ class FollowerController extends Controller
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "following") {
-            $following = Follower::where('user_id', $id);
+            $following = Follower::where('following_id', $id);
             $followingUser = $following->with('followerUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
@@ -174,39 +174,50 @@ class FollowerController extends Controller
                 'users' => $followingPaginated->setCollection($current_user),
                 'message' => 'Success',
             ], 200);
+        } else if ($filter == "follower") {
+            $following = Follower::where('user_id', $id);
+            $followingUser = $following->with('followingUser');
+            // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
+
+            if (!empty($keyword)) {
+                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
+                    $query->where('first_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
+                        ->orWhereHas('currentExperience', function ($q) use ($keyword) {
+                            $q->where('position', 'LIKE', '%' . $keyword . '%');
+                        });
+                });
+            }
+            $followingUser->whereHas('followingUser.userRoles', function ($q) {
+                $q->where('role_id', 3);
+            });
+
+            $followingPaginated = $followingUser->paginate(10);
+
+            // $followingUsers = $followingPaginated->map(function ($follower) {
+            //     return $follower->followingUser;
+            // });
+
+            $followingUsers = $followingPaginated->map(function ($follower) {
+                return array_merge(
+                    $follower->followingUser->toArray(),
+                    [
+                        'follower' => [
+                            'id' => $follower->id,
+                            'user_id' => $follower->user_id,
+                            'following_id' => $follower->following_id,
+                        ],
+                    ]
+                );
+            });
+
+            $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
+
+            return response([
+                'users' => $followingPaginated->setCollection($current_user),
+                'message' => 'Success',
+            ], 200);
         }
-        // else if ($filter == "follower") {
-        //     $follower = Follower::where('following_id', $id);
-        //     $followerUser = $follower->with('followerUser');
-        //     // $followerUser = $follower::with('followerUser.experiences', 'followerUser.certifications', 'followerUser.account', 'followerUser.references');
-
-        //     if (!empty($keyword)) {
-        //         $followerUser->whereHas('followerUser', function ($query) use ($keyword) {
-        //             $query->where(function ($q) use ($keyword) {
-        //                 $q->where('first_name', 'LIKE', '%' . $keyword . '%')
-        //                     ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
-        //             })->orWhereHas('currentExperience', function ($q) use ($keyword) {
-        //                 $q->where('position', 'LIKE', '%' . $keyword . '%');
-        //             });
-        //         });
-        //     }
-        //     $followerUser->whereHas('followerUser.userRoles', function ($q) {
-        //         $q->where('role_id', 3);
-        //     });
-
-        //     $followerPaginated = $followerUser->paginate(10);
-
-        //     $followerUsers = $followerPaginated->map(function ($follower) {
-        //         return $follower->followingUser;
-        //     });
-
-        //     $current_user = $this->followApplySortFilter($followerUsers, $sortFilter, $id);
-
-        //     return response([
-        //         'users' =>  $followerPaginated->setCollection($current_user),
-        //         'message' => 'Success',
-        //     ], 200);
-        // }
     }
 
     private function applySortFilter($users, $sortFilter, $id)
