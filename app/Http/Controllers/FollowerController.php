@@ -133,11 +133,11 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "following") {
             $following = Follower::where('following_id', $id);
-            $followingUser = $following->with('followerUser, followingUser');
+            $followingUser = $following->with('followingUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
-                $followingUser->whereHas('followerUser', function ($query) use ($keyword) {
+                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
                     $query->where('first_name', 'LIKE', '%' . $keyword . '%')
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
                         ->orWhereHas('currentExperience', function ($q) use ($keyword) {
@@ -145,7 +145,7 @@ class FollowerController extends Controller
                         });
                 });
             }
-            $followingUser->whereHas('followerUser.userRoles', function ($q) {
+            $followingUser->whereHas('followingUser.userRoles', function ($q) {
                 $q->where('role_id', 3);
             });
 
@@ -176,7 +176,7 @@ class FollowerController extends Controller
             ], 200);
         } else if ($filter == "follower") {
             $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followerUser, followingUser');
+            $followingUser = $following->with('followerUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
             if (!empty($keyword)) {
