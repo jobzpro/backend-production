@@ -126,7 +126,7 @@ class FollowerController extends Controller
             });
 
             $current_user->paginate(10);
-            $allJobseekers = $current_user->map(function ($connections) {
+            $allJobseekers = $current_user->getCollection()->map(function ($connections) {
                 return array_merge(
                     $connections->toArray(),
                     [
@@ -141,7 +141,7 @@ class FollowerController extends Controller
             $allJobseekersResult = $this->applySortFilter($allJobseekers, $sortFilter, $id);
 
             return response([
-                'users' => $allJobseekersResult,
+                'users' => $current_user->setCollection($allJobseekersResult),
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "following") {
