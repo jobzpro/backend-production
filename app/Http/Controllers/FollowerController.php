@@ -153,10 +153,8 @@ class FollowerController extends Controller
 
             $followingUsers = $followingPaginated->map(function ($follower) {
                 return [
-                    "users" => [
-                        "user" => $follower->followingUser,
-                        "follower" => $follower
-                    ]
+                    "user" => $follower->followingUser,
+                    "follower" => $follower
                 ];
                 // return $follower->followingUser;
             });
