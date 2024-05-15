@@ -187,13 +187,11 @@ class FollowerController extends Controller
         } else if ($filter == "friends") {
             $followersByUserId = Follower::where('user_id', $id)
                 ->where('status', 0)
-                ->with('followingUser')
-                ->get();
+                ->with('followingUser');
 
             $followersByFollowingId = Follower::where('following_id', $id)
                 ->where('status', 0)
-                ->with('followerUser')
-                ->get();
+                ->with('followerUser');
 
             $combinedFollowers = $followersByUserId->merge($followersByFollowingId);
             if (!empty($keyword)) {
