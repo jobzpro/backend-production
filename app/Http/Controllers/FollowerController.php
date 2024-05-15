@@ -112,7 +112,15 @@ class FollowerController extends Controller
         $filter = $request->query('filter');
 
         if (empty($filter)) {
-            $current_user = User::with('experiences', 'certifications', 'account', 'references', 'following', 'follower');
+            // $current_user = User::with('experiences', 'certifications', 'account', 'references', 'following', 'follower');
+            $current_user = User::with(['followings', 'followers'])
+                ->whereDoesntHave('followings', function ($query) {
+                    $query->where('user_id', 3);
+                })
+                ->whereDoesntHave('followers', function ($query) {
+                    $query->where('following_id', 3);
+                })
+                ->get();
 
             if (!empty($keyword)) {
                 $current_user->where(function ($query) use ($keyword) {
@@ -137,8 +145,6 @@ class FollowerController extends Controller
         } else if ($filter == "request") {
             $following = Follower::where('following_id', $id)->where("status", 1);
             $followingUser = $following->with('followerUser');
-            // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
-
             if (!empty($keyword)) {
                 $followingUser->whereHas('followerUser', function ($query) use ($keyword) {
                     $query->where('first_name', 'LIKE', '%' . $keyword . '%')
@@ -202,7 +208,7 @@ class FollowerController extends Controller
                     return false;
                 });
             }
-            // Convert the filtered collection to a LengthAwarePaginator instance
+
             $page = Paginator::resolveCurrentPage('page');
             $perPage = 10;
             $total = $combinedFollowers->count();
@@ -227,10 +233,8 @@ class FollowerController extends Controller
                 );
             });
 
-            // Update the paginated collection with the transformed results
             $followingPaginated->setCollection($followingUsers);
 
-            // Return the response with paginated results
             return response([
                 'users' => $followingPaginated,
                 'message' => 'Success',
