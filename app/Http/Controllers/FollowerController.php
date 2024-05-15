@@ -131,7 +131,7 @@ class FollowerController extends Controller
                 'users' => $current_user->paginate(10),
                 'message' => 'Success',
             ], 200);
-        } else if ($filter == "following") {
+        } else if ($filter == "request") {
             $following = Follower::where('following_id', $id);
             $followingUser = $following->with('followerUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
