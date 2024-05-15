@@ -112,7 +112,6 @@ class FollowerController extends Controller
 		$filter = $request->query('filter');
 
 		if (empty($filter)) {
-			// $current_user = User::with('experiences', 'certifications', 'account', 'references', 'following', 'follower');
 			$current_user = User::with(['followings', 'followers', 'experiences', 'certifications', 'account', 'references'])
 				->whereDoesntHave('followings', function ($query) use ($id) {
 					// $query->where('user_id', $id);
@@ -154,15 +153,8 @@ class FollowerController extends Controller
 						});
 				});
 			}
-			// $followingUser->whereHas('followingUser.userRoles', function ($q) {
-			//     $q->where('role_id', 3);
-			// });
 
 			$followingPaginated = $followingUser->paginate(10);
-
-			// $followingUsers = $followingPaginated->map(function ($follower) {
-			//     return $follower->followingUser;
-			// });
 
 			$followingUsers = $followingPaginated->getCollection()->map(function ($follower) {
 				return array_merge(
