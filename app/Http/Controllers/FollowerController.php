@@ -42,16 +42,17 @@ class FollowerController extends Controller
         $checker = $current_user->isFollowing($following_id);
         if ($current_user) {
             if ($checker) {
-                $current_user->follow($following_id);
+                $current_user->acceptFriendRequest($following_id);
                 return response([
-                    'message' => "followed!",
-                ], 200);
-            } else if ($checker) {
-                $current_user->declineFollow($following_id);
-                return response([
-                    'message' => "add!",
+                    'message' => "success",
                 ], 200);
             }
+            // else if ($checker) {
+            //     $current_user->declineFollow($following_id);
+            //     return response([
+            //         'message' => "decline",
+            //     ], 200);
+            // }
         } else {
             return response([
                 'message' => "Error",

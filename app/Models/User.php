@@ -273,17 +273,19 @@ class User extends Authenticatable
         }
     }
 
-    public function addFollow($follower_id)
+    public function acceptFriendRequest()
     {
-        $this->following()->create([
-            'user_id' => $follower_id,
-            'following_id' => $this->id,
+        return $this->following()->update([
+            'status' => 0
         ]);
     }
 
     public function declineFollow($follower_id)
     {
-        return $this->following()->where('user_id', $follower_id)->where('following_id', $this->id)->forceDelete();
+        return $this->following()
+            ->where('user_id', $follower_id)
+            ->where('following_id', $this->id)
+            ->forceDelete();
     }
 
     public function isFollowing($user_id)
