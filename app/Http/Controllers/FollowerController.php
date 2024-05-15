@@ -133,7 +133,7 @@ class FollowerController extends Controller
                 'message' => 'Success',
             ], 200);
         } else if ($filter == "request") {
-            $following = Follower::where('following_id', $id);
+            $following = Follower::where('following_id', $id)->where("status", 1);
             $followingUser = $following->with('followerUser');
             // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
 
