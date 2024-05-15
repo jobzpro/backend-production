@@ -200,10 +200,16 @@ class FollowerController extends Controller
                 $combinedFollowers = $combinedFollowers->filter(function ($follower) use ($keyword, $id) {
                     $relatedUser = $follower->user_id == $id ? $follower->followingUser : $follower->followerUser;
 
+                    // if ($relatedUser) {
+                    //     return str_contains($relatedUser->first_name, $keyword) ||
+                    //         str_contains($relatedUser->last_name, $keyword);
+                    //     // || ($relatedUser->currentExperience && str_contains($relatedUser->currentExperience->position, $keyword));
+                    // }
                     if ($relatedUser) {
-                        return str_contains($relatedUser->first_name, $keyword) ||
-                            str_contains($relatedUser->last_name, $keyword);
-                        // || ($relatedUser->currentExperience && str_contains($relatedUser->currentExperience->position, $keyword));
+                        return $relatedUser->where(function ($query) use ($keyword) {
+                            $query->where('first_name', 'LIKE', '%' . $keyword . '%')
+                                ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
+                        })->exists();
                     }
                     return false;
                 });
