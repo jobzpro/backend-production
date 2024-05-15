@@ -115,10 +115,12 @@ class FollowerController extends Controller
             // $current_user = User::with('experiences', 'certifications', 'account', 'references', 'following', 'follower');
             $current_user = User::with(['followings', 'followers', 'experiences', 'certifications', 'account', 'references'])
                 ->whereDoesntHave('followings', function ($query) use ($id) {
-                    $query->where('user_id', $id);
+                    // $query->where('user_id', $id);
+                    $query->where('following_id', $id);
                 })
                 ->whereDoesntHave('followers', function ($query) use ($id) {
-                    $query->where('following_id', $id);
+                    // $query->where('following_id', $id);
+                    $query->where('user_id', $id);
                 })
                 ->whereHas('userRoles', function ($q) {
                     $q->where('role_id', 3);
