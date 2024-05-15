@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 
 class FollowerController extends Controller
@@ -176,47 +178,60 @@ class FollowerController extends Controller
                 // 'users' => $followingPaginated,
                 'message' => 'Success',
             ], 200);
-        } else if ($filter == "follower") {
-            $following = Follower::where('user_id', $id);
-            $followingUser = $following->with('followingUser');
-            // $followingUser = $following::with('followingUser.experiences', 'followingUser.certifications', 'followingUser.account', 'followingUser.references');
+        } else if ($filter == "friends") {
+            $followersByUserId = Follower::where('user_id', $id)
+                ->where('status', 0)
+                ->with('followingUser')
+                ->get();
 
+            $followersByFollowingId = Follower::where('following_id', $id)
+                ->where('status', 0)
+                ->with('followerUser')
+                ->get();
+
+            $combinedFollowers = $followersByUserId->merge($followersByFollowingId);
             if (!empty($keyword)) {
-                $followingUser->whereHas('followingUser', function ($query) use ($keyword) {
-                    $query->where('first_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
-                        ->orWhereHas('currentExperience', function ($q) use ($keyword) {
-                            $q->where('position', 'LIKE', '%' . $keyword . '%');
-                        });
+                $combinedFollowers = $combinedFollowers->filter(function ($follower) use ($keyword, $id) {
+                    $relatedUser = $follower->user_id == $id ? $follower->followingUser : $follower->followerUser;
+
+                    if ($relatedUser) {
+                        return str_contains($relatedUser->first_name, $keyword) ||
+                            str_contains($relatedUser->last_name, $keyword) ||
+                            ($relatedUser->currentExperience && str_contains($relatedUser->currentExperience->position, $keyword));
+                    }
+                    return false;
                 });
             }
-            // $followingUser->whereHas('followingUser.userRoles', function ($q) {
-            //     $q->where('role_id', 3);
-            // });
+            // Convert the filtered collection to a LengthAwarePaginator instance
+            $page = Paginator::resolveCurrentPage('page');
+            $perPage = 10;
+            $total = $combinedFollowers->count();
+            $currentPageResults = $combinedFollowers->slice(($page - 1) * $perPage, $perPage)->values();
+            $followingPaginated = new LengthAwarePaginator($currentPageResults, $total, $perPage, $page, [
+                'path' => Paginator::resolveCurrentPath(),
+            ]);
 
-            $followingPaginated = $followingUser->paginate(10);
+            // Transform the paginated collection
+            $followingUsers = $followingPaginated->getCollection()->map(function ($follower) use ($id) {
+                $relatedUser = $follower->user_id == $id ? $follower->followingUser : $follower->followerUser;
 
-            // $followingUsers = $followingPaginated->map(function ($follower) {
-            //     return $follower->followingUser;
-            // });
+                return array_merge(
+                    $relatedUser ? $relatedUser->toArray() : [],
+                    [
+                        'follower' => [
+                            'id' => $follower->id,
+                            'user_id' => $follower->user_id,
+                            'following_id' => $follower->following_id,
+                        ],
+                    ]
+                );
+            });
 
-            // $followingUsers = $followingPaginated->getCollection()->map(function ($follower) {
-            //     return array_merge(
-            //         $follower->followingUser->toArray(),
-            //         [
-            //             'follower' => [
-            //                 'id' => $follower->id,
-            //                 'user_id' => $follower->user_id,
-            //                 'following_id' => $follower->following_id,
-            //             ],
-            //         ]
-            //     );
-            // });
+            // Update the paginated collection with the transformed results
+            $followingPaginated->setCollection($followingUsers);
 
-            // $current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
-
+            // Return the response with paginated results
             return response([
-                // 'users' => $followingPaginated->setCollection($current_user),
                 'users' => $followingPaginated,
                 'message' => 'Success',
             ], 200);
