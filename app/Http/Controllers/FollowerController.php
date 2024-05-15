@@ -120,7 +120,9 @@ class FollowerController extends Controller
                 ->whereDoesntHave('followers', function ($query) use ($id) {
                     $query->where('following_id', $id);
                 })
-                ->get();
+                ->whereHas('userRoles', function ($q) {
+                    $q->where('role_id', 3);
+                });
 
             if (!empty($keyword)) {
                 $current_user->where(function ($query) use ($keyword) {
@@ -131,10 +133,6 @@ class FollowerController extends Controller
                         ->orWhere('last_name', 'LIKE', '%' . $keyword . '%');
                 });
             }
-
-            $current_user->whereHas('userRoles', function ($q) {
-                $q->where('role_id', 3);
-            });
 
             $current_user = $this->applySortFilter($current_user, $sortFilter, $id);
 
