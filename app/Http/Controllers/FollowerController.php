@@ -202,8 +202,8 @@ class FollowerController extends Controller
 
                     if ($relatedUser) {
                         return str_contains($relatedUser->first_name, $keyword) ||
-                            str_contains($relatedUser->last_name, $keyword) ||
-                            ($relatedUser->currentExperience && str_contains($relatedUser->currentExperience->position, $keyword));
+                            str_contains($relatedUser->last_name, $keyword);
+                        // || ($relatedUser->currentExperience && str_contains($relatedUser->currentExperience->position, $keyword));
                     }
                     return false;
                 });
