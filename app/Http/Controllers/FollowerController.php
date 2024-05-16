@@ -176,7 +176,42 @@ class FollowerController extends Controller
 				// 'users' => $followingPaginated,
 				'message' => 'Success',
 			], 200);
-		} else if ($filter == "friends") {
+		} if ($filter == "pending") {
+			$following = Follower::where('user_id', $id)->where("status", 1);
+			$followingUser = $following->with('followingUser');
+			if (!empty($keyword)) {
+				$followingUser->whereHas('followingUser', function ($query) use ($keyword) {
+					$query->where('first_name', 'LIKE', '%' . $keyword . '%')
+						->orWhere('last_name', 'LIKE', '%' . $keyword . '%')
+						->orWhereHas('currentExperience', function ($q) use ($keyword) {
+							$q->where('position', 'LIKE', '%' . $keyword . '%');
+						});
+				});
+			}
+
+			$followingPaginated = $followingUser->paginate(10);
+
+			$followingUsers = $followingPaginated->getCollection()->map(function ($follower) {
+				return array_merge(
+					$follower->followingUser->toArray(),
+					[
+						'follower' => [
+							'id' => $follower->id,
+							'user_id' => $follower->user_id,
+							'following_id' => $follower->following_id,
+						],
+					]
+				);
+			});
+
+			$current_user = $this->followApplySortFilter($followingUsers, $sortFilter, $id);
+
+			return response([
+				'users' => $followingPaginated->setCollection($current_user),
+				// 'users' => $followingPaginated,
+				'message' => 'Success',
+			], 200);
+		}else if ($filter == "friends") {
 			$query = Follower::query()
 				->where('status', 0)
 				->where(function ($query) use ($id) {
