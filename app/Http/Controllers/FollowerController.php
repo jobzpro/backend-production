@@ -66,17 +66,24 @@ class FollowerController extends Controller
 	{
 		$user_id = $request->input('user_id');
 		$following_id = $request->input('following_id');
-		$current_user = User::find($user_id);
-		// $following = User::find($following_id);
-		// $checker = $current_user->isFollowing($following_id);
 
-		Follower::where(function ($query) use ($user_id, $following_id) {
-			$query->where('user_id', $user_id)
-				->where('following_id', $following_id);
-		})->orWhere(function ($query) use ($user_id, $following_id) {
-			$query->where('user_id', $following_id)
-				->where('following_id', $user_id);
-		})->forceDelete();
+		if (empty($user_id) && empty($following_id)) {
+			Follower::where(function ($query) use ($user_id, $following_id) {
+				$query->where('user_id', $user_id)
+					->where('following_id', $following_id);
+			})->orWhere(function ($query) use ($user_id, $following_id) {
+				$query->where('user_id', $following_id)
+					->where('following_id', $user_id);
+			})->forceDelete();
+
+			return response([
+				'message' => "Success"
+			], 200);
+		} else {
+			return response([
+				'message' => "id missing"
+			], 400);
+		}
 	}
 
 	public function isFollowChecker($id, $following_id)
