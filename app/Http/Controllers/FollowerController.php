@@ -67,10 +67,16 @@ class FollowerController extends Controller
 		$user_id = $request->input('user_id');
 		$following_id = $request->input('following_id');
 		$current_user = User::find($user_id);
+		$following = User::find($following_id);
 		$checker = $current_user->isFollowing($following_id);
 		if ($current_user) {
 			if ($checker) {
 				$current_user->declineFollow($following_id);
+				return response([
+					'message' => "decline!",
+				], 200);
+			} else {
+				$following->declineFollow($user_id);
 				return response([
 					'message' => "decline!",
 				], 200);
