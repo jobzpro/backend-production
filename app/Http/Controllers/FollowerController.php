@@ -138,7 +138,7 @@ class FollowerController extends Controller
 			$current_user = $this->applySortFilter($current_user, $sortFilter, $id);
 
 			return response([
-				'users' => $current_user->paginate(10),
+				'users' => $current_user->paginate(12),
 				'message' => 'Success',
 			], 200);
 		} else if ($filter == "request") {
@@ -154,7 +154,7 @@ class FollowerController extends Controller
 				});
 			}
 
-			$followingPaginated = $followingUser->paginate(10);
+			$followingPaginated = $followingUser->paginate(12);
 
 			$followingUsers = $followingPaginated->getCollection()->map(function ($follower) {
 				return array_merge(
@@ -176,7 +176,8 @@ class FollowerController extends Controller
 				// 'users' => $followingPaginated,
 				'message' => 'Success',
 			], 200);
-		} if ($filter == "pending") {
+		}
+		if ($filter == "pending") {
 			$following = Follower::where('user_id', $id)->where("status", 1);
 			$followingUser = $following->with('followingUser');
 			if (!empty($keyword)) {
@@ -189,7 +190,7 @@ class FollowerController extends Controller
 				});
 			}
 
-			$followingPaginated = $followingUser->paginate(10);
+			$followingPaginated = $followingUser->paginate(12);
 
 			$followingUsers = $followingPaginated->getCollection()->map(function ($follower) {
 				return array_merge(
@@ -211,7 +212,7 @@ class FollowerController extends Controller
 				// 'users' => $followingPaginated,
 				'message' => 'Success',
 			], 200);
-		}else if ($filter == "friends") {
+		} else if ($filter == "friends") {
 			$query = Follower::query()
 				->where('status', 0)
 				->where(function ($query) use ($id) {
