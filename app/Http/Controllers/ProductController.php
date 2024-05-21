@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
+use Stripe\Stripe;
+use Stripe\Product;
+use Stripe\Price;
+use Stripe\Checkout\Session;
 
 class ProductController extends Controller
 {
@@ -22,38 +26,63 @@ class ProductController extends Controller
             ], 400);
         }
     }
-
     public function jobseekerSubscription()
     {
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         try {
-            $paymentLinks = $stripe->paymentLinks->all();
-            $productsWithPrices = collect($paymentLinks->data)->map(function ($paymentLink) use ($stripe) {
-                // $products = $stripe->products->all(['product' => $product->id]);
-                // $prices = $stripe->prices->all(['product' => $product->id]);
-                $lineItem = $stripe->paymentLinks->allLineItems($paymentLink->id, []);
-                // $price = $prices->data[0]->unit_amount_decimal;
+            $products = Product::all();
+            $productDetails = [];
 
-                return [
-                    // 'name' => $product->name,
-                    // 'description' => $product->description,
-                    // 'price' => $price,
-                    // 'lineItem' => $lineItem,
-                    'description' => $lineItem->data[0]->description,
-                    'price' => number_format($lineItem->data[0]->amount_total, 2),
-                    'lookup_key' => $lineItem->data[0]->price->lookup_key,
-                    'url' => $paymentLink->url,
+            foreach ($products->data as $product) {
+                $price = Price::retrieve($product->default_price);
+                $session = Session::create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price' => $price->id,
+                        'quantity' => 1,
+                    ]],
+                    'mode' => 'payment',
+                    'success_url' => route('checkout.success'),
+                    'cancel_url' => route('checkout.cancel'),
+                ]);
+                $productDetails[] = [
+                    'product_name' => $product->name,
+                    'price' => number_format($price->unit_amount / 100, 2),
+                    'checkout_url' => $session->url,
                 ];
-            });
-
-            return response($productsWithPrices, 200);
+            }
+            return response()->json($productDetails, 200);
         } catch (\Exception $e) {
-            return response([
-                'message' => $e->getMessage(),
+            return response()->json([
+                'error' => $e->getMessage(),
             ], 400);
         }
     }
+    // public function jobseekerSubscription()
+    // {
+    //     $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+    //     try {
+    //         $paymentLinks = $stripe->paymentLinks->all();
+    //         $productsWithPrices = collect($paymentLinks->data)->map(function ($paymentLink) use ($stripe) {
+    //             $lineItem = $stripe->paymentLinks->allLineItems($paymentLink->id, []);
+
+    //             return [
+    //                 'description' => $lineItem->data[0]->description,
+    //                 'price' => number_format($lineItem->data[0]->amount_total, 2),
+    //                 'lookup_key' => $lineItem->data[0]->price->lookup_key,
+    //                 'url' => $paymentLink->url,
+    //             ];
+    //         });
+
+    //         return response($productsWithPrices, 200);
+    //     } catch (\Exception $e) {
+    //         return response([
+    //             'message' => $e->getMessage(),
+    //         ], 400);
+    //     }
+    // }
 
 
     // public function jobseekerSubscription()
