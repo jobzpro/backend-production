@@ -30,7 +30,7 @@ class ProductController extends Controller
         try {
             $allProducts = $stripe->products->all();
             $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
-                return $product->active && $product->metadata->unit_label === 'jobseeker';
+                return $product->active && $product->unit_label ===  'jobseeker';
             })->map(function ($product) use ($stripe) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
                 $price = $prices->data[0]->unit_amount_decimal;
