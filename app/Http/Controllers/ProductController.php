@@ -28,9 +28,16 @@ class ProductController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
+            // $products = $stripe->products->search([
+            //     'query' => 'active:\'true\' AND unit_label:\'jobseeker\'',
+            // ]);
             $allProducts = $stripe->products->all();
+            // $products = collect($allProducts->data)->filter(function ($product) {
+            //     return $product->active && $product->unit_label === 'jobseeker';
+            // });
+            // return response($products, 200);
             $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
-                return $product->active && $product->metadata->unit_label === 'jobseeker';
+                return $product->active && $product->unit_label === 'jobseeker';
             })->map(function ($product) use ($stripe) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
                 $price = $prices->data[0]->unit_amount_decimal;
@@ -41,7 +48,6 @@ class ProductController extends Controller
                     'price' => $price,
                 ];
             });
-
             return response($productsWithPrices, 200);
         } catch (\Exception $e) {
             // Handle errors
@@ -57,24 +63,12 @@ class ProductController extends Controller
 
         try {
             $allProducts = $stripe->products->all();
-            $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
-                return $product->active && $product->metadata->unit_label === 'employer';
-            })->map(function ($product) use ($stripe) {
-                $monthlyPrices = $stripe->prices->all(['product' => $product->id, 'lookup_keys' => ['monthly']]);
-                $yearlyPrices = $stripe->prices->all(['product' => $product->id, 'lookup_keys' => ['yearly']]);
-                $monthlyPrice = $monthlyPrices->data[0]->unit_amount_decimal ?? null;
-                $yearlyPrice = $yearlyPrices->data[0]->unit_amount_decimal ?? null;
-
-                return [
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'monthly_price' => $monthlyPrice,
-                    'yearly_price' => $yearlyPrice,
-                ];
+            $products = collect($allProducts->data)->filter(function ($product) {
+                return $product->active && $product->unit_label === 'employer';
             });
-
-            return response($productsWithPrices, 200);
+            return response($products, 200);
         } catch (\Exception $e) {
+            // Handle errors
             return response([
                 'message' => $e->getMessage(),
             ], 400);
