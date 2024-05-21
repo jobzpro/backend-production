@@ -41,7 +41,7 @@ class ProductController extends Controller
                     // 'price' => $price,
                     // 'lineItem' => $lineItem,
                     'description' => $lineItem->description,
-                    'price' => $lineItem->price->unit_amount,
+                    'price' => $lineItem,
                     'url' => $paymentLink->url,
                 ];
             });
