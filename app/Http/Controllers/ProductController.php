@@ -40,4 +40,22 @@ class ProductController extends Controller
             ], 400);
         }
     }
+
+    public function employerSubscription()
+    {
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            $products = $stripe->products->search([
+                'query' => 'active:\'true\' AND unit_label:\'employer\'',
+            ]);
+
+            return response($products, 200);
+        } catch (\Exception $e) {
+            // Handle errors
+            return response([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+    }
 }

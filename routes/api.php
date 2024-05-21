@@ -259,7 +259,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::apiResources([
     'company' => CompanyController::class,
-    'products' => ProductController::class,
+    // 'products' => ProductController::class,
     'experience-levels' => ExperienceLevelController::class,
     'jobs' => JobListController::class,
     'industry' => IndustryController::class,
@@ -276,7 +276,9 @@ Route::apiResources([
 
 
 Route::prefix('/products')->controller(ProductController::class)->group(function () {
+    Route::get('/', 'index');
     Route::get('/jobseeker-subscription', 'jobseekerSubscription');
+    Route::get('/employer-subscription', 'employerSubscription');
 });
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
