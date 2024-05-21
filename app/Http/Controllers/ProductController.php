@@ -39,7 +39,7 @@ class ProductController extends Controller
                     // 'name' => $product->name,
                     // 'description' => $product->description,
                     // 'price' => $price,
-                    'product' => $product->name,
+                    'product' => $product,
                     'price' => $prices,
                 ];
             });
