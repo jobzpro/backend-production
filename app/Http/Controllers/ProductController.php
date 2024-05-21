@@ -28,14 +28,15 @@ class ProductController extends Controller
     }
     public function jobseekerSubscription()
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            $products = Product::all();
+            $products =  $stripe->products->all();
             $productDetails = [];
 
             foreach ($products->data as $product) {
-                $price = Price::retrieve($product->default_price);
+                $price = $stripe->prices->all(['product' => $product->id]);
+                // $price = Price::retrieve($product->default_price);
                 $session = Session::create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
