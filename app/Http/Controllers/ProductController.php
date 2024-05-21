@@ -37,15 +37,15 @@ class ProductController extends Controller
             foreach ($products->data as $product) {
                 $price = $stripe->prices->all(['product' => $product->id]);
                 // $price = Price::retrieve($product->default_price);
-                $session = Session::create([
+                $session = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
                         'price' => $price->id,
                         'quantity' => 1,
                     ]],
                     'mode' => 'payment',
-                    'success_url' => route('checkout.success'),
-                    'cancel_url' => route('checkout.cancel'),
+                    'success_url' => "http://localhost:3000",
+                    'cancel_url' => "http://localhost:3000",
                 ]);
                 $productDetails[] = [
                     'product_name' => $product->name,
