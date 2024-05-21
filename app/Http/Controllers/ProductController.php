@@ -39,8 +39,10 @@ class ProductController extends Controller
                     // 'name' => $product->name,
                     // 'description' => $product->description,
                     // 'price' => $price,
-                    'payment-link' => $paymentLink,
-                    'lineItem' => $lineItem,
+                    // 'lineItem' => $lineItem,
+                    'description' => $lineItem->description,
+                    'price' => $lineItem->price->unit_amount,
+                    'url' => $paymentLink->url,
                 ];
             });
 
