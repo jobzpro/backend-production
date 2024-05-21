@@ -273,6 +273,12 @@ Route::apiResources([
     '{id}/dealbreakers' => DealbreakerController::class,
 ], ['only' => ['index', 'show']]);
 
+
+
+Route::prefix('/products')->controller(JobListController::class)->group(function () {
+    Route::get('/jobs/jobseeker-subscription', 'jobseekerSubscription');
+});
+
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
     Route::get('/jobs', 'searchJobs')->name('jobs.search');
 });
