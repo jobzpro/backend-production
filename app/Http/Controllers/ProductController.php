@@ -41,7 +41,8 @@ class ProductController extends Controller
                     // 'price' => $price,
                     // 'lineItem' => $lineItem,
                     'description' => $lineItem->data[0]->description,
-                    'price' => $lineItem->data[0]->amount_total,
+                    'price' => number_format($lineItem->data[0]->amount_total, 2),
+                    'lookup_key' => $lineItem->data[0]->price->lookup_key,
                     'url' => $paymentLink->url,
                 ];
             });
