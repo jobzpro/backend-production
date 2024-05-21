@@ -23,75 +23,46 @@ class ProductController extends Controller
         }
     }
 
-    // public function jobseekerSubscription()
-    // {
-    //     $stripe = new StripeClient(env('STRIPE_SECRET'));
-
-    //     try {
-    //         $allProducts = $stripe->products->all();
-    //         $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
-    //             return $product->active && $product->unit_label === 'jobseeker';
-    //         })->map(function ($product) use ($stripe) {
-    //             $prices = $stripe->prices->all(['product' => $product->id]);
-    //             $price = $prices->data[0]->unit_amount_decimal;
-
-    //             return [
-    //                 // 'name' => $product->name,
-    //                 // 'description' => $product->description,
-    //                 // 'price' => $price,
-    //                 'product' => $product,
-    //                 'prices' => $prices,
-    //             ];
-    //         });
-    //         return response($productsWithPrices, 200);
-    //     } catch (\Exception $e) {
-    //         // Handle errors
-    //         return response([
-    //             'message' => $e->getMessage(),
-    //         ], 400);
-    //     }
-    // }
-
-
     public function jobseekerSubscription()
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            $allProducts = $stripe->products->all();
-            $productsWithPaymentLinks = [];
-            foreach ($allProducts->data as $product) {
-                if ($product->active && $product->metadata->unit_label === 'jobseeker') {
-                    $prices = $stripe->prices->all(['product' => $product->id]);
-                    $price = $prices->data[0]->unit_amount_decimal;
-                    $session = $stripe->checkout->sessions->create([
-                        'payment_method_types' => ['card'],
-                        'line_items' => [
-                            [
-                                'price' => $prices->data[0]->id,
-                                'quantity' => 1,
-                            ],
-                        ],
-                        'mode' => 'payment',
-                        'success_url' => 'http://localhost:3000/success',
-                        'cancel_url' => 'http://localhost:3000/cancel',
-                    ]);
-                    $paymentLink = 'https://checkout.stripe.com/pay/' . $session->id;
-                    $productsWithPaymentLinks[] = [
-                        'name' => $product->name,
-                        'description' => $product->description,
-                        'price' => $price,
-                        'payment_link' => $paymentLink,
-                    ];
-                }
-            }
+            // $allProducts = $stripe->products->all();
+            // $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
+            //     return $product->active && $product->unit_label === 'jobseeker';
+            // })->map(function ($product) use ($stripe) {
+            //     $prices = $stripe->prices->all(['product' => $product->id]);
+            //     $payment_link = $stripe->paymentLinks->all(['product' => $product->id]);
+            //     $price = $prices->data[0]->unit_amount_decimal;
 
-            return response()->json(['products' => $productsWithPaymentLinks], 200);
+            //     return [
+            //         // 'name' => $product->name,
+            //         // 'description' => $product->description,
+            //         // 'price' => $price,
+            //         'product' => $product,
+            //         'prices' => $prices,
+            //         'payment_link' => $payment_link,
+            //     ];
+            // });
+
+            $allProducts = $stripe->paymentLink->all();
+            $line_items = $allProducts->line_items;
+            $productsWithPrices = $allProducts->line_items->data;
+
+            return response([
+                'allProducts' => $allProducts,
+                'line_items' => $line_items,
+                'productsWithPrices' => $productsWithPrices
+            ], 200);
         } catch (\Exception $e) {
             // Handle errors
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response([
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
+
     public function employerSubscription()
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
