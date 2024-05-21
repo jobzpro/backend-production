@@ -26,6 +26,7 @@ use App\Http\Controllers\QualificationsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\JobStatusDataController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -258,6 +259,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 Route::apiResources([
     'company' => CompanyController::class,
+    'products' => ProductController::class,
     'experience-levels' => ExperienceLevelController::class,
     'jobs' => JobListController::class,
     'industry' => IndustryController::class,
