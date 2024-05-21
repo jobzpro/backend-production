@@ -36,9 +36,11 @@ class ProductController extends Controller
                 $price = $prices->data[0]->unit_amount_decimal;
 
                 return [
-                    'name' => $product->name,
-                    'description' => $product->description,
-                    'price' => $price,
+                    // 'name' => $product->name,
+                    // 'description' => $product->description,
+                    // 'price' => $price,
+                    'product' => $product->name,
+                    'price' => $prices,
                 ];
             });
 
