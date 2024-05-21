@@ -56,18 +56,12 @@ class ProductController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            // Fetch all products from Stripe
             $allProducts = $stripe->products->all();
-
-            // Filter products by active status and unit label
             $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
                 return $product->active && $product->metadata->unit_label === 'employer';
             })->map(function ($product) use ($stripe) {
-                // Fetch prices for the product for both monthly and yearly billing intervals
                 $monthlyPrices = $stripe->prices->all(['product' => $product->id, 'lookup_keys' => ['monthly']]);
                 $yearlyPrices = $stripe->prices->all(['product' => $product->id, 'lookup_keys' => ['yearly']]);
-
-                // Extract the price information for monthly and yearly billing intervals
                 $monthlyPrice = $monthlyPrices->data[0]->unit_amount_decimal ?? null;
                 $yearlyPrice = $yearlyPrices->data[0]->unit_amount_decimal ?? null;
 
@@ -81,7 +75,6 @@ class ProductController extends Controller
 
             return response($productsWithPrices, 200);
         } catch (\Exception $e) {
-            // Handle errors
             return response([
                 'message' => $e->getMessage(),
             ], 400);
