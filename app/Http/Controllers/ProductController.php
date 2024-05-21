@@ -33,13 +33,13 @@ class ProductController extends Controller
                 return $product->active && $product->metadata->unit_label === 'jobseeker';
             })->map(function ($product) use ($stripe) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
-                $paymentLinks = $stripe->paymentLinks->all(['product' => $product->id]);
+                // $paymentLinks = $stripe->paymentLinks->all(['product' => $product->id]);
                 $price = $prices->data[0]->unit_amount_decimal;
                 return [
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $price,
-                    'payment_link' => isset($paymentLinks->data[0]) ? $paymentLinks->data[0]->url : null,
+                    // 'payment_link' => isset($paymentLinks->data[0]) ? $paymentLinks->data[0]->url : null,
                 ];
             });
 
