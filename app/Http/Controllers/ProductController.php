@@ -29,23 +29,21 @@ class ProductController extends Controller
 
         try {
             $allProducts = $stripe->products->all();
-            $productsWithPricesAndLinks = collect($allProducts->data)->filter(function ($product) {
+            $productsWithPrices = collect($allProducts->data)->filter(function ($product) {
                 return $product->active && $product->metadata->unit_label === 'jobseeker';
             })->map(function ($product) use ($stripe) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
-                // $paymentLinks = $stripe->paymentLinks->all(['product' => $product->id]);
                 $price = $prices->data[0]->unit_amount_decimal;
+
                 return [
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $price,
-                    // 'payment_link' => isset($paymentLinks->data[0]) ? $paymentLinks->data[0]->url : null,
                 ];
             });
 
-            return response()->json($productsWithPricesAndLinks, 200);
+            return response($productsWithPrices, 200);
         } catch (\Exception $e) {
-            // Handle errors
             return response([
                 'message' => $e->getMessage(),
             ], 400);
