@@ -28,10 +28,13 @@ class ProductController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            $products = $stripe->products->search([
-                'query' => 'active:\'true\' AND unit_label:\'jobseeker\'',
-            ]);
-
+            // $products = $stripe->products->search([
+            //     'query' => 'active:\'true\' AND unit_label:\'jobseeker\'',
+            // ]);
+            $allProducts = $stripe->products->all();
+            $products = collect($allProducts->data)->filter(function ($product) {
+                return $product->active && $product->unit_label === 'jobseeker';
+            });
             return response($products, 200);
         } catch (\Exception $e) {
             // Handle errors
@@ -46,10 +49,10 @@ class ProductController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            $products = $stripe->products->search([
-                'query' => 'active:\'true\' AND unit_label:\'employer\'',
-            ]);
-
+            $allProducts = $stripe->products->all();
+            $products = collect($allProducts->data)->filter(function ($product) {
+                return $product->active && $product->unit_label === 'employer';
+            });
             return response($products, 200);
         } catch (\Exception $e) {
             // Handle errors
