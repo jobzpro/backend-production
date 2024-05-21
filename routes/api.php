@@ -275,8 +275,8 @@ Route::apiResources([
 
 
 
-Route::prefix('/products')->controller(JobListController::class)->group(function () {
-    Route::get('/jobs/jobseeker-subscription', 'jobseekerSubscription');
+Route::prefix('/products')->controller(ProductController::class)->group(function () {
+    Route::get('/jobseeker-subscription', 'jobseekerSubscription');
 });
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
