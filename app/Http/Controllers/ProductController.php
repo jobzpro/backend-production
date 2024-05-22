@@ -38,13 +38,14 @@ class ProductController extends Controller
                 $prices = $stripe->prices->all(['product' => $product->id]);
                 if (count($prices->data) > 0) {
                     $price = $prices->data[0];
+                    $mode = $price->recurring ? 'subscription' : 'payment';
                     $session = $stripe->checkout->sessions->create([
                         'payment_method_types' => ['card'],
                         'line_items' => [[
                             'price' => $price->id,
                             'quantity' => 1,
                         ]],
-                        'mode' => 'payment',
+                        'mode' => $mode,
                         'success_url' => "http://localhost:3000",
                         'cancel_url' => "http://localhost:3000",
                     ]);
