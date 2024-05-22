@@ -20,7 +20,7 @@ class ProductSeeder extends Seeder
             "name" => "1-50 connections",
             "description" => "Up to 50 connections",
         ]);
-        $jobseeker50connections->product_plan()->create([
+        $jobseeker50connections->product_plans()->create([
             'price' => 8.99,
             'recurring' => "monthly",
             "mode" => "subscription",
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
             "name" => "51-100 connections",
             "description" => "Up to 100 connections",
         ]);
-        $jobseeker100connections->product_plan()->create([
+        $jobseeker100connections->product_plans()->create([
             'price' => 16.99,
             'recurring' => "monthly",
             "mode" => "subscription",
@@ -50,7 +50,7 @@ class ProductSeeder extends Seeder
             "name" => "101-200 connections",
             "description" => "Up to 200 connections",
         ]);
-        $jobseeker200connections->product_plan()->create([
+        $jobseeker200connections->product_plans()->create([
             'price' => 27.99,
             'recurring' => "monthly",
             "mode" => "subscription",
@@ -65,7 +65,7 @@ class ProductSeeder extends Seeder
             "name" => "201-300 connections",
             "description" => "Up to 300 connections",
         ]);
-        $jobseeker300connections->product_plan()->create([
+        $jobseeker300connections->product_plans()->create([
             'price' => 36.99,
             'recurring' => "monthly",
             "mode" => "subscription",
