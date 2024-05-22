@@ -94,7 +94,7 @@ class ProductController extends Controller
                                 'cancel_url' => "http://localhost:3000",
                             ]);
                             $productDetails[] = [
-                                'product_name' => $product->name,
+                                // 'product_name' => $product->name,
                                 'price' => number_format($price->unit_amount / 100, 2),
                                 'mode' => $mode,
                                 'unit_label' => $product->unit_label,
@@ -103,6 +103,9 @@ class ProductController extends Controller
                                 'checkout_url' => $session->url,
                             ];
                         }
+                    }
+                    if (!empty($productPrices)) {
+                        $productDetails[$product->name] = $productPrices;
                     }
                 }
             }
