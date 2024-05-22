@@ -31,27 +31,29 @@ class ProductController extends Controller
         $stripe = new StripeClient(env('STRIPE_SECRET'));
 
         try {
-            $products =  $stripe->products->all();
+            $products = $stripe->products->all();
             $productDetails = [];
 
             foreach ($products->data as $product) {
-                $price = $stripe->prices->all(['product' => $product->id]);
-                // $price = Price::retrieve($product->default_price);
-                $session = $stripe->checkout->sessions->create([
-                    'payment_method_types' => ['card'],
-                    'line_items' => [[
-                        'price' => $price->id,
-                        'quantity' => 1,
-                    ]],
-                    'mode' => 'payment',
-                    'success_url' => "http://localhost:3000",
-                    'cancel_url' => "http://localhost:3000",
-                ]);
-                $productDetails[] = [
-                    'product_name' => $product->name,
-                    'price' => number_format($price->unit_amount / 100, 2),
-                    'checkout_url' => $session->url,
-                ];
+                $prices = $stripe->prices->all(['product' => $product->id]);
+                if (count($prices->data) > 0) {
+                    $price = $prices->data[0];
+                    $session = $stripe->checkout->sessions->create([
+                        'payment_method_types' => ['card'],
+                        'line_items' => [[
+                            'price' => $price->id,
+                            'quantity' => 1,
+                        ]],
+                        'mode' => 'payment',
+                        'success_url' => "http://localhost:3000",
+                        'cancel_url' => "http://localhost:3000",
+                    ]);
+                    $productDetails[] = [
+                        'product_name' => $product->name,
+                        'price' => number_format($price->unit_amount / 100, 2),
+                        'checkout_url' => $session->url,
+                    ];
+                }
             }
             return response()->json($productDetails, 200);
         } catch (\Exception $e) {
