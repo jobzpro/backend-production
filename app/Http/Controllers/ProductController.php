@@ -32,6 +32,7 @@ class ProductController extends Controller
 
             foreach ($products->data as $product) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
+                $productPrices = [];
                 if (count($prices->data) > 0) {
                     $price = $prices->data[0];
                     foreach ($prices->data as $price) {
@@ -48,7 +49,7 @@ class ProductController extends Controller
                                 'cancel_url' => "http://localhost:3000",
                             ]);
                             $productDetails[] = [
-                                'product_name' => $product->name,
+                                // 'product_name' => $product->name,
                                 'price' => number_format($price->unit_amount / 100, 2),
                                 'mode' => $mode,
                                 'unit_label' => $product->unit_label,
@@ -58,6 +59,10 @@ class ProductController extends Controller
                             ];
                         }
                     }
+                    $productDetails[] = [
+                        'product_name' => $product->name,
+                        'plan' => $productPrices,
+                    ];
                 }
             }
             return response()->json($productDetails, 200);
