@@ -105,19 +105,13 @@ class ProductController extends Controller
                             ];
                         }
                     }
-                    // if (!empty($productPrices)) {
-                    //     $productDetails[$product->name] = $productPrices;
-                    // }
-                    $groupedProductDetails = [];
-                    foreach ($productDetails as $detail) {
-                        $name = $detail['name'];
-                        unset($detail['name']);
-                        $groupedProductDetails[$name][] = $detail['plans'][0];
-                    }
+                    $productDetails[] = [
+                        'product_name' => $product->name,
+                        'plan' => $productPrices,
+                    ];
                 }
             }
-            // return response()->json($productDetails, 200);
-            return response()->json($groupedProductDetails, 200);
+            return response()->json($productDetails, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
