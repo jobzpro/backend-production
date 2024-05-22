@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
-use Stripe\Stripe;
-use Stripe\Product;
-use Stripe\Price;
-use Stripe\Checkout\Session;
 
 class ProductController extends Controller
 {
@@ -39,31 +35,30 @@ class ProductController extends Controller
                 if (count($prices->data) > 0) {
                     $price = $prices->data[0];
                     foreach ($prices->data as $price) {
-                        if (!$price->active) {
-                            continue;
+                        if ($price->active && $price->lookup_key === "jobseeker") {
+                            $mode = $price->recurring ? 'subscription' : 'payment';
+                            $session = $stripe->checkout->sessions->create([
+                                'payment_method_types' => ['card'],
+                                'line_items' => [[
+                                    'price' => $price->id,
+                                    'quantity' => 1,
+                                ]],
+                                'mode' => $mode,
+                                'success_url' => "http://localhost:3000",
+                                'cancel_url' => "http://localhost:3000",
+                            ]);
+                            $productDetails[] = [
+                                'product_name' => $product->name,
+                                'price' => number_format($price->unit_amount / 100, 2),
+                                'mode' => $mode,
+                                'unit_label' => $product->unit_label,
+                                'lookup_key' => $price->lookup_key,
+                                'recurring' => $price->recurring->interval,
+                                'checkout_url' => $session->url,
+                                'product_info' => $product,
+                                'price_info' => $price,
+                            ];
                         }
-                        $mode = $price->recurring ? 'subscription' : 'payment';
-                        $session = $stripe->checkout->sessions->create([
-                            'payment_method_types' => ['card'],
-                            'line_items' => [[
-                                'price' => $price->id,
-                                'quantity' => 1,
-                            ]],
-                            'mode' => $mode,
-                            'success_url' => "http://localhost:3000",
-                            'cancel_url' => "http://localhost:3000",
-                        ]);
-                        $productDetails[] = [
-                            'product_name' => $product->name,
-                            'price' => number_format($price->unit_amount / 100, 2),
-                            'mode' => $mode,
-                            'unit_label' => $product->unit_label,
-                            'lookup_key' => $price->lookup_key,
-                            'recurring' => $price->recurring->interval,
-                            'checkout_url' => $session->url,
-                            'product_info' => $product,
-                            'price_info' => $price,
-                        ];
                     }
                 }
             }
