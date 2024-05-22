@@ -48,7 +48,7 @@ class ProductController extends Controller
                                 'success_url' => "http://localhost:3000",
                                 'cancel_url' => "http://localhost:3000",
                             ]);
-                            $productDetails[] = [
+                            $productPrices[] = [
                                 // 'product_name' => $product->name,
                                 'price' => number_format($price->unit_amount / 100, 2),
                                 'mode' => $mode,
@@ -60,6 +60,7 @@ class ProductController extends Controller
                         }
                     }
                     $productDetails[] = [
+                        'product_id' => $product->id,
                         'product_name' => $product->name,
                         'plan' => $productPrices,
                     ];
@@ -111,6 +112,7 @@ class ProductController extends Controller
                         }
                     }
                     $productDetails[] = [
+                        'product_id' => $product->id,
                         'product_name' => $product->name,
                         'plan' => $productPrices,
                     ];
