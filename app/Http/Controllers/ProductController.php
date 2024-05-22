@@ -78,6 +78,7 @@ class ProductController extends Controller
 
             foreach ($products->data as $product) {
                 $prices = $stripe->prices->all(['product' => $product->id]);
+                $productPrices = [];
                 if (count($prices->data) > 0) {
                     $price = $prices->data[0];
                     foreach ($prices->data as $price) {
@@ -93,7 +94,7 @@ class ProductController extends Controller
                                 'success_url' => "http://localhost:3000",
                                 'cancel_url' => "http://localhost:3000",
                             ]);
-                            $productDetails[] = [
+                            $productPrices[] = [
                                 // 'product_name' => $product->name,
                                 'price' => number_format($price->unit_amount / 100, 2),
                                 'mode' => $mode,
