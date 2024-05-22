@@ -17,7 +17,7 @@ class Product extends Model
         'name'
     ];
 
-    public function product_users(): HasMany
+    public function product_plans(): HasMany
     {
         return $this->hasMany(ProductPlan::class);
     }
