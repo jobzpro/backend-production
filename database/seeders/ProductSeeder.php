@@ -55,8 +55,8 @@ class ProductSeeder extends Seeder
             'recurring' => "monthly",
             "mode" => "subscription",
             "unit_label" => "jobseeker",
-            "lookup_key" => "https://checkout.stripe.com/c/pay/cs_test_a1Nar31Glt2xTGmvWJGRcFLXrcPBqvIoYQbuoqKRzihEjskrJyA5UG1Fis#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
-            "checkout_url" => "",
+            "lookup_key" => "jobseeker-200-connections",
+            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1Nar31Glt2xTGmvWJGRcFLXrcPBqvIoYQbuoqKRzihEjskrJyA5UG1Fis#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
             "connection_count" => 200
         ]);
 
