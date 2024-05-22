@@ -52,6 +52,9 @@ class ProductController extends Controller
                     $productDetails[] = [
                         'product_name' => $product->name,
                         'price' => number_format($price->unit_amount / 100, 2),
+                        'mode' => $mode,
+                        'product_info' => $product,
+                        'price_info' => $price,
                         'checkout_url' => $session->url,
                     ];
                 }
