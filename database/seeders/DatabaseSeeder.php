@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        if(env('APP_ENV') == 'production'){
+        if (env('APP_ENV') == 'production') {
             $this->call([
                 RolesSeeder::class,
                 BusinessTypesSeeder::class,
@@ -35,9 +35,10 @@ class DatabaseSeeder extends Seeder
                 IndustrySpecialitiesSeeder::class,
                 IndustryPhysicalSettingsSeeder::class,
                 QualificationSeeder::class,
-                
+                ProductSeeder::class,
+
             ]);
-        }else{
+        } else {
             $this->call([
                 RolesSeeder::class,
                 BusinessTypesSeeder::class,
@@ -51,6 +52,7 @@ class DatabaseSeeder extends Seeder
                 IndustrySpecialitiesSeeder::class,
                 IndustryPhysicalSettingsSeeder::class,
                 QualificationSeeder::class,
+                ProductSeeder::class,
             ]);
         }
     }
