@@ -39,6 +39,9 @@ class ProductController extends Controller
                 if (count($prices->data) > 0) {
                     $price = $prices->data[0];
                     foreach ($prices->data as $price) {
+                        if (!$price->active) {
+                            continue;
+                        }
                         $mode = $price->recurring ? 'subscription' : 'payment';
                         $session = $stripe->checkout->sessions->create([
                             'payment_method_types' => ['card'],
