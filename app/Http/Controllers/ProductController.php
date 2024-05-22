@@ -31,39 +31,41 @@ class ProductController extends Controller
             $productDetails = [];
 
             foreach ($products->data as $product) {
-                $prices = $stripe->prices->all(['product' => $product->id]);
-                $productPrices = [];
-                if (count($prices->data) > 0) {
-                    $price = $prices->data[0];
-                    foreach ($prices->data as $price) {
-                        if ($price->active && $product->unit_label === "jobseeker") {
-                            $mode = $price->recurring ? 'subscription' : 'payment';
-                            $session = $stripe->checkout->sessions->create([
-                                'payment_method_types' => ['card'],
-                                'line_items' => [[
-                                    'price' => $price->id,
-                                    'quantity' => 1,
-                                ]],
-                                'mode' => $mode,
-                                'success_url' => "http://localhost:3000",
-                                'cancel_url' => "http://localhost:3000",
-                            ]);
-                            $productPrices[] = [
-                                // 'product_name' => $product->name,
-                                'price' => number_format($price->unit_amount / 100, 2),
-                                'mode' => $mode,
-                                'unit_label' => $product->unit_label,
-                                'lookup_key' => $price->lookup_key,
-                                'recurring' => $price->recurring->interval,
-                                'checkout_url' => $session->url,
-                            ];
+                if ($product->unit_label === "jobseeker") {
+                    $prices = $stripe->prices->all(['product' => $product->id]);
+                    $productPrices = [];
+                    if (count($prices->data) > 0) {
+                        $price = $prices->data[0];
+                        foreach ($prices->data as $price) {
+                            if ($price->active && $product->unit_label === "jobseeker") {
+                                $mode = $price->recurring ? 'subscription' : 'payment';
+                                $session = $stripe->checkout->sessions->create([
+                                    'payment_method_types' => ['card'],
+                                    'line_items' => [[
+                                        'price' => $price->id,
+                                        'quantity' => 1,
+                                    ]],
+                                    'mode' => $mode,
+                                    'success_url' => "http://localhost:3000",
+                                    'cancel_url' => "http://localhost:3000",
+                                ]);
+                                $productPrices[] = [
+                                    // 'product_name' => $product->name,
+                                    'price' => number_format($price->unit_amount / 100, 2),
+                                    'mode' => $mode,
+                                    'unit_label' => $product->unit_label,
+                                    'lookup_key' => $price->lookup_key,
+                                    'recurring' => $price->recurring->interval,
+                                    'checkout_url' => $session->url,
+                                ];
+                            }
                         }
+                        $productDetails[] = [
+                            'product_id' => $product->id,
+                            'product_name' => $product->name,
+                            'plan' => $productPrices,
+                        ];
                     }
-                    $productDetails[] = [
-                        'product_id' => $product->id,
-                        'product_name' => $product->name,
-                        'plan' => $productPrices,
-                    ];
                 }
             }
             return response()->json($productDetails, 200);
@@ -83,39 +85,41 @@ class ProductController extends Controller
             $productDetails = [];
 
             foreach ($products->data as $product) {
-                $prices = $stripe->prices->all(['product' => $product->id]);
-                $productPrices = [];
-                if (count($prices->data) > 0) {
-                    $price = $prices->data[0];
-                    foreach ($prices->data as $price) {
-                        if ($price->active && $product->unit_label === "employer") {
-                            $mode = $price->recurring ? 'subscription' : 'payment';
-                            $session = $stripe->checkout->sessions->create([
-                                'payment_method_types' => ['card'],
-                                'line_items' => [[
-                                    'price' => $price->id,
-                                    'quantity' => 1,
-                                ]],
-                                'mode' => $mode,
-                                'success_url' => "http://localhost:3000",
-                                'cancel_url' => "http://localhost:3000",
-                            ]);
-                            $productPrices[] = [
-                                // 'product_name' => $product->name,
-                                'price' => number_format($price->unit_amount / 100, 2),
-                                'mode' => $mode,
-                                'unit_label' => $product->unit_label,
-                                'lookup_key' => $price->lookup_key,
-                                'recurring' => $price->recurring->interval,
-                                'checkout_url' => $session->url,
-                            ];
+                if ($product->unit_label === "employer") {
+                    $prices = $stripe->prices->all(['product' => $product->id]);
+                    $productPrices = [];
+                    if (count($prices->data) > 0) {
+                        $price = $prices->data[0];
+                        foreach ($prices->data as $price) {
+                            if ($price->active && $product->unit_label === "employer") {
+                                $mode = $price->recurring ? 'subscription' : 'payment';
+                                $session = $stripe->checkout->sessions->create([
+                                    'payment_method_types' => ['card'],
+                                    'line_items' => [[
+                                        'price' => $price->id,
+                                        'quantity' => 1,
+                                    ]],
+                                    'mode' => $mode,
+                                    'success_url' => "http://localhost:3000",
+                                    'cancel_url' => "http://localhost:3000",
+                                ]);
+                                $productPrices[] = [
+                                    // 'product_name' => $product->name,
+                                    'price' => number_format($price->unit_amount / 100, 2),
+                                    'mode' => $mode,
+                                    'unit_label' => $product->unit_label,
+                                    'lookup_key' => $price->lookup_key,
+                                    'recurring' => $price->recurring->interval,
+                                    'checkout_url' => $session->url,
+                                ];
+                            }
                         }
+                        $productDetails[] = [
+                            'product_id' => $product->id,
+                            'product_name' => $product->name,
+                            'plan' => $productPrices,
+                        ];
                     }
-                    $productDetails[] = [
-                        'product_id' => $product->id,
-                        'product_name' => $product->name,
-                        'plan' => $productPrices,
-                    ];
                 }
             }
             return response()->json($productDetails, 200);
