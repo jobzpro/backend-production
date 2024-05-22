@@ -55,8 +55,52 @@ class ProductController extends Controller
                                 'lookup_key' => $price->lookup_key,
                                 'recurring' => $price->recurring->interval,
                                 'checkout_url' => $session->url,
-                                'product_info' => $product,
-                                'price_info' => $price,
+                            ];
+                        }
+                    }
+                }
+            }
+            return response()->json($productDetails, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
+    public function employerSubscription()
+    {
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            $products = $stripe->products->all();
+            $productDetails = [];
+
+            foreach ($products->data as $product) {
+                $prices = $stripe->prices->all(['product' => $product->id]);
+                if (count($prices->data) > 0) {
+                    $price = $prices->data[0];
+                    foreach ($prices->data as $price) {
+                        if ($price->active && $product->unit_label === "employer") {
+                            $mode = $price->recurring ? 'subscription' : 'payment';
+                            $session = $stripe->checkout->sessions->create([
+                                'payment_method_types' => ['card'],
+                                'line_items' => [[
+                                    'price' => $price->id,
+                                    'quantity' => 1,
+                                ]],
+                                'mode' => $mode,
+                                'success_url' => "http://localhost:3000",
+                                'cancel_url' => "http://localhost:3000",
+                            ]);
+                            $productDetails[] = [
+                                'product_name' => $product->name,
+                                'price' => number_format($price->unit_amount / 100, 2),
+                                'mode' => $mode,
+                                'unit_label' => $product->unit_label,
+                                'lookup_key' => $price->lookup_key,
+                                'recurring' => $price->recurring->interval,
+                                'checkout_url' => $session->url,
                             ];
                         }
                     }
@@ -124,21 +168,21 @@ class ProductController extends Controller
     //     }
     // }
 
-    public function employerSubscription()
-    {
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
+    // public function employerSubscription()
+    // {
+    //     $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-        try {
-            $allProducts = $stripe->products->all();
-            $products = collect($allProducts->data)->filter(function ($product) {
-                return $product->active && $product->unit_label === 'employer';
-            });
-            return response($products, 200);
-        } catch (\Exception $e) {
-            // Handle errors
-            return response([
-                'message' => $e->getMessage(),
-            ], 400);
-        }
-    }
+    //     try {
+    //         $allProducts = $stripe->products->all();
+    //         $products = collect($allProducts->data)->filter(function ($product) {
+    //             return $product->active && $product->unit_label === 'employer';
+    //         });
+    //         return response($products, 200);
+    //     } catch (\Exception $e) {
+    //         // Handle errors
+    //         return response([
+    //             'message' => $e->getMessage(),
+    //         ], 400);
+    //     }
+    // }
 }
