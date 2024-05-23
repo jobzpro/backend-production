@@ -172,6 +172,7 @@ return [
 
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        App\Providers\StripeServiceProvider::class,
     ])->toArray(),
 
     /*

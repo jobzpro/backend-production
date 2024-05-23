@@ -2,8 +2,6 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -23,7 +21,7 @@ class Product extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -31,7 +29,7 @@ class Product extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'name',
     ];
 
     /**
@@ -40,6 +38,7 @@ class Product extends Resource
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
+
     public function fields(NovaRequest $request)
     {
         return [
