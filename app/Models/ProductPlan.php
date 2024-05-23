@@ -52,7 +52,7 @@ class ProductPlan extends Model
         //         $checkoutSession = $stripe->checkout->sessions->create([
         //             'payment_method_types' => ['card'],
         //             'line_items' => [[
-        //                 'price' => $price->stripe_price_id,
+        //                 'price' => $price->price_code,
         //                 'quantity' => 1,
         //             ]],
         //             'mode' => $price->mode ?? 'subscription',
@@ -83,7 +83,7 @@ class ProductPlan extends Model
                 $checkoutSession = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
                     'line_items' => [[
-                        'price' => $price->stripe_price_id,
+                        'price' => $price->price_code,
                         'quantity' => 1,
                     ]],
                     'mode' => $price->mode ?? 'subscription',
@@ -113,7 +113,7 @@ class ProductPlan extends Model
                     $checkoutSession = $stripe->checkout->sessions->create([
                         'payment_method_types' => ['card'],
                         'line_items' => [[
-                            'price' => $price->stripe_price_id,
+                            'price' => $price->price_code,
                             'quantity' => 1,
                         ]],
                         'mode' => $price->mode ?? 'subscription',
