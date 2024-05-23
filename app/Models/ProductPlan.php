@@ -31,99 +31,99 @@ class ProductPlan extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // protected static function booted()
-    // {
-    //     // static::saved(function ($price) {
-    //     //     $product = $price->product;
-    //     //     $stripe = new StripeClient(env('STRIPE_SECRET'));
+    protected static function booted()
+    {
+        // static::saved(function ($price) {
+        //     $product = $price->product;
+        //     $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-    //     //     if ($product && $product->product_code) {
-    //     //         if (!$price->price_code) {
-    //     //             $stripePrice = $stripe->prices->update([
-    //     //                 'unit_amount' => $price->amount * 100,
-    //     //                 'product' => $product->product_code,
-    //     //                 'lookup_key' => $price->lookup_key,
-    //     //                 'currency' => 'usd',
-    //     //                 'recurring' => ['interval' => $price->recurring],
-    //     //             ]);
-    //     //             $price->price_code = $stripePrice->id;
-    //     //             $price->save();
-    //     //         }
-    //     //         $checkoutSession = $stripe->checkout->sessions->create([
-    //     //             'payment_method_types' => ['card'],
-    //     //             'line_items' => [[
-    //     //                 'price' => $price->stripe_price_id,
-    //     //                 'quantity' => 1,
-    //     //             ]],
-    //     //             'mode' => $price->mode ?? 'subscription',
-    //     //             'success_url' => 'http://localhost:3000',,
-    //     //             'cancel_url' => 'http://localhost:3000',,
-    //     //         ]);
-    //     //         $price->checkout_url = $checkoutSession->url;
-    //     //         $price->save();
-    //     //     }
-    //     // });
+        //     if ($product && $product->product_code) {
+        //         if (!$price->price_code) {
+        //             $stripePrice = $stripe->prices->update([
+        //                 'unit_amount' => $price->amount * 100,
+        //                 'product' => $product->product_code,
+        //                 'lookup_key' => $price->lookup_key,
+        //                 'currency' => 'usd',
+        //                 'recurring' => ['interval' => $price->recurring],
+        //             ]);
+        //             $price->price_code = $stripePrice->id;
+        //             $price->save();
+        //         }
+        //         $checkoutSession = $stripe->checkout->sessions->create([
+        //             'payment_method_types' => ['card'],
+        //             'line_items' => [[
+        //                 'price' => $price->stripe_price_id,
+        //                 'quantity' => 1,
+        //             ]],
+        //             'mode' => $price->mode ?? 'subscription',
+        //             'success_url' => 'http://localhost:3000',,
+        //             'cancel_url' => 'http://localhost:3000',,
+        //         ]);
+        //         $price->checkout_url = $checkoutSession->url;
+        //         $price->save();
+        //     }
+        // });
 
-    //     static::created(function ($price) {
-    //         $product = $price->product;
-    //         $stripe = new StripeClient(env('STRIPE_SECRET'));
+        static::created(function ($price) {
+            $product = $price->product;
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-    //         if ($product && $product->product_code) {
-    //             if (!$price->price_code) {
-    //                 $stripePrice = $stripe->prices->update([
-    //                     'unit_amount' => $price->amount * 100,
-    //                     'product' => $product->product_code,
-    //                     'lookup_key' => $price->lookup_key,
-    //                     'currency' => 'usd',
-    //                     'recurring' => ['interval' => $price->recurring],
-    //                 ]);
-    //                 $price->price_code = $stripePrice->id;
-    //                 $price->save();
-    //             }
-    //             $checkoutSession = $stripe->checkout->sessions->create([
-    //                 'payment_method_types' => ['card'],
-    //                 'line_items' => [[
-    //                     'price' => $price->stripe_price_id,
-    //                     'quantity' => 1,
-    //                 ]],
-    //                 'mode' => $price->mode ?? 'subscription',
-    //                 'success_url' => 'http://localhost:3000',
-    //                 'cancel_url' => 'http://localhost:3000',
-    //             ]);
-    //             $price->checkout_url = $checkoutSession->url;
-    //             $price->save();
-    //         }
-    //     });
+            if ($product && $product->product_code) {
+                if (!$price->price_code) {
+                    $stripePrice = $stripe->prices->update([
+                        'unit_amount' => $price->amount * 100,
+                        'product' => $product->product_code,
+                        'lookup_key' => $price->lookup_key,
+                        'currency' => 'usd',
+                        'recurring' => ['interval' => $price->recurring],
+                    ]);
+                    $price->price_code = $stripePrice->id;
+                    $price->save();
+                }
+                $checkoutSession = $stripe->checkout->sessions->create([
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price' => $price->stripe_price_id,
+                        'quantity' => 1,
+                    ]],
+                    'mode' => $price->mode ?? 'subscription',
+                    'success_url' => 'http://localhost:3000',
+                    'cancel_url' => 'http://localhost:3000',
+                ]);
+                $price->checkout_url = $checkoutSession->url;
+                $price->save();
+            }
+        });
 
-    //     static::updated(function ($price) {
-    //         if ($price->price_code) {
-    //             $product = $price->product;
-    //             $stripe = new StripeClient(env('STRIPE_SECRET'));
+        static::updated(function ($price) {
+            if ($price->price_code) {
+                $product = $price->product;
+                $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-    //             if ($product && $product->product_code) {
-    //                 if (!$price->price_code) {
-    //                     $stripe->prices->update($price->price_code, [
-    //                         'unit_amount' => $price->amount * 100,
-    //                         'product' => $product->product_code,
-    //                         'lookup_key' => $price->lookup_key,
-    //                         'currency' => 'usd',
-    //                         'recurring' => ['interval' => $price->recurring],
-    //                     ]);
-    //                 }
-    //                 $checkoutSession = $stripe->checkout->sessions->create([
-    //                     'payment_method_types' => ['card'],
-    //                     'line_items' => [[
-    //                         'price' => $price->stripe_price_id,
-    //                         'quantity' => 1,
-    //                     ]],
-    //                     'mode' => $price->mode ?? 'subscription',
-    //                     'success_url' => 'http://localhost:3000',
-    //                     'cancel_url' => 'http://localhost:3000',
-    //                 ]);
-    //                 $price->checkout_url = $checkoutSession->url;
-    //                 $price->save();
-    //             }
-    //         }
-    //     });
-    // }
+                if ($product && $product->product_code) {
+                    if (!$price->price_code) {
+                        $stripe->prices->update($price->price_code, [
+                            'unit_amount' => $price->amount * 100,
+                            'product' => $product->product_code,
+                            'lookup_key' => $price->lookup_key,
+                            'currency' => 'usd',
+                            'recurring' => ['interval' => $price->recurring],
+                        ]);
+                    }
+                    $checkoutSession = $stripe->checkout->sessions->create([
+                        'payment_method_types' => ['card'],
+                        'line_items' => [[
+                            'price' => $price->stripe_price_id,
+                            'quantity' => 1,
+                        ]],
+                        'mode' => $price->mode ?? 'subscription',
+                        'success_url' => 'http://localhost:3000',
+                        'cancel_url' => 'http://localhost:3000',
+                    ]);
+                    $price->checkout_url = $checkoutSession->url;
+                    $price->save();
+                }
+            }
+        });
+    }
 }
