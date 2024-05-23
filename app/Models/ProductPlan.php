@@ -45,7 +45,7 @@ class ProductPlan extends Model
                         'recurring' => ['interval' => $price->recurring],
                         'product' => $product->product_code,
                         'nickname' => $price->lookup_key,
-                        'unit_label' => $product->unit_label,
+                        // 'unit_label' => $product->unit_label,
                         'metadata' => [
                             'lookup_key' => $price->lookup_key,
                         ],
