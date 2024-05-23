@@ -46,9 +46,9 @@ class Product extends Model
         });
 
         static::updated(function ($product) {
-            if ($product->stripe_product_id) {
+            if ($product->product_code) {
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
-                $stripe->products->update($product->stripe_product_id, [
+                $stripe->products->update($product->product_code, [
                     'name' => $product->name,
                     // 'description' => $product->description,
                 ]);

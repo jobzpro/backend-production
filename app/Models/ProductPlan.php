@@ -36,14 +36,14 @@ class ProductPlan extends Model
             $product = $price->product;
             $stripe = new StripeClient(env('STRIPE_SECRET'));
 
-            if ($product && $product->stripe_product_id) {
+            if ($product && $product->product_code) {
                 if (!$price->stripe_price_id) {
                     // Create a new Stripe price
                     $stripePrice = $stripe->prices->create([
                         'unit_amount' => $price->amount * 100, // Stripe expects the amount in cents
                         'currency' => $price->currency,
                         'recurring' => ['interval' => $price->recurring],
-                        'product' => $product->stripe_product_id,
+                        'product' => $product->product_code,
                         'nickname' => $price->lookup_key,
                         'unit_label' => $price->unit_label,
                         'metadata' => [
