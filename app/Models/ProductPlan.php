@@ -104,10 +104,10 @@ class ProductPlan extends Model
                 // ]);
 
                 $stripe->prices->update($price->price_code, [
-                    'unit_amount' => $price->amount * 100,
+                    'unit_amount' => $price->price * 100,
                     // 'product' => $product->product_code,
                     'lookup_key' => $price->lookup_key,
-                    'currency' => 'usd',
+                    // 'currency' => 'usd',
                     'recurring' => ['interval' => $price->recurring],
                 ]);
 
