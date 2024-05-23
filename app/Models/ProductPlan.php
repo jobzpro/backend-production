@@ -97,16 +97,19 @@ class ProductPlan extends Model
             if ($price->price_code) {
                 $product = $price->product;
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
+                $product->update($product->product_code, [
+                    'name' => $price->name,
+                    'unit_label' => $price->unit_label,
+                    'description' => $price->description,
+                ]);
 
-                if (!$price->price_code) {
-                    $stripe->prices->update($price->price_code, [
-                        'unit_amount' => $price->amount * 100,
-                        'product' => $product->product_code,
-                        'lookup_key' => $price->lookup_key,
-                        'currency' => 'usd',
-                        'recurring' => ['interval' => $price->recurring],
-                    ]);
-                }
+                $stripe->prices->update($price->price_code, [
+                    'unit_amount' => $price->amount * 100,
+                    // 'product' => $product->product_code,
+                    'lookup_key' => $price->lookup_key,
+                    'currency' => 'usd',
+                    'recurring' => ['interval' => $price->recurring],
+                ]);
 
                 $checkoutSession = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
