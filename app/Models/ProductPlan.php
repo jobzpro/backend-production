@@ -45,8 +45,8 @@ class ProductPlan extends Model
                         'currency' => 'usd',
                         'recurring' => ['interval' => $price->recurring],
                     ]);
-                    $price->stripe_price_id = $stripePrice->id;
-                    $price->save();
+                    // $price->stripe_price_id = $stripePrice->id;
+                    // $price->save();
                 }
                 $checkoutSession = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
