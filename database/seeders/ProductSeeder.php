@@ -21,8 +21,9 @@ class ProductSeeder extends Seeder
             "description" => "Up to 50 connections",
         ]);
         $jobseeker50connections->product_plans()->create([
+            'price_code' => 'price_1PJ3SDChe3vlhgX38N2GhHQY',
             'price' => 8.99,
-            'recurring' => "monthly",
+            'recurring' => "month",
             "mode" => "subscription",
             "unit_label" => "jobseeker",
             "lookup_key" => "jobseeker-50-connections",
@@ -36,8 +37,9 @@ class ProductSeeder extends Seeder
             "description" => "Up to 100 connections",
         ]);
         $jobseeker100connections->product_plans()->create([
+            'price_code' => 'price_1PJ3TIChe3vlhgX3GyQ8rHYn',
             'price' => 16.99,
-            'recurring' => "monthly",
+            'recurring' => "month",
             "mode" => "subscription",
             "unit_label" => "jobseeker",
             "lookup_key" => "jobseeker-100-connections",
@@ -51,8 +53,9 @@ class ProductSeeder extends Seeder
             "description" => "Up to 200 connections",
         ]);
         $jobseeker200connections->product_plans()->create([
+            'price_code' => 'price_1PJ3UqChe3vlhgX3dGsooSOS',
             'price' => 27.99,
-            'recurring' => "monthly",
+            'recurring' => "month",
             "mode" => "subscription",
             "unit_label" => "jobseeker",
             "lookup_key" => "jobseeker-200-connections",
@@ -66,8 +69,9 @@ class ProductSeeder extends Seeder
             "description" => "Up to 300 connections",
         ]);
         $jobseeker300connections->product_plans()->create([
+            'price_code' => 'price_1PJ3WIChe3vlhgX3xW7OVLZJ',
             'price' => 36.99,
-            'recurring' => "monthly",
+            'recurring' => "month",
             "mode" => "subscription",
             "unit_label" => "jobseeker",
             "lookup_key" => "jobseeker-300-connections",
