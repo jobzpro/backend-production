@@ -43,7 +43,7 @@ class Product extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make("Code", "product_code"),
+            Text::make("Code", "product_code")->onlyOnIndex(),
             Text::make("Name", "name"),
             HasMany::make('Plan', 'product_plans', ProductPlan::class),
         ];

@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ProductPlan extends Resource
@@ -53,7 +54,8 @@ class ProductPlan extends Resource
             // Text::make("Mode", "mode"),
             Text::make("Unit Label", "unit_label"),
             Text::make("Tag", "lookup_key"),
-            Textarea::make("Link", "checkout_url"),
+            Textarea::make("Link", "checkout_url")->hideWhenCreating()->hideWhenUpdating(),
+            BelongsTo::make('Product', 'product', Product::class),
             Number::make("Connection Count", "connection_count"),
             Number::make("Post Count", "post_count"),
             Number::make("Applicant Count", "applicant_count"),

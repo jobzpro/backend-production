@@ -25,16 +25,32 @@ class Product extends Model
 
     protected static function booted()
     {
-        static::saved(function ($product) {
-            // Check if the product has a Stripe product ID before updating
-            if ($product->product_code) {
-                $stripe = new StripeClient(env('STRIPE_SECRET'));
+        // static::saved(function ($product) {
+        //     if ($product->product_code) {
+        //         $stripe = new StripeClient(env('STRIPE_SECRET'));
+        //         $stripe->products->update($product->product_code, [
+        //             'name' => $product->name,
+        //         ]);
+        //     }
+        // });
+        static::created(function ($product) {
+            $stripe = new StripeClient(env('STRIPE_SECRET'));
+            $stripeProduct = $stripe->products->create([
+                'name' => $product->name,
+                // 'description' => $product->description,
+            ]);
 
-                // Update the Stripe product
-                $stripe->products->update($product->product_code, [
+            // Save the Stripe product ID to the database
+            $product->product_code = $stripeProduct->id;
+            $product->save();
+        });
+
+        static::updated(function ($product) {
+            if ($product->stripe_product_id) {
+                $stripe = new StripeClient(env('STRIPE_SECRET'));
+                $stripe->products->update($product->stripe_product_id, [
                     'name' => $product->name,
                     // 'description' => $product->description,
-                    // Add any other fields you need to update
                 ]);
             }
         });
