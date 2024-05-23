@@ -24,38 +24,38 @@ class Product extends Model
         return $this->hasMany(ProductPlan::class);
     }
 
-    protected static function booted()
-    {
-        // static::saved(function ($product) {
-        //     if ($product->product_code) {
-        //         $stripe = new StripeClient(env('STRIPE_SECRET'));
-        //         $stripe->products->update($product->product_code, [
-        //             'name' => $product->name,
-        //         ]);
-        //     }
-        // });
-        static::created(function ($product) {
-            $stripe = new StripeClient(env('STRIPE_SECRET'));
-            $stripeProduct = $stripe->products->create([
-                'name' => $product->name,
-                // 'unit_label' => $product->unit_label,
-                'description' => $product->description,
-            ]);
+    // protected static function booted()
+    // {
+    //     // static::saved(function ($product) {
+    //     //     if ($product->product_code) {
+    //     //         $stripe = new StripeClient(env('STRIPE_SECRET'));
+    //     //         $stripe->products->update($product->product_code, [
+    //     //             'name' => $product->name,
+    //     //         ]);
+    //     //     }
+    //     // });
+    //     static::created(function ($product) {
+    //         $stripe = new StripeClient(env('STRIPE_SECRET'));
+    //         $stripeProduct = $stripe->products->create([
+    //             'name' => $product->name,
+    //             // 'unit_label' => $product->unit_label,
+    //             'description' => $product->description,
+    //         ]);
 
-            // Save the Stripe product ID to the database
-            $product->product_code = $stripeProduct->id;
-            $product->save();
-        });
+    //         // Save the Stripe product ID to the database
+    //         $product->product_code = $stripeProduct->id;
+    //         $product->save();
+    //     });
 
-        static::updated(function ($product) {
-            if ($product->product_code) {
-                $stripe = new StripeClient(env('STRIPE_SECRET'));
-                $stripe->products->update($product->product_code, [
-                    'name' => $product->name,
-                    // 'unit_label' => $product->unit_label,
-                    'description' => $product->description,
-                ]);
-            }
-        });
-    }
+    //     static::updated(function ($product) {
+    //         if ($product->product_code) {
+    //             $stripe = new StripeClient(env('STRIPE_SECRET'));
+    //             $stripe->products->update($product->product_code, [
+    //                 'name' => $product->name,
+    //                 // 'unit_label' => $product->unit_label,
+    //                 'description' => $product->description,
+    //             ]);
+    //         }
+    //     });
+    // }
 }
