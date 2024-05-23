@@ -97,11 +97,11 @@ class ProductPlan extends Model
             if ($price->price_code) {
                 $product = $price->product;
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
-                $product->update([
-                    'name' => $price->name,
-                    'unit_label' => $price->unit_label,
-                    'description' => $price->description,
-                ]);
+                // $product->update([
+                //     'name' => $price->name,
+                //     'unit_label' => $price->unit_label,
+                //     'description' => $price->description,
+                // ]);
 
                 $stripe->prices->update($price->price_code, [
                     'unit_amount' => $price->amount * 100,
