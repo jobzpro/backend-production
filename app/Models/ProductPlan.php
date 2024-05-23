@@ -42,6 +42,7 @@ class ProductPlan extends Model
                         'unit_amount' => $price->amount * 100,
                         'product' => $product->product_code,
                         'lookup_key' => $price->lookup_key,
+                        'currency' => 'usd',
                         'recurring' => ['interval' => $price->recurring],
                     ]);
                     $price->stripe_price_id = $stripePrice->id;
