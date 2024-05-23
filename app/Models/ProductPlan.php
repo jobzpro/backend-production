@@ -40,13 +40,10 @@ class ProductPlan extends Model
                 if (!$price->stripe_price_id) {
                     $stripePrice = $stripe->prices->create([
                         'unit_amount' => $price->amount * 100,
-                        'currency' => $price->currency,
-                        'recurring' => ['interval' => $price->recurring],
+                        'mode' => "subscription",
                         'product' => $product->product_code,
-                        'nickname' => $price->lookup_key,
-                        'metadata' => [
-                            'lookup_key' => $price->lookup_key,
-                        ],
+                        'lookup_key' => $price->lookup_key,
+                        'recurring' => ['interval' => $price->recurring],
                     ]);
                     $price->stripe_price_id = $stripePrice->id;
                     $price->save();

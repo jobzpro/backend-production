@@ -48,8 +48,8 @@ class ProductPlan extends Resource
             ID::make()->sortable(),
             Text::make("Price", "price"),
             Select::make("Recurring", "recurring")->options([
-                'monthly' => 'Monthly',
-                'yearly' => 'Yearly',
+                'month' => 'Monthly',
+                'year' => 'Yearly',
             ]),
             // Text::make("Mode", "mode"),
             Text::make("Unit Label", "unit_label"),
