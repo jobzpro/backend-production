@@ -18,6 +18,7 @@ use App\Nova\JobApplication;
 use App\Nova\JobList;
 use App\Nova\JobLocation;
 use App\Nova\Product;
+use App\Nova\ProductPlan;
 use App\Nova\Report;
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuSection;
@@ -48,7 +49,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ])->icon('users')->collapsable(),
                 MenuSection::make('Subscription', [
                     MenuItem::resource(Product::class),
-                    // MenuItem::resource(Industry::class),
+                    MenuItem::resource(ProductPlan::class),
                     // MenuItem::resource(BusinessType::class),
                 ])->collapsable(),
                 MenuSection::make('Company', [
