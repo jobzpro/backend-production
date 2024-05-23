@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -45,7 +46,7 @@ class Product extends Resource
             ID::make()->sortable(),
             Text::make("Code", "product_code"),
             Text::make("Name", "name"),
-            BelongsTo::make('Plan', 'product_plans', ProductPlan::class),
+            HasMany::make('Plan', 'product_plans', ProductPlan::class),
         ];
     }
 
