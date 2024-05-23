@@ -108,7 +108,7 @@ class ProductPlan extends Model
                     // 'product' => $product->product_code,
                     'lookup_key' => $price->lookup_key,
                     // 'currency' => 'usd',
-                    'recurring' => ['interval' => $price->recurring],
+                    // 'recurring' => ['interval' => $price->recurring],
                 ]);
 
                 $checkoutSession = $stripe->checkout->sessions->create([
