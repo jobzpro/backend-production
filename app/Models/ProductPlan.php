@@ -23,6 +23,7 @@ class ProductPlan extends Model
         'connection_count',
         'post_count',
         'applicant_count',
+        'price_code',
     ];
 
     public function product(): BelongsTo

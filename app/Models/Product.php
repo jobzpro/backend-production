@@ -15,7 +15,8 @@ class Product extends Model
 
     protected $fillable = [
         'product_code',
-        'name'
+        'name',
+        'description'
     ];
 
     public function product_plans(): HasMany
