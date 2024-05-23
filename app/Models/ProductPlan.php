@@ -111,19 +111,19 @@ class ProductPlan extends Model
                     // 'recurring' => ['interval' => $price->recurring],
                 ]);
 
-                $checkoutSession = $stripe->checkout->sessions->create([
-                    'payment_method_types' => ['card'],
-                    'line_items' => [[
-                        'price' => $price->price_code,
-                        'quantity' => 1,
-                    ]],
-                    'mode' => 'subscription',
-                    'success_url' => 'http://localhost:3000',
-                    'cancel_url' => 'http://localhost:3000',
-                ]);
+                // $checkoutSession = $stripe->checkout->sessions->create([
+                //     'payment_method_types' => ['card'],
+                //     'line_items' => [[
+                //         'price' => $price->price_code,
+                //         'quantity' => 1,
+                //     ]],
+                //     'mode' => 'subscription',
+                //     'success_url' => 'http://localhost:3000',
+                //     'cancel_url' => 'http://localhost:3000',
+                // ]);
 
-                $price->checkout_url = $checkoutSession->url;
-                $price->save();
+                // $price->checkout_url = $checkoutSession->url;
+                // $price->save();
             }
         });
     }
