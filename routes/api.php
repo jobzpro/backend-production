@@ -106,6 +106,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/{id}/profile/certifications/update', 'updateCertifications');
         Route::delete('/{id}/profile/certifications/delete', 'deleteCertificate');
 
+        Route::prefix('/{id}/2FA')->controller(ReportController::class)->group(function () {
+            Route::get('/get-code', 'create2fa');
+            Route::post('/verify-code', 'verfiy2fa');
+        });
+
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
             Route::get('/', 'userReports');
             Route::post('/', 'reportCompanyOrJobList');

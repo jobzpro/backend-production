@@ -40,4 +40,8 @@ class Account extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(User::class);
     }
+    public function account_otp(): HasOne
+    {
+        return $this->hasOne(AccountOtp::class);
+    }
 }
