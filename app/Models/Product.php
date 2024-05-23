@@ -52,7 +52,7 @@ class Product extends Model
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
                 $stripe->products->update($product->product_code, [
                     'name' => $product->name,
-                    // 'unit_label' => $product->unit_label,
+                    'unit_label' => $product->unit_label,
                     'description' => $product->description,
                 ]);
             }
