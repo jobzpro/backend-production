@@ -38,25 +38,18 @@ class ProductPlan extends Model
 
             if ($product && $product->product_code) {
                 if (!$price->stripe_price_id) {
-                    // Create a new Stripe price
                     $stripePrice = $stripe->prices->create([
-                        'unit_amount' => $price->amount * 100, // Stripe expects the amount in cents
+                        'unit_amount' => $price->amount * 100,
                         'currency' => $price->currency,
                         'recurring' => ['interval' => $price->recurring],
                         'product' => $product->product_code,
                         'nickname' => $price->lookup_key,
-                        // 'unit_label' => $product->unit_label,
                         'metadata' => [
                             'lookup_key' => $price->lookup_key,
                         ],
                     ]);
-                    $stripeProduct = $stripe->product->create([
-                        'unit_label' => $product->unit_label,
-                    ]);
-                    // Save the Stripe price ID to the database
                     $price->stripe_price_id = $stripePrice->id;
                     $price->save();
-                    $stripeProduct->save();
                 }
                 $checkoutSession = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
