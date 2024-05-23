@@ -38,8 +38,8 @@ class Product extends Model
             $stripe = new StripeClient(env('STRIPE_SECRET'));
             $stripeProduct = $stripe->products->create([
                 'name' => $product->name,
-                'unit_label' => $product->unit_label,
-                // 'description' => $product->description,
+                // 'unit_label' => $product->unit_label,
+                'description' => $product->description,
             ]);
 
             // Save the Stripe product ID to the database
@@ -52,7 +52,8 @@ class Product extends Model
                 $stripe = new StripeClient(env('STRIPE_SECRET'));
                 $stripe->products->update($product->product_code, [
                     'name' => $product->name,
-                    // 'description' => $product->description,
+                    // 'unit_label' => $product->unit_label,
+                    'description' => $product->description,
                 ]);
             }
         });
