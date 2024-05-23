@@ -45,15 +45,18 @@ class ProductPlan extends Model
                         'recurring' => ['interval' => $price->recurring],
                         'product' => $product->product_code,
                         'nickname' => $price->lookup_key,
-                        'unit_label' => $price->unit_label,
+                        'unit_label' => $product->unit_label,
                         'metadata' => [
                             'lookup_key' => $price->lookup_key,
                         ],
                     ]);
-
+                    $stripeProduct = $stripe->product->create([
+                        'unit_label' => $product->unit_label,
+                    ]);
                     // Save the Stripe price ID to the database
                     $price->stripe_price_id = $stripePrice->id;
                     $price->save();
+                    $stripeProduct->save();
                 }
                 $checkoutSession = $stripe->checkout->sessions->create([
                     'payment_method_types' => ['card'],
