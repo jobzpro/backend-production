@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Account2FA;
 use App\Models\Account;
 use App\Models\AccountOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Mailables\Attachment;
 
 class AccountOtpController extends Controller
 {
@@ -24,6 +27,11 @@ class AccountOtpController extends Controller
                 'account_id' => $account->id,
                 'code' => $code,
             ]);
+            $mailData = [
+                'code' => $code,
+            ];
+
+            Mail::to($account->email)->send(new Account2FA($mailData));
             return response()->json(['message' => 'success, check your email'], 200);
         } else {
             return response()->json(['message' => 'something wrong try again.'], 500);
