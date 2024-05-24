@@ -58,4 +58,32 @@ class AccountOtpController extends Controller
             return response()->json(['message' => 'Something wrong please try again'], 500);
         }
     }
+
+    public function otpToggle($id)
+    {
+        $account = Account::find($id);
+        if (!$account) {
+            return response([
+                'message' => "Account not found",
+            ], 500);
+        } else if ($account) {
+            if ($account->is_otp == true) {
+                $account->is_otp = false;
+                $account->save();
+                return response([
+                    'is_otp' => false,
+                ], 200);
+            } else {
+                $account->is_otp = true;
+                $account->save();
+                return response([
+                    'is_otp' => true,
+                ], 200);
+            }
+        } else {
+            return response([
+                'message' => "Something wrong please try again.",
+            ], 400);
+        }
+    }
 }
