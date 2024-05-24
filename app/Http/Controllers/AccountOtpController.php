@@ -14,7 +14,11 @@ class AccountOtpController extends Controller
         $account = Account::find($id);
         if (!$account) {
             return response()->json(['message' => 'Account id not found.'], 400);
-        } else if ($account) {
+        } else if ($account && $account->is_otp == true) {
+            $account_otp = AccountOtp::where('account_id', $account->id);
+            if ($account_otp->exists()) {
+                $account_otp->forceDelete();
+            }
             $code = Str::random(6);
             AccountOtp::create([
                 'account_id' => $account->id,
