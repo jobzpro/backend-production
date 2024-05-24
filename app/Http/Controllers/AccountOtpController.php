@@ -22,7 +22,8 @@ class AccountOtpController extends Controller
             if ($account_otp->exists()) {
                 $account_otp->forceDelete();
             }
-            $code = Str::random(6);
+            $code = random_int(100000, 999999);
+            // $code = Str::random(6);
             AccountOtp::create([
                 'account_id' => $account->id,
                 'code' => $code,
