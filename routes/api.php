@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountOtpController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\AppReviewController;
 use App\Http\Controllers\BusinessTypeController;
@@ -106,7 +107,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/{id}/profile/certifications/update', 'updateCertifications');
         Route::delete('/{id}/profile/certifications/delete', 'deleteCertificate');
 
-        Route::prefix('/{id}/2FA')->controller(ReportController::class)->group(function () {
+        Route::prefix('{id}/2FA')->controller(AccountOtpController::class)->group(function () {
             Route::get('/get-code', 'create2fa');
             Route::post('/verify-code', 'verfiy2fa');
         });
@@ -147,6 +148,10 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::prefix('/company/{id}')->group(function () {
+        Route::prefix('/2FA')->controller(AccountOtpController::class)->group(function () {
+            Route::get('/get-code', 'create2fa');
+            Route::post('/verify-code', 'verfiy2fa');
+        });
         #all job listing routes
         Route::prefix('/jobs')->controller(JobListController::class)->group(function () {
             Route::get('/', 'getJobListings');
