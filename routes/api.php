@@ -53,7 +53,7 @@ Route::middleware(['guest'])->group(function () {
 Route::prefix('auth')->controller(AccountController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::post('/login', 'login')->middleware(['auth:api']);
+    Route::get('/logout', 'logout')->middleware(['auth:api']);
     Route::post('/deactivate', 'accountDeactivation')->middleware(['auth:api']);
 
 
