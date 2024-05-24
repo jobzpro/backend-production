@@ -53,7 +53,7 @@ Route::middleware(['guest'])->group(function () {
 Route::prefix('auth')->controller(AccountController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-    Route::get('/logout', 'logout')->middleware(['auth:api']);
+    Route::post('/login', 'login')->middleware(['auth:api']);
     Route::post('/deactivate', 'accountDeactivation')->middleware(['auth:api']);
 
 
@@ -110,6 +110,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('{id}/2FA')->controller(AccountOtpController::class)->group(function () {
             Route::get('/get-code', 'create2fa');
             Route::post('/verify-code', 'verfiy2fa');
+            Route::post('/otp-set', 'otpToggle');
         });
 
         Route::prefix('/{id}/reports')->controller(ReportController::class)->group(function () {
@@ -151,6 +152,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('/2FA')->controller(AccountOtpController::class)->group(function () {
             Route::get('/get-code', 'create2fa');
             Route::post('/verify-code', 'verfiy2fa');
+            Route::post('/otp-set', 'otpToggle');
         });
         #all job listing routes
         Route::prefix('/jobs')->controller(JobListController::class)->group(function () {
