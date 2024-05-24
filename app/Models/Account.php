@@ -22,7 +22,8 @@ class Account extends Authenticatable implements MustVerifyEmail
         'password',
         'name',
         'login_type',
-        'login_type_id'
+        'login_type_id',
+        'is_otp'
     ];
 
     protected $hidden = [
