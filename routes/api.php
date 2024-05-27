@@ -153,6 +153,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::get('/get-code', 'create2fa');
             Route::post('/verify-code', 'verfiy2fa');
             Route::post('/otp-set', 'otpToggle');
+            Route::get('/account-display', 'showAccountInformation');
         });
         #all job listing routes
         Route::prefix('/jobs')->controller(JobListController::class)->group(function () {

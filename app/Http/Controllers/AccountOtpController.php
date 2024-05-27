@@ -86,4 +86,21 @@ class AccountOtpController extends Controller
             ], 400);
         }
     }
+    public function showAccountInformation($id)
+    {
+        $account = Account::find($id);
+        if (!$account) {
+            return response([
+                'message' => "Account not found",
+            ], 500);
+        } else if ($account) {
+            return response([
+                'account' => $account,
+            ], 200);
+        } else {
+            return response([
+                'message' => "Something wrong please try again.",
+            ], 400);
+        }
+    }
 }
