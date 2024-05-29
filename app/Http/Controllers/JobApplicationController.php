@@ -179,11 +179,11 @@ class JobApplicationController extends Controller
         }
 
         if ($user && $user->user_subscription && ($user->user_subscription->connection_count >= 1)) {
-            $user->user_subscription->update([
+            $user->user_subscription()->update([
                 'connection_count' => $user->user_subscription->connection_count - 1
             ]);
         } else {
-            $user->user_subscription->create([
+            $user->user_subscription()->create([
                 'connection_count' => 19,
                 'post_count' => 10,
                 'applicant_count' => 20,
