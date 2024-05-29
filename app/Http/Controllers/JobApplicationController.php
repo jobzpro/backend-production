@@ -183,7 +183,7 @@ class JobApplicationController extends Controller
                 'connection_count' => $user->user_subscription->connection_count - 1
             ]);
         } else {
-            $user->user_subscription->created_at([
+            $user->user_subscription->create([
                 'connection_count' => 19,
                 'post_count' => 10,
                 'applicant_count' => 20,
