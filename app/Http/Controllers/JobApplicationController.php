@@ -182,6 +182,13 @@ class JobApplicationController extends Controller
             $user->user_subscription->update([
                 'connection_count' => $user->user_subscription->connection_count - 1
             ]);
+        } else {
+            $user->user_subscription->created_at([
+                'connection_count' => 19,
+                'post_count' => 10,
+                'applicant_count' => 20,
+                'expiry_at' => Carbon::now()->addMonths(6),
+            ]);
         }
 
         return response([
