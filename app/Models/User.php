@@ -119,6 +119,10 @@ class User extends Authenticatable
         return $this->hasMany(UserCompany::class, 'user_id')->with('companies');
     }
 
+    public function user_subscription(): HasOne
+    {
+        return $this->hasOne(UserSubscription::class);
+    }
     // public function company(): HasMany{
     //     return $this->hasMany();
     // }

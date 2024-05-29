@@ -19,6 +19,7 @@ use App\Helper\FileManager;
 use App\Models\CompanyNotification;
 use App\Http\Controllers\MailerController as MailerController;
 use App\Models\Notification;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -175,6 +176,12 @@ class JobApplicationController extends Controller
 
         if ($user) {
             (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
+        }
+
+        if ($user && $user->user_subscription && ($user->user_subscription->connection_count >= 1)) {
+            $user->user_subscription->update([
+                'connection_count' => $user->user_subscription->connection_count - 1
+            ]);
         }
 
         return response([
