@@ -65,8 +65,8 @@ class ProductController extends Controller
                                             'quantity' => 1,
                                         ]],
                                         'mode' => $mode,
-                                        'success_url' => route('checkout.success'),
-                                        'cancel_url' => route('checkout.cancel'),
+                                        'success_url' => "http://localhost:3000/",
+                                        'cancel_url' => "http://localhost:3000/",
                                     ]);
 
                                     $productPrices[] = [
