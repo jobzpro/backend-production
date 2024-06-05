@@ -118,6 +118,7 @@ class ProductController extends Controller
                         $productDetails[] = [
                             'product_id' => $product->id,
                             'product_name' => $product->name,
+                            'description' => $product->description,
                             'plan' => $productPrices,
                         ];
                     }

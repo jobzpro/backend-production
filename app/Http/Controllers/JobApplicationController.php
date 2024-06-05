@@ -89,7 +89,7 @@ class JobApplicationController extends Controller
         $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
         if ($user && $user->user_subscription && ($user->user_subscription->connection_count == 0)) {
             return response([
-                'message' => 'subscription ended',
+                'message' => 'Subscription ended',
             ], 400);
         } else {
             if ($request->has('file')) {
