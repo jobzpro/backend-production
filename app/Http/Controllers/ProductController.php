@@ -108,41 +108,59 @@ class ProductController extends Controller
     public function employerSubscription()
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
-
+        $productDetails = [];
         try {
-            $products = $stripe->products->all();
-            $productDetails = [];
+            $lastProductId = null;
+            do {
+                $productParams = ['limit' => 100];
+                if ($lastProductId) {
+                    $productParams['starting_after'] = $lastProductId;
+                }
+                $products = $stripe->products->all($productParams);
 
-            foreach ($products->data as $product) {
-                if ($product->unit_label === "employer") {
-                    $prices = $stripe->prices->all(['product' => $product->id]);
-                    $productPrices = [];
-                    if (count($prices->data) > 0) {
-                        $price = $prices->data[0];
-                        foreach ($prices->data as $price) {
-                            if ($price->active && $product->unit_label === "employer") {
-                                $mode = $price->recurring ? 'subscription' : 'payment';
-                                $session = $stripe->checkout->sessions->create([
-                                    'payment_method_types' => ['card'],
-                                    'line_items' => [[
-                                        'price' => $price->id,
-                                        'quantity' => 1,
-                                    ]],
-                                    'mode' => $mode,
-                                    'success_url' => "http://localhost:3000",
-                                    'cancel_url' => "http://localhost:3000",
-                                ]);
-                                $productPrices[] = [
-                                    // 'product_name' => $product->name,
-                                    'price' => number_format($price->unit_amount / 100, 2),
-                                    'mode' => $mode,
-                                    'unit_label' => $product->unit_label,
-                                    'lookup_key' => $price->lookup_key,
-                                    'recurring' => $price->recurring->interval,
-                                    'checkout_url' => $session->url,
-                                ];
+
+                foreach ($products->data as $product) {
+                    if ($product->unit_label === "employer") {
+                        $productPrices = [];
+                        $lastPriceId = null;
+
+                        do {
+                            $priceParams = [
+                                'product' => $product->id,
+                                'limit' => 100,
+                            ];
+                            if ($lastPriceId) {
+                                $priceParams['starting_after'] = $lastPriceId;
                             }
-                        }
+                            $prices = $stripe->prices->all(['product' => $product->id]);
+                            foreach ($prices->data as $price) {
+                                if ($price->active && $product->unit_label === "employer") {
+                                    $mode = $price->recurring ? 'subscription' : 'payment';
+                                    $session = $stripe->checkout->sessions->create([
+                                        'payment_method_types' => ['card'],
+                                        'line_items' => [[
+                                            'price' => $price->id,
+                                            'quantity' => 1,
+                                        ]],
+                                        'mode' => $mode,
+                                        'success_url' => "http://localhost:3000",
+                                        'cancel_url' => "http://localhost:3000",
+                                    ]);
+                                    $productPrices[] = [
+                                        // 'product_name' => $product->name,
+                                        'price' => number_format($price->unit_amount / 100, 2),
+                                        'mode' => $mode,
+                                        'unit_label' => $product->unit_label,
+                                        'lookup_key' => $price->lookup_key,
+                                        'recurring' => $price->recurring->interval,
+                                        'checkout_url' => $session->url,
+                                    ];
+                                }
+                            }
+                            if (!empty($prices->data)) {
+                                $lastPriceId = end($prices->data)->id;
+                            }
+                        } while ($prices->has_more);
                         $productDetails[] = [
                             'product_id' => $product->id,
                             'product_name' => $product->name,
@@ -151,12 +169,14 @@ class ProductController extends Controller
                         ];
                     }
                 }
-            }
+                if (!empty($products->data)) {
+                    $lastProductId = end($products->data)->id;
+                }
+            } while ($products->has_more);
+
             return response()->json($productDetails, 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
     // public function jobseekerSubscription()
