@@ -31,13 +31,13 @@ class ProductController extends Controller
             $productDetails = [];
 
             foreach ($products->data as $product) {
-                if ($product->unit_label === "jobseeker") {
+                if ($product->unit_label != "employer") {
                     $prices = $stripe->prices->all(['product' => $product->id]);
                     $productPrices = [];
                     if (count($prices->data) > 0) {
                         $price = $prices->data[0];
                         foreach ($prices->data as $price) {
-                            if ($price->active && $product->unit_label === "jobseeker") {
+                            if ($price->active && $product->unit_label != "employer") {
                                 $mode = $price->recurring ? 'subscription' : 'payment';
                                 $session = $stripe->checkout->sessions->create([
                                     'payment_method_types' => ['card'],
