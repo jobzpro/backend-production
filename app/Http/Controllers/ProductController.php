@@ -35,7 +35,7 @@ class ProductController extends Controller
                     $prices = $stripe->prices->all(['product' => $product->id]);
                     $productPrices = [];
                     if (count($prices->data) > 0) {
-                        $price = $prices->data[0];
+                        // $price = $prices->data[0];
                         foreach ($prices->data as $price) {
                             if ($price->active) {
                                 $mode = $price->recurring ? 'subscription' : 'payment';
