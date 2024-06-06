@@ -69,6 +69,13 @@ class AccountController extends Controller
       'role_id' => 3,
     ]);
 
+    $user = User::find($account->user->id);
+
+    $user->user_subscription()->create([
+      'connection_count' => 20,
+      'expiry_at' => Carbon::now()->addMonths(6),
+    ]);
+
     event(new Registered($account));
 
     $result = [
@@ -787,6 +794,12 @@ class AccountController extends Controller
       //'middle_name' => $data['middle_name'],
       'last_name' => $data['last_name'],
       'created_at' => Carbon::now(),
+    ]);
+
+    $user->user_subscription()->create([
+      'post_count' => 20,
+      'applicant_count' => 20,
+      'expiry_at' => Carbon::now()->addMonths(1),
     ]);
 
     $userRole = UserRole::create([

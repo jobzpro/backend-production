@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\ProductPlan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Stripe\StripeClient;
@@ -203,13 +206,17 @@ class ProductController extends Controller
             ], 400);
         } else {
             $user = User::find($request->input('user_id'));
+            $product = Product::where('product_code', $request->input('product_id'))->first();
+            $productPlan = ProductPlan::where('product_code', $request->input('price_id'))->first();
+            $expiryMonths = $productPlan->recurring == "month" ? 1 : 6;
+            $expiryAt = Carbon::now()->addMonths($expiryMonths);
             $res = $user->user_subscription()->create([
-                'product_id' => $request->input('product_id'),
-                'product_plan_id' => $request->input('product_plan_id'),
-                'connection_count' => $request->input('connection_count'),
-                'post_count' => $request->input('post_count'),
-                'applicant_count' => $request->input('applicant_count'),
-                'expiry_at' => $request->input('expiry_at'),
+                'product_id' => $product->product_code,
+                'product_plan_id' => $productPlan->price_code,
+                'connection_count' => $productPlan->connection_count,
+                'post_count' => $productPlan->post_count,
+                'applicant_count' => $productPlan->applicant_count,
+                'expiry_at' => $expiryAt,
             ]);
             return response([
                 'message' => "Success",
