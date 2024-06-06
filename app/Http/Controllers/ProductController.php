@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Stripe\StripeClient;
 
 class ProductController extends Controller
@@ -177,6 +179,42 @@ class ProductController extends Controller
             return response()->json($productDetails, 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function insertSubscription(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required',
+            'product_plan_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'message' => "Registration Unsuccessful",
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        if (!isset($id)) {
+            return response([
+                'message' => "id is missing",
+                'errors' => $validator->errors(),
+            ], 400);
+        } else {
+            $user = User::find($id);
+            $res = $user->user_subscription()->create([
+                'product_id' => $request->input('product_id'),
+                'product_plan_id' => $request->input('product_plan_id'),
+                'connection_count' => $request->input('connection_count'),
+                'post_count' => $request->input('post_count'),
+                'applicant_count' => $request->input('applicant_count'),
+                'expiry_at' => $request->input('expiry_at'),
+            ]);
+            return response([
+                'message' => "Success",
+                'user_subscription' => $res,
+            ], 400);
         }
     }
     // public function jobseekerSubscription()

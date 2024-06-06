@@ -292,6 +292,7 @@ Route::prefix('/products')->controller(ProductController::class)->group(function
     Route::get('/', 'index');
     Route::get('/jobseeker-subscription', 'jobseekerSubscription');
     Route::get('/employer-subscription', 'employerSubscription');
+    Route::post('/insert-subscription', 'insertSubscription');
 });
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
