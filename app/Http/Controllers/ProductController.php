@@ -182,7 +182,7 @@ class ProductController extends Controller
         }
     }
 
-    public function insertSubscription(Request $request, $id)
+    public function insertSubscription(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
@@ -202,7 +202,7 @@ class ProductController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         } else {
-            $user = User::find($id);
+            $user = User::find($request->input('user_id'));
             $res = $user->user_subscription()->create([
                 'product_id' => $request->input('product_id'),
                 'product_plan_id' => $request->input('product_plan_id'),
