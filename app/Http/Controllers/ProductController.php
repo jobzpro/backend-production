@@ -197,7 +197,7 @@ class ProductController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
-            'product_plan_id' => 'required',
+            'price_id' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -215,12 +215,12 @@ class ProductController extends Controller
         } else {
             $user = User::find($request->input('user_id'));
             $product = Product::where('product_code', $request->input('product_id'))->first();
-            $productPlan = ProductPlan::where('product_code', $request->input('price_id'))->first();
+            $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
             $expiryMonths = $productPlan->recurring == "month" ? 1 : 6;
             $expiryAt = Carbon::now()->addMonths($expiryMonths);
             $res = $user->user_subscription()->create([
-                'product_id' => $product->product_code,
-                'product_plan_id' => $productPlan->price_code,
+                'product_id' => $product->id,
+                'product_plan_id' => $productPlan->id,
                 'connection_count' => $productPlan->connection_count,
                 'post_count' => $productPlan->post_count,
                 'applicant_count' => $productPlan->applicant_count,
