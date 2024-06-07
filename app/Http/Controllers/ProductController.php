@@ -28,7 +28,7 @@ class ProductController extends Controller
             ], 400);
         }
     }
-    public function jobseekerSubscription()
+    public function jobseekerSubscription(Request $request)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $productDetails = [];
@@ -63,8 +63,7 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active) {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    $user = Auth::user();
-                                    $user_id = $user->user->id;
+                                    $user_id = $request->input('user_id');
                                     $session = $stripe->checkout->sessions->create([
                                         'payment_method_types' => ['card'],
                                         'line_items' => [[
@@ -115,7 +114,7 @@ class ProductController extends Controller
         }
     }
 
-    public function employerSubscription()
+    public function employerSubscription(Request $request)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $productDetails = [];
@@ -146,9 +145,7 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active && $product->unit_label === "employer") {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-
-                                    $user = Auth::user();
-                                    $user_id = $user->user->id;
+                                    $user_id = $request->input('user_id');
                                     $session = $stripe->checkout->sessions->create([
                                         'payment_method_types' => ['card'],
                                         'line_items' => [[
