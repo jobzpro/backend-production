@@ -224,7 +224,7 @@ class ProductController extends Controller
         return response([
             'message' => "Success",
             'user_subscription' => $res,
-        ], 400);
+        ], 200);
     }
     // public function jobseekerSubscription()
     // {
