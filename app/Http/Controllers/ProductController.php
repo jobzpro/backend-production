@@ -28,7 +28,7 @@ class ProductController extends Controller
             ], 400);
         }
     }
-    public function jobseekerSubscription(Request $request)
+    public function jobseekerSubscription($id)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $productDetails = [];
@@ -63,7 +63,7 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active) {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    $user_id = $request->input('user_id');
+                                    $user_id = $id;
                                     $session = $stripe->checkout->sessions->create([
                                         'payment_method_types' => ['card'],
                                         'line_items' => [[
@@ -114,7 +114,7 @@ class ProductController extends Controller
         }
     }
 
-    public function employerSubscription(Request $request)
+    public function employerSubscription($id)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $productDetails = [];
@@ -145,7 +145,6 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active && $product->unit_label === "employer") {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    $user_id = $request->input('user_id');
                                     $session = $stripe->checkout->sessions->create([
                                         'payment_method_types' => ['card'],
                                         'line_items' => [[
@@ -156,7 +155,7 @@ class ProductController extends Controller
                                         'success_url' => "http://localhost:3000",
                                         'cancel_url' => "http://localhost:3000",
                                         'metadata' => [
-                                            'user_id' => $user_id
+                                            'user_id' => $id
                                         ]
                                     ]);
 

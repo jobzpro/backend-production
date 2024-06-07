@@ -290,8 +290,8 @@ Route::apiResources([
 
 Route::prefix('/products')->controller(ProductController::class)->group(function () {
     Route::get('/', 'index');
-    Route::get('/jobseeker-subscription', 'jobseekerSubscription');
-    Route::get('/employer-subscription', 'employerSubscription');
+    Route::get('/jobseeker-subscription/{id}', 'jobseekerSubscription');
+    Route::get('/employer-subscription/{id}', 'employerSubscription');
     Route::post('/insert-subscription', 'insertSubscription');
 });
 
