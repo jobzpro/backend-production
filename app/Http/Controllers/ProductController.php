@@ -63,23 +63,21 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active) {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    if (Auth::check()) {
-                                        $user = Auth::user();
-                                        $user_id = $user->user->id;
-                                        $session = $stripe->checkout->sessions->create([
-                                            'payment_method_types' => ['card'],
-                                            'line_items' => [[
-                                                'price' => $price->id,
-                                                'quantity' => 1,
-                                            ]],
-                                            'mode' => $mode,
-                                            'success_url' => "http://localhost:3000/",
-                                            'cancel_url' => "http://localhost:3000/",
-                                            'metadata' => [
-                                                'user_id' => $user_id
-                                            ]
-                                        ]);
-                                    }
+                                    $user = Auth::user();
+                                    $user_id = $user->user->id;
+                                    $session = $stripe->checkout->sessions->create([
+                                        'payment_method_types' => ['card'],
+                                        'line_items' => [[
+                                            'price' => $price->id,
+                                            'quantity' => 1,
+                                        ]],
+                                        'mode' => $mode,
+                                        'success_url' => "http://localhost:3000/",
+                                        'cancel_url' => "http://localhost:3000/",
+                                        'metadata' => [
+                                            'user_id' => $user_id
+                                        ]
+                                    ]);
 
                                     $productPrices[] = [
                                         'price' => number_format($price->unit_amount / 100, 2),
@@ -148,23 +146,22 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active && $product->unit_label === "employer") {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    if (Auth::check()) {
-                                        $user = Auth::user();
-                                        $user_id = $user->user->id;
-                                        $session = $stripe->checkout->sessions->create([
-                                            'payment_method_types' => ['card'],
-                                            'line_items' => [[
-                                                'price' => $price->id,
-                                                'quantity' => 1,
-                                            ]],
-                                            'mode' => $mode,
-                                            'success_url' => "http://localhost:3000",
-                                            'cancel_url' => "http://localhost:3000",
-                                            'metadata' => [
-                                                'user_id' => $user_id
-                                            ]
-                                        ]);
-                                    }
+
+                                    $user = Auth::user();
+                                    $user_id = $user->user->id;
+                                    $session = $stripe->checkout->sessions->create([
+                                        'payment_method_types' => ['card'],
+                                        'line_items' => [[
+                                            'price' => $price->id,
+                                            'quantity' => 1,
+                                        ]],
+                                        'mode' => $mode,
+                                        'success_url' => "http://localhost:3000",
+                                        'cancel_url' => "http://localhost:3000",
+                                        'metadata' => [
+                                            'user_id' => $user_id
+                                        ]
+                                    ]);
 
                                     $productPrices[] = [
                                         // 'product_name' => $product->name,
