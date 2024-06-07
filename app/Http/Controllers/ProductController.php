@@ -196,6 +196,7 @@ class ProductController extends Controller
     public function insertSubscription(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
             'product_id' => 'required',
             'price_id' => 'required',
         ]);
@@ -207,30 +208,23 @@ class ProductController extends Controller
             ], 400);
         }
 
-        if (!isset($id)) {
-            return response([
-                'message' => "id is missing",
-                'errors' => $validator->errors(),
-            ], 400);
-        } else {
-            $user = User::find($request->input('user_id'));
-            $product = Product::where('product_code', $request->input('product_id'))->first();
-            $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
-            $expiryMonths = $productPlan->recurring == "month" ? 1 : 6;
-            $expiryAt = Carbon::now()->addMonths($expiryMonths);
-            $res = $user->user_subscription()->create([
-                'product_id' => $product->id,
-                'product_plan_id' => $productPlan->id,
-                'connection_count' => $productPlan->connection_count,
-                'post_count' => $productPlan->post_count,
-                'applicant_count' => $productPlan->applicant_count,
-                'expiry_at' => $expiryAt,
-            ]);
-            return response([
-                'message' => "Success",
-                'user_subscription' => $res,
-            ], 400);
-        }
+        $user = User::find($request->input('user_id'));
+        $product = Product::where('product_code', $request->input('product_id'))->first();
+        $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
+        $expiryMonths = $productPlan->recurring == "month" ? 1 : 6;
+        $expiryAt = Carbon::now()->addMonths($expiryMonths);
+        $res = $user->user_subscription()->create([
+            'product_id' => $product->id,
+            'product_plan_id' => $productPlan->id,
+            'connection_count' => $productPlan->connection_count,
+            'post_count' => $productPlan->post_count,
+            'applicant_count' => $productPlan->applicant_count,
+            'expiry_at' => $expiryAt,
+        ]);
+        return response([
+            'message' => "Success",
+            'user_subscription' => $res,
+        ], 400);
     }
     // public function jobseekerSubscription()
     // {
