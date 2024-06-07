@@ -7,6 +7,7 @@ use App\Models\ProductPlan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Stripe\StripeClient;
 
@@ -141,16 +142,24 @@ class ProductController extends Controller
                             foreach ($prices->data as $price) {
                                 if ($price->active && $product->unit_label === "employer") {
                                     $mode = $price->recurring ? 'subscription' : 'payment';
-                                    $session = $stripe->checkout->sessions->create([
-                                        'payment_method_types' => ['card'],
-                                        'line_items' => [[
-                                            'price' => $price->id,
-                                            'quantity' => 1,
-                                        ]],
-                                        'mode' => $mode,
-                                        'success_url' => "http://localhost:3000",
-                                        'cancel_url' => "http://localhost:3000",
-                                    ]);
+                                    if (Auth::check()) {
+                                        $user = Auth::user();
+                                        $user_id = $user->user->id;
+                                        $session = $stripe->checkout->sessions->create([
+                                            'payment_method_types' => ['card'],
+                                            'line_items' => [[
+                                                'price' => $price->id,
+                                                'quantity' => 1,
+                                            ]],
+                                            'mode' => $mode,
+                                            'success_url' => "http://localhost:3000",
+                                            'cancel_url' => "http://localhost:3000",
+                                            'metadata' => [
+                                                'user_id' => $user_id
+                                            ]
+                                        ]);
+                                    }
+
                                     $productPrices[] = [
                                         // 'product_name' => $product->name,
                                         'price' => number_format($price->unit_amount / 100, 2),
@@ -297,3 +306,5 @@ class ProductController extends Controller
     //     }
     // }
 }
+// https://checkout.stripe.com/c/pay/cs_test_a1XdnzjKISgM9Lok6eeOO5EwAO9qSmmo76NJYr1KRGx0FrFrq3fqnquMeW#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl?customer_id=3
+// https://checkout.stripe.com/c/pay/cs_test_a1Buys9UX4q9vHJZCwMNWoxayUHpONaHlJp24VCorR1855De2JtPmghDaA#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl
