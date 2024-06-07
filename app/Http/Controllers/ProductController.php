@@ -71,8 +71,8 @@ class ProductController extends Controller
                                             'quantity' => 1,
                                         ]],
                                         'mode' => $mode,
-                                        'success_url' => "http://localhost:3000/",
-                                        'cancel_url' => "http://localhost:3000/",
+                                        'success_url' => env('BASE_URL'),
+                                        'cancel_url' => env('BASE_URL'),
                                         'metadata' => [
                                             'user_id' => $user_id
                                         ]
@@ -152,8 +152,8 @@ class ProductController extends Controller
                                             'quantity' => 1,
                                         ]],
                                         'mode' => $mode,
-                                        'success_url' => "http://localhost:3000",
-                                        'cancel_url' => "http://localhost:3000",
+                                        'success_url' => env('BASE_URL'),
+                                        'cancel_url' => env('BASE_URL'),
                                         'metadata' => [
                                             'user_id' => $id
                                         ]
