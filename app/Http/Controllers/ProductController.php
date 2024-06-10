@@ -45,7 +45,7 @@ class ProductController extends Controller
                 $products = $stripe->products->all($productParams);
 
                 foreach ($products->data as $product) {
-                    if ($product->unit_label === "jobseeker") {
+                    if ($product->active && $product->unit_label === "jobseeker") {
                         $productPrices = [];
                         $lastPriceId = null;
 
@@ -129,7 +129,7 @@ class ProductController extends Controller
 
 
                 foreach ($products->data as $product) {
-                    if ($product->unit_label === "employer") {
+                    if ($product->active && $product->unit_label === "employer") {
                         $productPrices = [];
                         $lastPriceId = null;
 
@@ -211,7 +211,8 @@ class ProductController extends Controller
         $user = User::find($request->input('user_id'));
         $product = Product::where('product_code', $request->input('product_id'))->first();
         $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
-        $expiryMonths = $productPlan->recurring == "month" ? 1 : 6;
+        $expiryMonths = $productPlan->recurring == "month" ? 1 : 12;
+
         $expiryAt = Carbon::now()->addMonths($expiryMonths);
         $res = $user->user_subscription()->create([
             'product_id' => $product->id,
@@ -299,5 +300,3 @@ class ProductController extends Controller
     //     }
     // }
 }
-// https://checkout.stripe.com/c/pay/cs_test_a1XdnzjKISgM9Lok6eeOO5EwAO9qSmmo76NJYr1KRGx0FrFrq3fqnquMeW#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl?customer_id=3
-// https://checkout.stripe.com/c/pay/cs_test_a1Buys9UX4q9vHJZCwMNWoxayUHpONaHlJp24VCorR1855De2JtPmghDaA#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl
