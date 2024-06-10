@@ -205,7 +205,9 @@ class ProductSeeder extends Seeder
             "mode" => "subscription",
             "unit_label" => "employer",
             "lookup_key" => "na",
-            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a19YmIyJxStx9966M6rXLzF8vbkzCbkmwi7Xl3rJ7Nw5p4Ttxo0EAPWy47#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl"
+            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a19YmIyJxStx9966M6rXLzF8vbkzCbkmwi7Xl3rJ7Nw5p4Ttxo0EAPWy47#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+            "post_count" => 10,
+
         ]);
 
         $posting30 = Product::create([
@@ -220,7 +222,8 @@ class ProductSeeder extends Seeder
             "mode" => "subscription",
             "unit_label" => "employer",
             "lookup_key" => "na",
-            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a16uG9vX0ug1q0g0sxzK5xl8TjhX0wqcPYryOyOJq87nMdc1vf6o1OyBA7#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl"
+            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a16uG9vX0ug1q0g0sxzK5xl8TjhX0wqcPYryOyOJq87nMdc1vf6o1OyBA7#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+            "post_count" => 30,
         ]);
 
         $posting50 = Product::create([
@@ -235,7 +238,8 @@ class ProductSeeder extends Seeder
             "mode" => "subscription",
             "unit_label" => "employer",
             "lookup_key" => "na",
-            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1s3glXMDnbers1fiFJ4fo3koskbhU1styfWlUfbvleVFvCpncXf9pBS3Z#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl"
+            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1s3glXMDnbers1fiFJ4fo3koskbhU1styfWlUfbvleVFvCpncXf9pBS3Z#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+            "post_count" => 50,
         ]);
 
         $singlePlan = Product::create([
@@ -243,7 +247,8 @@ class ProductSeeder extends Seeder
             "name" => "Single Plan",
             "description" => "1 post and 10 applicants per post per month. Perfect for small businesses or occasional hiring needs.",
         ]);
-        $singlePlan->product_plans()->insert(
+
+        $singleProductPlan = [
             [
                 "price_code" => "price_1PPvJSChe3vlhgX3na97xNFU",
                 "price" => 20.00,
@@ -252,6 +257,8 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "month",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1svkiqyHyHkrA4tVZ9pBdwrAsXnU01p1eFZeHsq4vJ5pgE78Y2O254wsq#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 1,
+                "applicant_count" => 10,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
             ],
@@ -263,17 +270,21 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "year",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1iCQG1ZLN4zkMvxh45TJvGuNDe3LTRM1xhKl3Bi9KrVoQbSCvN2EdEng3#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 1,
+                "applicant_count" => 10,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
             ],
-        );
+        ];
+
+        $singlePlan->product_plans()->insert($singleProductPlan);
 
         $familyPlan = Product::create([
             "product_code" => "prod_Q9MJloheLiCl2U",
             "name" => "Family Plan",
             "description" => "3 posts and 15 applicants per post per month. Ideal for moderate hiring demands.",
         ]);
-        $familyPlan->product_plans()->insert(
+        $familyProductPlan = [
             [
                 "price_code" => "price_1PPvLIChe3vlhgX3cRLSZmIK",
                 "price" => 49.00,
@@ -282,6 +293,8 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "month",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1YKXeQZ6fNiCCsCoCbCE8jTDV5cUuaWmzfJpsrZ29qJ8UdfZCuVTYGQJW#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 3,
+                "applicant_count" => 15,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
             ],
@@ -293,17 +306,21 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "year",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1XwC0pjnA4ZVnInofwiMrQ9N16SvRFF13ZwgTqdZfq3gdShFG8GyvzcMV#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 3,
+                "applicant_count" => 15,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
             ]
-        );
+        ];
+        $familyPlan->product_plans()->insert($familyProductPlan);
 
         $extendedPlan = Product::create([
             "product_code" => "prod_Q9MMMH7NaIMZaW",
             "name" => "Extended Plan",
             "description" => "10 job posts with up to 20 applicants per post per month. Best for larger businesses with significant recruitment needs.",
         ]);
-        $extendedPlan->product_plans()->insert(
+
+        $extendedProductPlan = [
             [
                 "price_code" => "price_1PPvMSChe3vlhgX3MRjalT36",
                 "price" => 69.00,
@@ -312,6 +329,8 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "month",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1lVJl8hc8MjYdiigwc0wIovvb5fGzJl6xpVIVbNflELaCSNW11K7gignN#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 10,
+                "applicant_count" => 20,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
@@ -323,17 +342,21 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "year",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1ncwjuNMiJLHYB0roX705QFQVtFUosWvcBmXPQIRHLrk7yURnAga07Qt8#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 10,
+                "applicant_count" => 20,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
-        );
+        ];
+        $extendedPlan->product_plans()->insert($extendedProductPlan);
 
         $company1 = Product::create([
             "product_code" => "prod_Q9MOSJQlkICTyh",
             "name" => "Company Plan #1",
             "description" => "Includes 20 posts and 30 applicants per post per month. Ideal for growing businesses.",
         ]);
-        $company1->product_plans()->insert(
+
+        $company1ProductPlan = [
             [
                 "price_code" => "price_1PPvNJChe3vlhgX3KAVRVH7s",
                 "price" => 104.00,
@@ -342,6 +365,8 @@ class ProductSeeder extends Seeder
                 "lookup_key" => "na",
                 "recurring" => "month",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1qqkicfUyK6XB3NfN1HnU1RcEJwZ8bEpbTG7quJPlhwAJMdTSDO2VwPjr#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 20,
+                "applicant_count" => 30,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
@@ -353,17 +378,22 @@ class ProductSeeder extends Seeder
                 "unit_label" => "employer",
                 "lookup_key" => "na",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1hdqTI6NGrgNX7bboo2Nmg87zXULAvSmiP2DyRbXHLp5FvfDcLNM9U7js#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 20,
+                "applicant_count" => 30,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
-        );
+        ];
+
+        $company1->product_plans()->insert($company1ProductPlan);
 
         $company2 = Product::create([
             "product_code" => "prod_Q9MPY7scX06iRZ",
             "name" => "Company Plan #2",
             "description" => "Includes 50 posts and 50 applicants per post per month. Perfect for large-scale hiring.",
         ]);
-        $company2->product_plans()->insert(
+
+        $company2ProductPlan = [
             [
                 "price_code" => "price_1PPvQZChe3vlhgX3gZKZwEk7",
                 "price" => 199.00,
@@ -372,6 +402,8 @@ class ProductSeeder extends Seeder
                 "unit_label" => "employer",
                 "lookup_key" => "na",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1Hr9Uv7yLZ4PSIDDVXJkMjH11QMSobDmQDYl3r3Anneta4gjW4Yy4nSey#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 50,
+                "applicant_count" => 50,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ],
@@ -383,9 +415,12 @@ class ProductSeeder extends Seeder
                 "unit_label" => "employer",
                 "lookup_key" => "na",
                 "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1ZW6OAH4JkCvujxyGZUu4xb9ITqakDQiO6lg9CFLduSll9dvUDD4OBMYj#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+                "post_count" => 50,
+                "applicant_count" => 50,
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now()
             ]
-        );
+        ];
+        $company2->product_plans()->insert($company2ProductPlan);
     }
 }
