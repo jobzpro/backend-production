@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
+use App\Models\ProductPlan;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -250,6 +251,7 @@ class ProductSeeder extends Seeder
 
         $singleProductPlan = [
             [
+                "product_id" => $singlePlan->id,
                 "price_code" => "price_1PPvJSChe3vlhgX3na97xNFU",
                 "price" => 20.00,
                 "mode" => "subscription",
@@ -263,6 +265,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now(),
             ],
             [
+                "product_id" => $singlePlan->id,
                 "price_code" => "price_1PPvJlChe3vlhgX3Us9ZTSjU",
                 "price" => 117.00,
                 "mode" => "subscription",
@@ -277,8 +280,8 @@ class ProductSeeder extends Seeder
             ],
         ];
 
-        $singlePlan->product_plans()->insert($singleProductPlan);
-
+        // $singlePlan->product_plans()->insert($singleProductPlan);
+        ProductPlan::insert($singleProductPlan);
         $familyPlan = Product::create([
             "product_code" => "prod_Q9MJloheLiCl2U",
             "name" => "Family Plan",
@@ -286,6 +289,7 @@ class ProductSeeder extends Seeder
         ]);
         $familyProductPlan = [
             [
+                "product_id" => $familyPlan->id,
                 "price_code" => "price_1PPvLIChe3vlhgX3cRLSZmIK",
                 "price" => 49.00,
                 "mode" => "subscription",
@@ -299,6 +303,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now(),
             ],
             [
+                "product_id" => $familyPlan->id,
                 "price_code" => "price_1PPvLZChe3vlhgX3yDexWY88",
                 "price" => 298.00,
                 "mode" => "subscription",
@@ -313,6 +318,7 @@ class ProductSeeder extends Seeder
             ]
         ];
         $familyPlan->product_plans()->insert($familyProductPlan);
+        ProductPlan::insert($familyProductPlan);
 
         $extendedPlan = Product::create([
             "product_code" => "prod_Q9MMMH7NaIMZaW",
@@ -322,6 +328,7 @@ class ProductSeeder extends Seeder
 
         $extendedProductPlan = [
             [
+                "product_id" => $extendedPlan->id,
                 "price_code" => "price_1PPvMSChe3vlhgX3MRjalT36",
                 "price" => 69.00,
                 "mode" => "subscription",
@@ -335,6 +342,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ],
             [
+                "product_id" => $extendedPlan->id,
                 "price_code" => "price_1PPvMiChe3vlhgX3lVBA7ohc",
                 "price" => 417.00,
                 "mode" => "subscription",
@@ -348,8 +356,8 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ]
         ];
-        $extendedPlan->product_plans()->insert($extendedProductPlan);
-
+        // $extendedPlan->product_plans()->insert($extendedProductPlan);
+        ProductPlan::insert($extendedProductPlan);
         $company1 = Product::create([
             "product_code" => "prod_Q9MOSJQlkICTyh",
             "name" => "Company Plan #1",
@@ -358,6 +366,7 @@ class ProductSeeder extends Seeder
 
         $company1ProductPlan = [
             [
+                "product_id" => $company1->id,
                 "price_code" => "price_1PPvNJChe3vlhgX3KAVRVH7s",
                 "price" => 104.00,
                 "mode" => "subscription",
@@ -371,6 +380,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ],
             [
+                "product_id" => $company1->id,
                 "price_code" => "price_1PPvNSChe3vlhgX3Mvevupt6",
                 "price" => 627.00,
                 "recurring" => "year",
@@ -386,7 +396,7 @@ class ProductSeeder extends Seeder
         ];
 
         $company1->product_plans()->insert($company1ProductPlan);
-
+        ProductPlan::insert($company1ProductPlan);
         $company2 = Product::create([
             "product_code" => "prod_Q9MPY7scX06iRZ",
             "name" => "Company Plan #2",
@@ -395,6 +405,8 @@ class ProductSeeder extends Seeder
 
         $company2ProductPlan = [
             [
+
+                "product_id" => $company2->id,
                 "price_code" => "price_1PPvQZChe3vlhgX3gZKZwEk7",
                 "price" => 199.00,
                 "recurring" => "month",
@@ -408,6 +420,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ],
             [
+                "product_id" => $company2->id,
                 "price_code" => "price_1PPvQnChe3vlhgX3wbzysQry",
                 "price" => 1, 194.00,
                 "recurring" => "year",
@@ -421,6 +434,7 @@ class ProductSeeder extends Seeder
                 "updated_at" => Carbon::now()
             ]
         ];
-        $company2->product_plans()->insert($company2ProductPlan);
+        // $company2->product_plans()->insert($company2ProductPlan);
+        ProductPlan::insert($company2ProductPlan);
     }
 }
