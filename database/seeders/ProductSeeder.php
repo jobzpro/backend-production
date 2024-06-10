@@ -230,7 +230,7 @@ class ProductSeeder extends Seeder
         ]);
         $posting50->product_plans()->create([
             "price_code" => "price_1PO73fChe3vlhgX3eSqpcmlf",
-            "price" => 1, 499.00,
+            "price" =>  499.00,
             "recurring" => "month",
             "mode" => "subscription",
             "unit_label" => "employer",
