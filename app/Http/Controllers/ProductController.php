@@ -100,6 +100,7 @@ class ProductController extends Controller
                             'product_name' => $product->name,
                             'description' => $product->description,
                             'plan' => $productPrices,
+                            'created' => $product->created,
                         ];
                     }
                 }
@@ -180,6 +181,7 @@ class ProductController extends Controller
                             'product_name' => $product->name,
                             'description' => $product->description,
                             'plan' => $productPrices,
+                            'created' => $product->created,
                         ];
                     }
                 }
