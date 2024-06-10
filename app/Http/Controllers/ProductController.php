@@ -79,6 +79,7 @@ class ProductController extends Controller
                                     ]);
 
                                     $productPrices[] = [
+                                        'price_id' => $price->id,
                                         'price' => number_format($price->unit_amount / 100, 2),
                                         'mode' => $mode,
                                         'unit_label' => $product->unit_label,
@@ -160,7 +161,7 @@ class ProductController extends Controller
                                     ]);
 
                                     $productPrices[] = [
-                                        // 'product_name' => $product->name,
+                                        'price_id' => $price->id,
                                         'price' => number_format($price->unit_amount / 100, 2),
                                         'mode' => $mode,
                                         'unit_label' => $product->unit_label,
