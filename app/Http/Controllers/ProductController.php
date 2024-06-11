@@ -235,26 +235,25 @@ class ProductController extends Controller
     public function getSubscription($id)
     {
         $userSubscription = UserSubscription::where("user_id", $id)->orderBy('created_at', 'DESC')->first();
-
         if (!isset($userSubscription)) {
             return response([
                 'message' => 'id is missing',
             ], 400);
         }
-
         $now = Carbon::now();
         $expiryDate = Carbon::parse($userSubscription->expiry_at);
-
-        if ($now >= $expiryDate) {
+        if ($now > $expiryDate) {
+            $userSubscriptionArray['is_subscribe'] = false;
             return response([
                 'message' => 'free',
-                'is_subscribe' => false,
+                'user_subscription' => $userSubscriptionArray,
             ], 200);
         } else if ($now <= $expiryDate) {
+            $userSubscriptionArray = $userSubscription->toArray();
+            $userSubscriptionArray['is_subscribe'] = true;
             return response([
                 'message' => "subscribe",
-                'is_subscribe' => true,
-                'user_subscription' => $userSubscription
+                'user_subscription' => $userSubscriptionArray
             ], 200);
         } else {
             return response([
