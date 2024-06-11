@@ -33,4 +33,9 @@ class UserSubscription extends Model
     {
         return $this->belongsTo(Product::class, 'product_plan_id');
     }
+
+    public function displaySubscription($id)
+    {
+        return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+    }
 }

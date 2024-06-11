@@ -234,7 +234,8 @@ class ProductController extends Controller
 
     public function getSubscription($id)
     {
-        $userSubscription = UserSubscription::where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+        // $userSubscription = UserSubscription::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+        $userSubscription = UserSubscription::displaySubscription($id);
         if (!isset($id)) {
             return response([
                 'message' => 'id is missing',
