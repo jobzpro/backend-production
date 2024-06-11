@@ -45,6 +45,7 @@ class JobList extends Model
         'is_vaccinated',
         'can_commute',
         'qualification_id',
+        'connection_token',
     ];
 
     protected $casts = [
