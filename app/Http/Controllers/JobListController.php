@@ -81,6 +81,7 @@ class JobListController extends Controller
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
                 'job_title' => $data['job_title'],
+                'connection_token' => $data['connection_token'] ?? 1,
                 'description' => $data['description'] ?? null,
                 'show_pay' => $data['show_pay'] ?? null,
                 'pay_type' => $data['pay_type'] ?? null,
@@ -255,6 +256,7 @@ class JobListController extends Controller
             $jobList->update([
                 'company_id' => $userCompany->id,
                 'job_title' => $request->input('job_title') ?? $jobList->job_title,
+                'connection_token' => $data['connection_token'] ?? 1,
                 'description' => $request->input('description') ?? $jobList->description,
                 'show_pay' => $request->input('show_pay') ?? $jobList->show_pay,
                 'pay_type' => $request->input('pay_type') ?? $jobList->pay_type,
