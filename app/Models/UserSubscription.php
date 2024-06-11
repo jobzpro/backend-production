@@ -31,7 +31,7 @@ class UserSubscription extends Model
 
     public function product_plan(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_plan_id');
+        return $this->belongsTo(ProductPlan::class, 'product_plan_id');
     }
 
     public static  function displaySubscription($id)
