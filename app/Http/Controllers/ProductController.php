@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductPlan;
 use App\Models\User;
+use App\Models\UserSubscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -229,6 +230,26 @@ class ProductController extends Controller
             'message' => "Success",
             'user_subscription' => $res,
         ], 200);
+    }
+
+    public function getSubscription($id)
+    {
+        $userSubscription = UserSubscription::where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+
+        if ($userSubscription->expiry_at >= Carbon::now()) {
+            return response([
+                'message' => "free",
+            ], 200);
+        } else if ($userSubscription->expiry_at <= Carbon::now()) {
+            return response([
+                'message' => "subscribe",
+                'user_subscription' => $userSubscription
+            ], 200);
+        } else {
+            return response([
+                'message' => "id is missing",
+            ], 400);
+        }
     }
     // public function jobseekerSubscription()
     // {
