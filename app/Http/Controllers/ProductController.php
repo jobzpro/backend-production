@@ -245,12 +245,12 @@ class ProductController extends Controller
         $now = Carbon::now();
         $expiryDate = Carbon::parse($userSubscription->expiry_at);
 
-        if ($now <= $expiryDate) {
+        if ($now >= $expiryDate) {
             return response([
                 'message' => 'free',
                 'is_subscribe' => false,
             ], 200);
-        } else if ($now >= $expiryDate) {
+        } else if ($now <= $expiryDate) {
             return response([
                 'message' => "subscribe",
                 'is_subscribe' => true,
