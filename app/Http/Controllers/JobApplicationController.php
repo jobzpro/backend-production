@@ -185,7 +185,7 @@ class JobApplicationController extends Controller
             if ($user && $user->user_subscription && ($user->user_subscription->connection_count >= 1)) {
                 $userSubscription = $user->user_subscription()->latest()->first();
                 $userSubscription->update([
-                    'connection_count' => $user->user_subscription->connection_count - 1
+                    'connection_count' => (int)$request->input('connection_token') - 1
                 ]);
             } else {
                 $user->user_subscription()->create([
