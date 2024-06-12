@@ -87,7 +87,8 @@ class JobApplicationController extends Controller
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
         $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
-        if ($user && $user->user_subscription && ($user->user_subscription->connection_count == 0)) {
+        $userSubscription = $user->user_subscription()->latest()->first();
+        if ($user && ($userSubscription->connection_count == 0)) {
             return response([
                 'message' => 'Subscription ended',
             ], 400);
@@ -182,9 +183,7 @@ class JobApplicationController extends Controller
                 (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
             }
 
-            $userSubscription = $user->user_subscription()->latest()->first();
-
-            if ($user->user_subscription->connection_count >= 1) {
+            if ($userSubscription->connection_count >= 1) {
                 $userSubscription->update([
                     'connection_count' => (int)$request->input('connection_token') - 1
                 ]);
