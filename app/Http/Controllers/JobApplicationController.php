@@ -183,9 +183,9 @@ class JobApplicationController extends Controller
                 (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
             }
 
-            if ($userSubscription->connection_count >= 1) {
+            if ($userSubscription->connection_count >= (int)$request->input('connection_token')) {
                 $userSubscription->update([
-                    'connection_count' => (int)$request->input('connection_token') - 1
+                    'connection_count' => $userSubscription->connection_count - (int)$request->input('connection_token')
                 ]);
             } else {
                 $user->user_subscription()->create([
