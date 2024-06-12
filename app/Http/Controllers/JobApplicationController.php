@@ -90,7 +90,7 @@ class JobApplicationController extends Controller
         $userSubscription = $user->user_subscription()->latest()->first();
         if ($user && ($userSubscription->connection_count == 0)) {
             return response([
-                'message' => 'Subscription ended',
+                'message' => 'Oops, looks like you ran out of tokens.',
             ], 400);
         } else {
             if ($request->has('file')) {
@@ -196,7 +196,7 @@ class JobApplicationController extends Controller
                 ], 200);
             } else if (($userSubscription->connection_count <= (int)$request->input('connection_token'))) {
                 return response([
-                    'message' => 'Oops, looks like you ran out of tokens',
+                    'message' => 'Oops, looks like you ran out of tokens.',
                 ], 400);
             } elseif ($userSubscription->connection_count >= (int)$request->input('connection_token')) {
                 $userSubscription->update([
