@@ -182,23 +182,30 @@ class JobApplicationController extends Controller
             if ($user) {
                 (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
             }
-
-            if ($userSubscription->connection_count >= (int)$request->input('connection_token')) {
+            $now = Carbon::now();
+            $expiryDate = Carbon::parse($userSubscription->expiry_at);
+            if ($now > $expiryDate) {
+                $user->user_subscription()->create([
+                    'connection_count' => 19,
+                    'post_count' => 0,
+                    'applicant_count' => 0,
+                    'expiry_at' => Carbon::now()->addMonths(1),
+                ]);
+                return response([
+                    'message' => 'Application Successfully Submitted',
+                ], 200);
+            } else if (($userSubscription->connection_count <= (int)$request->input('connection_token'))) {
+                return response([
+                    'message' => 'Oops, looks like you ran out of tokens',
+                ], 400);
+            } elseif ($userSubscription->connection_count >= (int)$request->input('connection_token')) {
                 $userSubscription->update([
                     'connection_count' => $userSubscription->connection_count - (int)$request->input('connection_token')
                 ]);
-            } else {
-                $user->user_subscription()->create([
-                    'connection_count' => 19,
-                    'post_count' => 10,
-                    'applicant_count' => 20,
-                    'expiry_at' => Carbon::now()->addMonths(6),
-                ]);
+                return response([
+                    'message' => 'Application Successfully Submitted',
+                ], 200);
             }
-
-            return response([
-                'message' => 'Application Successfully Submitted',
-            ], 200);
         }
     }
 
