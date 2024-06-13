@@ -43,7 +43,7 @@ class UserSubscription extends Model
     // public static function displaySubscriptionAsEmployer($id)
     // {
     //     // $currentDate = Carbon::now()->toDateTimeString();
-    //     $activeSubs = self::with("product", "product_plan")
+    //     return self::with("product", "product_plan")
     //         ->where("user_id", $id)
     //         ->orderBy('created_at', 'DESC')
     //         ->where('expiry_at', '>', now())

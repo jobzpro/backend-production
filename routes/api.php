@@ -293,6 +293,7 @@ Route::prefix('/products')->controller(ProductController::class)->group(function
     Route::get('/jobseeker-subscription/{id}', 'jobseekerSubscription');
     Route::get('/employer-subscription/{id}', 'employerSubscription');
     Route::get('/get-subscription/{id}', 'getSubscription');
+    Route::get('/get-subscription-employer/{id}', 'getSubscriptionEmployer');
     Route::post('/insert-subscription', 'insertSubscription');
 });
 

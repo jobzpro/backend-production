@@ -269,4 +269,47 @@ class ProductController extends Controller
             ], 400);
         }
     }
+
+    public function getSubscriptionEmployer($id)
+    {
+        $currentDate = Carbon::now();
+        $userSubscription = UserSubscription::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->orderBy('created_at', 'DESC')
+            ->where('expiry_at', '>', now())
+            ->get();
+
+        if (!isset($id)) {
+            return response([
+                'message' => 'id is missing',
+            ], 400);
+        }
+
+        $now = Carbon::now();
+        $expiryDate = Carbon::parse($userSubscription->expiry_at);
+        if ($now > $expiryDate) {
+            $userSubscriptionArray['is_subscribe'] = false;
+            return response([
+                'message' => 'free',
+                'user_subscription' => $userSubscriptionArray,
+            ], 200);
+        } else if ($now <= $expiryDate) {
+            $userSubscriptionArray = $userSubscription->toArray();
+            $userSubscriptionArray['is_subscribe'] = true;
+
+            $res = [
+                'total_post_count' => $userSubscription->sum('post_count'),
+                // 'total_connection_count' => $userSubscription->sum('connection_count'),
+                $userSubscriptionArray
+            ];
+            return response([
+                'message' => "subscribe",
+                'user_subscription' => $res
+            ], 200);
+        } else {
+            return response([
+                'message' => "something wrong, try again later"
+            ], 400);
+        }
+    }
 }
