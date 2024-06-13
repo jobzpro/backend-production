@@ -272,44 +272,54 @@ class ProductController extends Controller
 
     public function getSubscriptionEmployer($id)
     {
-        $currentDate = Carbon::now();
-        $userSubscription = UserSubscription::with("product", "product_plan")
-            ->where("user_id", $id)
-            ->orderBy('created_at', 'DESC')
-            ->where('expiry_at', '>', now())
-            ->get();
-
         if (!isset($id)) {
             return response([
                 'message' => 'id is missing',
             ], 400);
         }
 
-        $now = Carbon::now();
-        $expiryDate = Carbon::parse($userSubscription->expiry_at);
-        if ($now > $expiryDate) {
-            $userSubscriptionArray['is_subscribe'] = false;
-            return response([
-                'message' => 'free',
-                'user_subscription' => $userSubscriptionArray,
-            ], 200);
-        } else if ($now <= $expiryDate) {
-            $userSubscriptionArray = $userSubscription->toArray();
-            $userSubscriptionArray['is_subscribe'] = true;
+        $userSubscriptions = UserSubscription::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->orderBy('created_at', 'DESC')
+            ->where('expiry_at', '>', now())
+            ->get();
 
-            $res = [
-                'total_post_count' => $userSubscription->sum('post_count'),
-                // 'total_connection_count' => $userSubscription->sum('connection_count'),
-                $userSubscriptionArray
-            ];
+        if ($userSubscriptions->isEmpty()) {
             return response([
-                'message' => "subscribe",
-                'user_subscription' => $res
+                'message' => 'No active subscriptions found',
+                'is_subscribe' => false,
             ], 200);
-        } else {
-            return response([
-                'message' => "something wrong, try again later"
-            ], 400);
         }
+
+        $userSubscriptionArray = [];
+        $isSubscribed = false;
+
+        foreach ($userSubscriptions as $subscription) {
+            $now = Carbon::now();
+            $expiryDate = Carbon::parse($subscription->expiry_at);
+            if ($now > $expiryDate) {
+                $subscriptionArray = $subscription->toArray();
+                $subscriptionArray['is_subscribe'] = false;
+                $userSubscriptionArray[] = $subscriptionArray;
+            } else {
+                $subscriptionArray = $subscription->toArray();
+                $subscriptionArray['is_subscribe'] = true;
+                $userSubscriptionArray[] = $subscriptionArray;
+                $isSubscribed = true;
+            }
+        }
+
+        $totalPostCount = $userSubscriptions->sum('post_count');
+
+        $response = [
+            'message' => $isSubscribed ? "Subscribe" : "Free",
+            'user_subscription' => [
+                'subscriptions' => $userSubscriptionArray,
+                'total_post_count' => $totalPostCount,
+                // Add other totals if needed
+            ],
+        ];
+
+        return response($response, 200);
     }
 }
