@@ -234,7 +234,9 @@ class ProductController extends Controller
 
     public function getSubscription($id)
     {
+        $currentDate = Carbon::now();
         $userSubscription = UserSubscription::displaySubscription($id);
+
         if (!isset($id)) {
             return response([
                 'message' => 'id is missing',
@@ -251,9 +253,15 @@ class ProductController extends Controller
         } else if ($now <= $expiryDate) {
             $userSubscriptionArray = $userSubscription->toArray();
             $userSubscriptionArray['is_subscribe'] = true;
+
+            $res = [
+                'total_post_count' => $userSubscriptionArray->sum('post_count'),
+                'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
+                $userSubscriptionArray
+            ];
             return response([
                 'message' => "subscribe",
-                'user_subscription' => $userSubscriptionArray
+                'user_subscription' => $res
             ], 200);
         } else {
             return response([

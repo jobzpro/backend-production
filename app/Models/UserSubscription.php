@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,5 +38,16 @@ class UserSubscription extends Model
     public static function displaySubscription($id)
     {
         return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+    }
+
+    public static function displaySubscriptionAsEmployer($id)
+    {
+        // $currentDate = Carbon::now()->toDateTimeString();
+        $activeSubs = self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->orderBy('created_at', 'DESC')
+            ->where('expiry_at', '>', now())
+            ->get();
+        // return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
     }
 }
