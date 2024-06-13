@@ -40,14 +40,14 @@ class UserSubscription extends Model
         return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
     }
 
-    public static function displaySubscriptionAsEmployer($id)
-    {
-        // $currentDate = Carbon::now()->toDateTimeString();
-        $activeSubs = self::with("product", "product_plan")
-            ->where("user_id", $id)
-            ->orderBy('created_at', 'DESC')
-            ->where('expiry_at', '>', now())
-            ->get();
-        // return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
-    }
+    // public static function displaySubscriptionAsEmployer($id)
+    // {
+    //     // $currentDate = Carbon::now()->toDateTimeString();
+    //     $activeSubs = self::with("product", "product_plan")
+    //         ->where("user_id", $id)
+    //         ->orderBy('created_at', 'DESC')
+    //         ->where('expiry_at', '>', now())
+    //         ->get();
+    //     // return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+    // }
 }
