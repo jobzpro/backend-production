@@ -310,11 +310,13 @@ class ProductController extends Controller
         }
 
         $totalPostCount = $userSubscriptions->sum('post_count');
+        $totalApplicantCount = $userSubscriptions->sum('applicant_count');
 
         $response = [
             'message' => $isSubscribed ? "Subscribe" : "Free",
             'user_subscription' => [
                 'subscriptions' => $userSubscriptionArray,
+                'applicant_count' => $totalApplicantCount,
                 'total_post_count' => $totalPostCount,
                 // Add other totals if needed
             ],
