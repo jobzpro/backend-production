@@ -202,9 +202,9 @@ class JobListController extends Controller
                 'company_id' => $userCompany->id,
                 'job_list_id' => $job_list->id,
             ]);
-
-            $user->user_subscription()->update([
-                'post_count' => $user->user_subscription->latest()->post_count - 1
+            $latestSubscription = $user->user_subscription()->latest()->first();
+            $latestSubscription->update([
+                'post_count' => $latestSubscription->post_count - 1
             ]);
 
             return response([
