@@ -254,14 +254,14 @@ class ProductController extends Controller
             $userSubscriptionArray = $userSubscription->toArray();
             $userSubscriptionArray['is_subscribe'] = true;
 
-            $res = [
-                'total_post_count' => $userSubscriptionArray->sum('post_count'),
-                'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
-                $userSubscriptionArray
-            ];
+            // $res = [
+            //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
+            //     'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
+            //     $userSubscriptionArray
+            // ];
             return response([
                 'message' => "subscribe",
-                'user_subscription' => $res
+                'user_subscription' => $userSubscriptionArray
             ], 200);
         } else {
             return response([
