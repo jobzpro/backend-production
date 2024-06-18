@@ -34,8 +34,6 @@ class AccountOtpController extends Controller
 
             Mail::to($account->email)->send(new Account2FA($mailData));
             return response()->json(['message' => 'success, check your email'], 200);
-        } else {
-            return response()->json(['message' => 'something wrong try again.'], 500);
         }
     }
 
