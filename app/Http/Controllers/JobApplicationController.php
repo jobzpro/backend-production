@@ -194,7 +194,7 @@ class JobApplicationController extends Controller
                 return response([
                     'message' => 'Application Successfully Submitted',
                 ], 200);
-            } else if (($userSubscription->connection_count <= (int)$request->input('connection_token'))) {
+            } else if (($userSubscription->connection_count < (int)$request->input('connection_token'))) {
                 return response([
                     'message' => 'Oops, looks like you ran out of tokens.',
                 ], 400);
