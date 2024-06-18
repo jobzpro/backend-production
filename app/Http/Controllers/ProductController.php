@@ -234,42 +234,50 @@ class ProductController extends Controller
 
     public function getSubscription($id)
     {
-        $userSubscription = UserSubscription::displaySubscription($id);
-
         if (!isset($id)) {
             return response([
                 'message' => 'id is missing',
             ], 400);
         }
 
+        $userSubscription = UserSubscription::displaySubscription($id);
+
+        if (!$userSubscription) {
+            $res = UserSubscription::create([
+                'user_id' => $id,
+                'connection_count' => 3,
+                'post_count' => 3,
+                'applicant_count' => 3,
+            ]);
+            return response([
+                'message' => 'free',
+                'user_subscription' => $res,
+                // 'user_subscription' => $userSubscriptionArray,
+            ], 200);
+        }
+
         $now = Carbon::now();
+        $expiryDate = Carbon::parse($userSubscription->expiry_at);
 
-        if ($userSubscription->expiry_at && isset($userSubscription)) {
-            $expiryDate = Carbon::parse($userSubscription->expiry_at);
-            if ($now > $expiryDate) {
-                $userSubscriptionArray['is_subscribe'] = false;
-                return response([
-                    'message' => 'free',
-                    'user_subscription' => $userSubscriptionArray,
-                ], 200);
-            } else if ($now <= $expiryDate || !isset($userSubscription)) {
-                $userSubscriptionArray = $userSubscription->toArray();
-                $userSubscriptionArray['is_subscribe'] = true;
+        if ($userSubscription->expiry_at && $now > $expiryDate) {
+            $userSubscriptionArray['is_subscribe'] = false;
+            return response([
+                'message' => 'free',
+                'user_subscription' => $userSubscriptionArray,
+            ], 200);
+        } else if ($now <= $expiryDate) {
+            $userSubscriptionArray = $userSubscription->toArray();
+            $userSubscriptionArray['is_subscribe'] = true;
 
-                // $res = [
-                //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
-                //     'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
-                //     $userSubscriptionArray
-                // ];
-                return response([
-                    'message' => "subscribe",
-                    'user_subscription' => $userSubscriptionArray
-                ], 200);
-            } else {
-                return response([
-                    'message' => "something wrong, try again later"
-                ], 400);
-            }
+            // $res = [
+            //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
+            //     'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
+            //     $userSubscriptionArray
+            // ];
+            return response([
+                'message' => "subscribe",
+                'user_subscription' => $userSubscriptionArray
+            ], 200);
         } else {
             return response([
                 'message' => "something wrong, try again later"
