@@ -234,7 +234,6 @@ class ProductController extends Controller
 
     public function getSubscription($id)
     {
-        $currentDate = Carbon::now();
         $userSubscription = UserSubscription::displaySubscription($id);
 
         if (!isset($id)) {
@@ -242,27 +241,35 @@ class ProductController extends Controller
                 'message' => 'id is missing',
             ], 400);
         }
-        $now = Carbon::now();
-        $expiryDate = Carbon::parse($userSubscription->expiry_at);
-        if ($now > $expiryDate) {
-            $userSubscriptionArray['is_subscribe'] = false;
-            return response([
-                'message' => 'free',
-                'user_subscription' => $userSubscriptionArray,
-            ], 200);
-        } else if ($now <= $expiryDate) {
-            $userSubscriptionArray = $userSubscription->toArray();
-            $userSubscriptionArray['is_subscribe'] = true;
 
-            // $res = [
-            //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
-            //     'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
-            //     $userSubscriptionArray
-            // ];
-            return response([
-                'message' => "subscribe",
-                'user_subscription' => $userSubscriptionArray
-            ], 200);
+        $now = Carbon::now();
+
+        if ($userSubscription->expiry_at) {
+            $expiryDate = Carbon::parse($userSubscription->expiry_at);
+            if ($now > $expiryDate) {
+                $userSubscriptionArray['is_subscribe'] = false;
+                return response([
+                    'message' => 'free',
+                    'user_subscription' => $userSubscriptionArray,
+                ], 200);
+            } else if ($now <= $expiryDate) {
+                $userSubscriptionArray = $userSubscription->toArray();
+                $userSubscriptionArray['is_subscribe'] = true;
+
+                // $res = [
+                //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
+                //     'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
+                //     $userSubscriptionArray
+                // ];
+                return response([
+                    'message' => "subscribe",
+                    'user_subscription' => $userSubscriptionArray
+                ], 200);
+            } else {
+                return response([
+                    'message' => "something wrong, try again later"
+                ], 400);
+            }
         } else {
             return response([
                 'message' => "something wrong, try again later"
@@ -318,7 +325,6 @@ class ProductController extends Controller
                 'subscriptions' => $userSubscriptionArray,
                 'applicant_count' => $totalApplicantCount,
                 'total_post_count' => $totalPostCount,
-                // Add other totals if needed
             ],
         ];
 
