@@ -270,7 +270,7 @@ class ProductController extends Controller
                 ]);
             } else {
                 $employer = UserSubscription::where('user_id', $id)->first();
-                if ($employer) {
+                if (!$employer) {
                     $res = UserSubscription::create([
                         'user_id' => $id,
                         'connection_count' => 0,
