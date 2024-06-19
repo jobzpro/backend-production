@@ -37,7 +37,10 @@ class UserSubscription extends Model
 
     public static function displaySubscription($id)
     {
-        return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+        return self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->where('expiry_at', '>', Carbon::now())
+            ->first();
     }
 
     public static function displayConnectionCountTotal($id)
