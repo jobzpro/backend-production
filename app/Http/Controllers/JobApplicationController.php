@@ -87,7 +87,8 @@ class JobApplicationController extends Controller
         $user = User::find($account->user->id);
         $company = Company::find($job_list->company_id);
         $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
-        $userSubscription = $user->user_subscription()->latest()->first();
+        // $userSubscription = $user->user_subscription()->latest()->first();
+        $userSubscription = UserSubscription::displayConnectionCountTotalFirst($user->id);
         if ($user && ($userSubscription->connection_count == 0)) {
             return response([
                 'message' => 'Oops, looks like you ran out of tokens.',
@@ -184,17 +185,18 @@ class JobApplicationController extends Controller
             }
             $now = Carbon::now();
             $expiryDate = Carbon::parse($userSubscription->expiry_at);
-            if ($now > $expiryDate) {
-                $user->user_subscription()->create([
-                    'connection_count' => 19,
-                    'post_count' => 0,
-                    'applicant_count' => 0,
-                    'expiry_at' => Carbon::now()->addMonths(1),
-                ]);
-                return response([
-                    'message' => 'Application Successfully Submitted',
-                ], 200);
-            } else if (($userSubscription->connection_count < (int)$request->input('connection_token'))) {
+            // if ($now > $expiryDate) {
+            //     $user->user_subscription()->create([
+            //         'connection_count' => 19,
+            //         'post_count' => 0,
+            //         'applicant_count' => 0,
+            //         'expiry_at' => Carbon::now()->addMonths(1),
+            //     ]);
+            //     return response([
+            //         'message' => 'Application Successfully Submitted',
+            //     ], 200);
+            // } else 
+            if (($userSubscription->connection_count < (int)$request->input('connection_token'))) {
                 return response([
                     'message' => 'Oops, looks like you ran out of tokens.',
                 ], 400);
