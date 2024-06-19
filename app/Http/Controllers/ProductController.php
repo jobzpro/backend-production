@@ -243,12 +243,32 @@ class ProductController extends Controller
         $userSubscription = UserSubscription::displaySubscription($id);
         $user = User::find($id);
         if (!$userSubscription) {
-            $res = UserSubscription::create([
-                'user_id' => $id,
-                'connection_count' => 3,
-                'post_count' => 3,
-                'applicant_count' => 3,
-            ]);
+            if ($user->userRoles->role_id === 3) {
+                $res = UserSubscription::create([
+                    'user_id' => $id,
+                    'connection_count' => 3,
+                    'post_count' => 0,
+                    'applicant_count' => 0,
+                    'expiry_at' => Carbon::now()->addMonths(1),
+                ]);
+            } else {
+                $employer = UserSubscription::where('user_id', $id)->first();
+                if ($employer) {
+                    $res = UserSubscription::create([
+                        'user_id' => $id,
+                        'connection_count' => 0,
+                        'post_count' => 3,
+                        'applicant_count' => 3,
+                        'expiry_at' => Carbon::now()->addMonths(6),
+                    ]);
+                } else {
+                    return response([
+                        'message' => 'Subscription over',
+                        // 'user_subscription' => $res,
+                        // 'user_subscription' => $userSubscriptionArray,
+                    ], 400);
+                }
+            }
             return response([
                 'message' => 'free',
                 'user_subscription' => $res,
