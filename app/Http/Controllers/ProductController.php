@@ -226,21 +226,34 @@ class ProductController extends Controller
             ], 400);
         }
         if ($userSubscriptionExist === null) {
-            $res = $user->user_subscription()->create([
-                'product_id' => $product->id,
-                'product_plan_id' => $productPlan->id,
-                'connection_count' => $productPlan->connection_count,
-                'post_count' => $productPlan->post_count,
-                'applicant_count' => $productPlan->applicant_count,
-                'expiry_at' => $expiryAt,
-            ]);
-            return response([
-                'message' => "Success",
-                'user_subscription' => $res,
-            ], 200);
+            if ($user->userRoles->role_id != 3) {
+                $res = UserSubscription::create([
+                    'user_id' => $user->id,
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $expiryAt,
+                ]);
+                return response([
+                    'message' => "Success",
+                    'user_subscription' => $res,
+                ], 200);
+            } else {
+                $res = $user->user_subscription()->create([
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $expiryAt,
+                ]);
+            }
         } else if (!!$userSubscriptionExist) {
             if ($user->userRoles->role_id != 3) {
-                $res = $user->user_subscription()->create([
+                $res = UserSubscription::create([
+                    'user_id' => $user->id,
                     'product_id' => $product->id,
                     'product_plan_id' => $productPlan->id,
                     'connection_count' => $productPlan->connection_count,
