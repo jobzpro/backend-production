@@ -35,6 +35,16 @@ class UserSubscription extends Model
         return $this->belongsTo(ProductPlan::class, 'product_plan_id');
     }
 
+    public static function displaySubscriptionFree($id)
+    {
+        return self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->whereNotNull('product_id')
+            ->whereNotNull('product_plan_id')
+            // ->where('expiry_at', '>', Carbon::now())
+            ->first();
+    }
+
     public static function displaySubscription($id)
     {
         return self::with("product", "product_plan")

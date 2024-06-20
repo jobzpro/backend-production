@@ -297,7 +297,8 @@ class ProductController extends Controller
         $expiryDate = Carbon::parse($userSubscription->expiry_at);
 
         if ($user->userRoles->role_id === 3) {
-            $userSubscriptionArray = $userSubscription->toArray();
+            $userSubscriptionCount = UserSubscription::displaySubscription($id);
+            $userSubscriptionArray = $userSubscriptionCount->toArray();
             $connection_count_total = UserSubscription::displayConnectionCountTotal($id);
             $userSubscriptionArray['total_connection_count'] = $connection_count_total;
 
