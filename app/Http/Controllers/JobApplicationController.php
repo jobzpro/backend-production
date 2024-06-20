@@ -89,118 +89,119 @@ class JobApplicationController extends Controller
         $user_companies = UserCompany::where('company_id', $company->id)->with('user.account')->get();
         // $userSubscription = $user->user_subscription()->latest()->first();
         $userSubscription = UserSubscription::displayConnectionCountTotalFirst($user->id);
-        if ($user && ($userSubscription->connection_count == 0)) {
+        if ($user && ($userSubscription->connection_count == (int)$request->input('connection_token'))) {
             return response([
                 'message' => 'Oops, looks like you ran out of tokens.',
             ], 400);
         } else {
-            if ($request->has('file')) {
-                $filesValidator = Validator::make($request->all(), [
-                    'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
-                ]);
-
-                if ($filesValidator->fails()) {
-                    return response([
-                        'message' => "Invalid file.",
-                        'errors' => $filesValidator->errors(),
-                    ], 400);
-                } else {
-                    $path = 'files';
-                    $file = $request->file('file');
-                    $fileName = time() . $file->getClientOriginalName();
-                    $filePath = Storage::disk('s3')->put($path, $file);
-                    $filePath   = Storage::disk('s3')->url($filePath);
-                    $file_type  = $file->getClientOriginalExtension();
-                    $fileSize   = $this->fileSize($file);
-
-                    $r = FileAttachment::create([
-                        'name' => $fileName,
-                        'user_id' => $user->id,
-                        'path' => $filePath,
-                        'type' => $file_type,
-                        'size' => $fileSize
-                    ]);
-
-                    $resume = $r->path;
-                }
-            } else {
-                $resume = null;
-            }
-
-            $job_application = JobApplication::create([
-                'user_id' => $user->id,
-                'job_list_id' => $job_list->id,
-                'status' => application_status::unread,
-                'applied_at' => Carbon::now(),
-                'resume_path' => $resume,
-                'authorized_to_work_in_us' => $request->authorized_to_work_in_us ?? null,
-                'vaccinated_with_booster' => $request->vaccinated_with_booster ?? null,
-                'able_to_commute' => $request->able_to_commute ?? null
-            ]);
-
-            // UserNotification::create([
-            //     'job_application_id' => $job_application->id,
-            //     'user_id' => $user->id,
-            //     'title' => "Job Application Successfully submitted.",
-            //     'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
-            //     'is_Read' => false,
-            // ]);
-
-            $notification = Notification::create([
-                'notifiable_id' => $job_application->user->id,
-                'notifiable_type' => get_class($job_application->user),
-                'notifier_id' => $job_application->id,
-                'notifier_type' => get_class($job_application),
-                'notif_type' => 'interview_scheduled',
-                'photo' => $job_list->company->company_logo_path,
-                'content' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
-                'title' => 'Job Application Successfully submitted.',
-            ]);
-            // CompanyNotification::create([
-            //     'company_id' => $company->id,
-            //     'job_list_id' => $job_list->id,
-            //     'title' => "A jobseeker has applied for " . $job_list->job_title,
-            //     'description' => "You can review and see their profile to check if the applicant is qualified.",
-            //     'is_Read' => false,
-            // ]);
-
-            $notification = Notification::create([
-                'notifiable_id' => $company->id,
-                'notifiable_type' => get_class($company),
-                'notifier_id' => $company->id,
-                'notifier_type' => get_class($company),
-                'notif_type' => 'interview_scheduled',
-                'photo' => $job_list->company->company_logo_path,
-                'content' => "You can review and see their profile to check if the applicant is qualified.",
-                'title' => "A jobseeker has applied for " . $job_list->job_title,
-            ]);
-            if ($user_companies) {
-                foreach ($user_companies as $employer) {
-                    (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
-                }
-            }
-
-            if ($user) {
-                (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
-            }
-            $now = Carbon::now();
-            $expiryDate = Carbon::parse($userSubscription->expiry_at);
-            // if ($now > $expiryDate) {
-            //     $user->user_subscription()->create([
-            //         'connection_count' => 19,
-            //         'post_count' => 0,
-            //         'applicant_count' => 0,
-            //         'expiry_at' => Carbon::now()->addMonths(1),
-            //     ]);
-            //     return response([
-            //         'message' => 'Application Successfully Submitted',
-            //     ], 200);
-            // } else 
             if (($userSubscription->connection_count < (int)$request->input('connection_token'))) {
                 return response([
                     'message' => 'Oops, looks like you ran out of tokens.',
                 ], 400);
             } elseif ($userSubscription->connection_count >= (int)$request->input('connection_token')) {
+                if ($request->has('file')) {
+                    $filesValidator = Validator::make($request->all(), [
+                        'files.*' => 'mimes:pdf,doc,docx,txt|max:2048',
+                    ]);
+
+                    if ($filesValidator->fails()) {
+                        return response([
+                            'message' => "Invalid file.",
+                            'errors' => $filesValidator->errors(),
+                        ], 400);
+                    } else {
+                        $path = 'files';
+                        $file = $request->file('file');
+                        $fileName = time() . $file->getClientOriginalName();
+                        $filePath = Storage::disk('s3')->put($path, $file);
+                        $filePath   = Storage::disk('s3')->url($filePath);
+                        $file_type  = $file->getClientOriginalExtension();
+                        $fileSize   = $this->fileSize($file);
+
+                        $r = FileAttachment::create([
+                            'name' => $fileName,
+                            'user_id' => $user->id,
+                            'path' => $filePath,
+                            'type' => $file_type,
+                            'size' => $fileSize
+                        ]);
+
+                        $resume = $r->path;
+                    }
+                } else {
+                    $resume = null;
+                }
+
+                $job_application = JobApplication::create([
+                    'user_id' => $user->id,
+                    'job_list_id' => $job_list->id,
+                    'status' => application_status::unread,
+                    'applied_at' => Carbon::now(),
+                    'resume_path' => $resume,
+                    'authorized_to_work_in_us' => $request->authorized_to_work_in_us ?? null,
+                    'vaccinated_with_booster' => $request->vaccinated_with_booster ?? null,
+                    'able_to_commute' => $request->able_to_commute ?? null
+                ]);
+
+                // UserNotification::create([
+                //     'job_application_id' => $job_application->id,
+                //     'user_id' => $user->id,
+                //     'title' => "Job Application Successfully submitted.",
+                //     'description' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+                //     'is_Read' => false,
+                // ]);
+
+                $notification = Notification::create([
+                    'notifiable_id' => $job_application->user->id,
+                    'notifiable_type' => get_class($job_application->user),
+                    'notifier_id' => $job_application->id,
+                    'notifier_type' => get_class($job_application),
+                    'notif_type' => 'interview_scheduled',
+                    'photo' => $job_list->company->company_logo_path,
+                    'content' => "Your application to " . $job_list->company->name . " has been successfully submitted. A company representative will reach out you if you got shortlisted.",
+                    'title' => 'Job Application Successfully submitted.',
+                ]);
+                // CompanyNotification::create([
+                //     'company_id' => $company->id,
+                //     'job_list_id' => $job_list->id,
+                //     'title' => "A jobseeker has applied for " . $job_list->job_title,
+                //     'description' => "You can review and see their profile to check if the applicant is qualified.",
+                //     'is_Read' => false,
+                // ]);
+
+                $notification = Notification::create([
+                    'notifiable_id' => $company->id,
+                    'notifiable_type' => get_class($company),
+                    'notifier_id' => $company->id,
+                    'notifier_type' => get_class($company),
+                    'notif_type' => 'interview_scheduled',
+                    'photo' => $job_list->company->company_logo_path,
+                    'content' => "You can review and see their profile to check if the applicant is qualified.",
+                    'title' => "A jobseeker has applied for " . $job_list->job_title,
+                ]);
+                if ($user_companies) {
+                    foreach ($user_companies as $employer) {
+                        (new EmployerMailerController)->applicantApplied($user, $employer, $company, $job_list);
+                    }
+                }
+
+                if ($user) {
+                    (new MailerController)->sendApplicationSuccess($user, $company, $job_list);
+                }
+                $now = Carbon::now();
+                $expiryDate = Carbon::parse($userSubscription->expiry_at);
+                // if ($now > $expiryDate) {
+                //     $user->user_subscription()->create([
+                //         'connection_count' => 19,
+                //         'post_count' => 0,
+                //         'applicant_count' => 0,
+                //         'expiry_at' => Carbon::now()->addMonths(1),
+                //     ]);
+                //     return response([
+                //         'message' => 'Application Successfully Submitted',
+                //     ], 200);
+                // } else 
+
                 $userSubscription->update([
                     'connection_count' => $userSubscription->connection_count - (int)$request->input('connection_token')
                 ]);
