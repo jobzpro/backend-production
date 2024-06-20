@@ -39,9 +39,9 @@ class UserSubscription extends Model
     {
         return self::with("product", "product_plan")
             ->where("user_id", $id)
-            ->whereNotNull('product_id')
-            ->whereNotNull('product_plan_id')
-            // ->where('expiry_at', '>', Carbon::now())
+            // ->whereNotNull('product_id')
+            // ->whereNotNull('product_plan_id')
+            ->where('expiry_at', '>', Carbon::now())
             ->first();
     }
 
