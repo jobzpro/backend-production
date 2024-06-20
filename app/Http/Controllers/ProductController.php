@@ -340,8 +340,8 @@ class ProductController extends Controller
         } else {
             $employerSub = UserSubscription::displaySubscriptionTrial($id);
 
-            if ($employerSub) {
-                $merged = UserSubscription::displaySubscriptionAsEmployer($id, 2);
+            if ($employerSub) {;
+                $merged = UserSubscription::displaySubscriptionAsEmployer($id, 2)->toArray();
                 $res = [
                     'total_post_count' => $merged->sum('post_count'),
                     'total_applicant_count' => $merged->sum('applicant_count'),
