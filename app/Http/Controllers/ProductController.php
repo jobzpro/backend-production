@@ -338,34 +338,40 @@ class ProductController extends Controller
                 'user_subscription' => $userSubscriptionArray
             ], 200);
         } else {
-            if ($userSubscriptionCount->expiry_at) {
-                $expiryDate = Carbon::parse($userSubscriptionCount->expiry_at);
-                if ($now > $expiryDate) {
-                    $userSubscriptionArray['is_subscribe'] = false;
-                    return response([
-                        'message' => 'free',
-                        'user_subscription' => $userSubscriptionArray,
-                    ], 200);
-                } else if ($now <= $expiryDate) {
-                    $userSubscriptionArray = $userSubscriptionCount->toArray();
-                    // $userSubscriptionArray['is_subscribe'] = true;
-                    // $userSubscriptionArray['total_post_count'] = $userSubscriptionArray->sum('post_count');
-                    // $userSubscriptionArray['total_applicant_count'] = $userSubscriptionArray->sum('applicannt_count');
+            $employerSub = UserSubscription::displaySubscriptionTrial($id);
 
-                    $userSubscriptionArray['is_subscribe'] = true;
-                    $res = [
-                        'total_post_count' => $userSubscriptionArray->sum('post_count'),
-                        'total_connection_count' => $userSubscriptionArray->sum('connection_count'),
-                        $userSubscriptionArray
-                    ];
-                    return response([
-                        'message' => "subscribe",
-                        'user_subscription' => $res
-                    ], 200);
-                } else {
-                    return response([
-                        'message' => "something wrong, try again later"
-                    ], 400);
+            if ($employerSub) {
+                $merged = UserSubscription::displaySubscriptionAsEmployer($id, 2);
+                $res = [
+                    'total_post_count' => $merged->sum('post_count'),
+                    'total_applicant_count' => $merged->sum('applicant_count'),
+                    'subscribe' => $merged
+                ];
+                return response([
+                    'message' => "subscribe",
+                    'user_subscription' => $res
+                ], 200);
+            } else {
+                if ($userSubscription->expiry_at) {
+                    $expiryDate = Carbon::parse($userSubscription->expiry_at);
+                    if ($now > $expiryDate) {
+                        $userSubscriptionArray['is_subscribe'] = false;
+                        return response([
+                            'message' => 'free',
+                            'user_subscription' => $userSubscriptionArray,
+                        ], 200);
+                    } else if ($now <= $expiryDate) {
+                        $userSubscriptionArray = $userSubscription->toArray();
+                        $userSubscriptionArray['is_subscribe'] = true;
+                        return response([
+                            'message' => "subscribe",
+                            'user_subscription' => $userSubscriptionArray
+                        ], 200);
+                    } else {
+                        return response([
+                            'message' => "something wrong, try again later"
+                        ], 400);
+                    }
                 }
             }
         }

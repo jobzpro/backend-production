@@ -45,6 +45,16 @@ class UserSubscription extends Model
             ->first();
     }
 
+    public static function displaySubscriptionTrial($id)
+    {
+        return self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->whereNull('product_id')
+            ->whereNull('product_plan_id')
+            ->where('expiry_at', '>', Carbon::now())
+            ->first();
+    }
+
     public static function displaySubscription($id)
     {
         return self::with("product", "product_plan")
@@ -73,14 +83,14 @@ class UserSubscription extends Model
             ->first();
     }
 
-    // public static function displaySubscriptionAsEmployer($id)
-    // {
-    //     // $currentDate = Carbon::now()->toDateTimeString();
-    //     return self::with("product", "product_plan")
-    //         ->where("user_id", $id)
-    //         ->orderBy('created_at', 'DESC')
-    //         ->where('expiry_at', '>', now())
-    //         ->get();
-    //     // return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
-    // }
+    public static function displaySubscriptionAsEmployer($id, $limit)
+    {
+        // $currentDate = Carbon::now()->toDateTimeString();
+        return self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->orderBy('created_at', 'ASC')
+            ->where('expiry_at', '>', now())
+            ->limit($limit);
+        // return self::with("product", "product_plan")->where("user_id", $id)->orderBy('created_at', 'DESC')->first();
+    }
 }
