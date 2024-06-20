@@ -238,19 +238,34 @@ class ProductController extends Controller
                 'message' => "Success",
                 'user_subscription' => $res,
             ], 200);
-        } else if (!!$userSubscriptionExist && $user->userRoles->role_id != 3) {
-            $res = $user->user_subscription()->create([
-                'product_id' => $product->id,
-                'product_plan_id' => $productPlan->id,
-                'connection_count' => $productPlan->connection_count,
-                'post_count' => $productPlan->post_count,
-                'applicant_count' => $productPlan->applicant_count,
-                'expiry_at' => $existingSubscriptionExpiry,
-            ]);
-            return response([
-                'message' => "Success",
-                'user_subscription' => $res,
-            ], 200);
+        } else if (!!$userSubscriptionExist) {
+            if ($user->userRoles->role_id != 3) {
+                $res = $user->user_subscription()->create([
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $expiryAt,
+                ]);
+                return response([
+                    'message' => "Success",
+                    'user_subscription' => $res,
+                ], 200);
+            } else {
+                $res = $user->user_subscription()->create([
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $existingSubscriptionExpiry,
+                ]);
+                return response([
+                    'message' => "Success",
+                    'user_subscription' => $res,
+                ], 200);
+            }
         }
     }
 
