@@ -345,7 +345,7 @@ class ProductController extends Controller
                 $res = [
                     'total_post_count' => $merged->sum('post_count'),
                     'total_applicant_count' => $merged->sum('applicant_count'),
-                    'subscribe' => $merged
+                    'subscriptions' => $merged
                 ];
                 return response([
                     'message' => "subscribe",
