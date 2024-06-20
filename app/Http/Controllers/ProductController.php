@@ -296,7 +296,6 @@ class ProductController extends Controller
         }
 
         $now = Carbon::now();
-        $expiryDate = Carbon::parse($userSubscription->expiry_at);
 
         if ($user->userRoles->role_id === 3) {
             $userSubscriptionArray = $userSubscriptionCount->toArray();
@@ -313,6 +312,7 @@ class ProductController extends Controller
                 'user_subscription' => $userSubscriptionArray
             ], 200);
         } else {
+            $expiryDate = Carbon::parse($userSubscription->expiry_at);
             if ($userSubscription->expiry_at && $now > $expiryDate) {
                 $userSubscriptionArray['is_subscribe'] = false;
                 return response([
