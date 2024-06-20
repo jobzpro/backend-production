@@ -338,8 +338,8 @@ class ProductController extends Controller
                 'user_subscription' => $userSubscriptionArray
             ], 200);
         } else {
-            if ($userSubscription->expiry_at) {
-                $expiryDate = Carbon::parse($userSubscription->expiry_at);
+            if ($userSubscriptionCount->expiry_at) {
+                $expiryDate = Carbon::parse($userSubscriptionCount->expiry_at);
                 if ($now > $expiryDate) {
                     $userSubscriptionArray['is_subscribe'] = false;
                     return response([
@@ -347,8 +347,10 @@ class ProductController extends Controller
                         'user_subscription' => $userSubscriptionArray,
                     ], 200);
                 } else if ($now <= $expiryDate) {
-                    $userSubscriptionArray = $userSubscription->toArray();
+                    $userSubscriptionArray = $userSubscriptionCount->toArray();
                     $userSubscriptionArray['is_subscribe'] = true;
+                    $userSubscriptionArray['total_post_count'] = $userSubscriptionArray->sum('post_count');
+                    $userSubscriptionArray['total_applicant_count'] = $userSubscriptionArray->sum('applicannt_count');
 
                     // $res = [
                     //     'total_post_count' => $userSubscriptionArray->sum('post_count'),
