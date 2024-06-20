@@ -214,18 +214,35 @@ class ProductController extends Controller
 
         $user = User::find($request->input('user_id'));
         $userSubscriptionExist = UserSubscription::displaySubscription($user->id);
+        $userSubscriptionFree = UserSubscription::displaySubscriptionFree($user->id);
         $product = Product::where('product_code', $request->input('product_id'))->first();
         $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
         $expiryMonths = $productPlan->recurring == "month" ? 1 : 12;
         $expiryAt = Carbon::now()->addMonths($expiryMonths);
 
-        $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
         if (!$product && !$productPlan) {
             return response([
                 'message' => "Product or Product Plan not found",
             ], 400);
         }
-        if ($userSubscriptionExist === null) {
+
+        if ($userSubscriptionFree) {
+            $res = UserSubscription::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'product_plan_id' => $productPlan->id,
+                'connection_count' => $productPlan->connection_count,
+                'post_count' => $productPlan->post_count,
+                'applicant_count' => $productPlan->applicant_count,
+                'expiry_at' => $expiryAt,
+            ]);
+            return response([
+                'message' => "Success",
+                'user_subscription' => $res,
+            ], 200);
+        }
+
+        if (!!$userSubscriptionExist) {
             if ($user->userRoles->role_id != 3) {
                 $res = UserSubscription::create([
                     'user_id' => $user->id,
@@ -241,31 +258,7 @@ class ProductController extends Controller
                     'user_subscription' => $res,
                 ], 200);
             } else {
-                $res = $user->user_subscription()->create([
-                    'product_id' => $product->id,
-                    'product_plan_id' => $productPlan->id,
-                    'connection_count' => $productPlan->connection_count,
-                    'post_count' => $productPlan->post_count,
-                    'applicant_count' => $productPlan->applicant_count,
-                    'expiry_at' => $expiryAt,
-                ]);
-            }
-        } else if (!!$userSubscriptionExist) {
-            if ($user->userRoles->role_id != 3) {
-                $res = UserSubscription::create([
-                    'user_id' => $user->id,
-                    'product_id' => $product->id,
-                    'product_plan_id' => $productPlan->id,
-                    'connection_count' => $productPlan->connection_count,
-                    'post_count' => $productPlan->post_count,
-                    'applicant_count' => $productPlan->applicant_count,
-                    'expiry_at' => $expiryAt,
-                ]);
-                return response([
-                    'message' => "Success",
-                    'user_subscription' => $res,
-                ], 200);
-            } else {
+                $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
                 $res = $user->user_subscription()->create([
                     'product_id' => $product->id,
                     'product_plan_id' => $productPlan->id,
