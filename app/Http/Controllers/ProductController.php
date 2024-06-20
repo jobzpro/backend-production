@@ -220,7 +220,13 @@ class ProductController extends Controller
         $expiryAt = Carbon::now()->addMonths($expiryMonths);
 
         $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
-        if ($userSubscriptionExist && $user->userRoles->role_id == 2) {
+        if (!$product && !$productPlan) {
+            return response([
+                'message' => "Product or Product Plan not found",
+            ], 400);
+        }
+
+        if (!!$userSubscriptionExist && $user->userRoles->role_id != 3) {
             $res = $user->user_subscription()->create([
                 'product_id' => $product->id,
                 'product_plan_id' => $productPlan->id,
@@ -233,7 +239,7 @@ class ProductController extends Controller
                 'message' => "Success",
                 'user_subscription' => $res,
             ], 200);
-        } else {
+        } else if (!$userSubscriptionExist) {
             $res = $user->user_subscription()->create([
                 'product_id' => $product->id,
                 'product_plan_id' => $productPlan->id,
