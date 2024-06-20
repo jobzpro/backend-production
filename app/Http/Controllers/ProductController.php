@@ -258,8 +258,10 @@ class ProductController extends Controller
         }
 
         $userSubscription = UserSubscription::displaySubscription($id);
+        $userSubscriptionCount = UserSubscription::displaySubscriptionFree($id);
         $user = User::find($id);
-        if (!$userSubscription) {
+
+        if (!$userSubscriptionCount) {
             if ($user->userRoles->role_id === 3) {
                 $res = UserSubscription::create([
                     'user_id' => $id,
@@ -297,7 +299,6 @@ class ProductController extends Controller
         $expiryDate = Carbon::parse($userSubscription->expiry_at);
 
         if ($user->userRoles->role_id === 3) {
-            $userSubscriptionCount = UserSubscription::displaySubscriptionFree($id);
             $userSubscriptionArray = $userSubscriptionCount->toArray();
             $connection_count_total = UserSubscription::displayConnectionCountTotal($id);
             $userSubscriptionArray['total_connection_count'] = $connection_count_total;
