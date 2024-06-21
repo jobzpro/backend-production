@@ -23,6 +23,7 @@ use App\Models\JobWeeklySchedule;
 use App\Models\Industry;
 use App\Http\Controllers\UploadController as Uploader;
 use App\Models\JobListDealbreaker;
+use App\Models\UserSubscription;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -202,15 +203,26 @@ class JobListController extends Controller
                 'company_id' => $userCompany->id,
                 'job_list_id' => $job_list->id,
             ]);
-            $latestSubscription = $user->user_subscription()->latest()->first();
-            $latestSubscription->update([
-                'post_count' => $latestSubscription->post_count - 1
-            ]);
 
-            return response([
-                'job_list' => $job_list,
-                'message' => "Job posted successfully."
-            ], 200);
+            $free = UserSubscription::where('user_id', $user->id)->where('expiry_at', '>', now())->first();
+            if ($free) {
+                if (!$free->product_id) {
+                    return response([
+                        'job_list' => $job_list,
+                        'message' => "Job posted successfully."
+                    ], 200);
+                } else if ($free->product_id) {
+                    $latestSubscription = $user->user_subscription()->first();
+                    $latestSubscription->update([
+                        'post_count' => $latestSubscription->post_count - 1
+                    ]);
+
+                    return response([
+                        'job_list' => $job_list,
+                        'message' => "Job posted successfully."
+                    ], 200);
+                }
+            }
         } else {
             return response([
                 'message' => "Unauthorized."
