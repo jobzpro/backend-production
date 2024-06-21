@@ -74,6 +74,16 @@ class UserSubscription extends Model
             ->sum('connection_count');
     }
 
+    public static function displayConnectionCountTotalLimit($id)
+    {
+        return self::with("product", "product_plan")
+            ->where("user_id", $id)
+            ->where('expiry_at', '>', Carbon::now())
+            ->where('connection_count', '>', 0)
+            ->limit(2)
+            ->sum('connection_count');
+    }
+
     public static function displayConnectionCountTotalFirst($id)
     {
         return self::with("product", "product_plan")

@@ -325,7 +325,7 @@ class ProductController extends Controller
 
         if ($user->userRoles->role_id === 3) {
             $userSubscriptionArray = $userSubscriptionCount->toArray();
-            $connection_count_total = UserSubscription::displayConnectionCountTotal($id);
+            $connection_count_total = UserSubscription::displayConnectionCountTotalLimit($id);
             $userSubscriptionArray['total_connection_count'] = $connection_count_total;
 
             // $res = [

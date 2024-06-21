@@ -72,8 +72,8 @@ class AccountController extends Controller
     $user = User::find($account->user->id);
 
     $user->user_subscription()->create([
-      'connection_count' => 20,
-      'expiry_at' => Carbon::now()->addMonths(6),
+      'connection_count' => 3,
+      'expiry_at' => Carbon::now()->addMonths(1),
     ]);
 
     event(new Registered($account));
