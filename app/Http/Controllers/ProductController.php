@@ -227,19 +227,37 @@ class ProductController extends Controller
         }
 
         if ($userSubscriptionFree) {
-            $res = UserSubscription::create([
-                'user_id' => $user->id,
-                'product_id' => $product->id,
-                'product_plan_id' => $productPlan->id,
-                'connection_count' => $productPlan->connection_count,
-                'post_count' => $productPlan->post_count,
-                'applicant_count' => $productPlan->applicant_count,
-                'expiry_at' => $expiryAt,
-            ]);
-            return response([
-                'message' => "Success",
-                'user_subscription' => $res,
-            ], 200);
+            if ($user->userRoles->role_id != 3) {
+                $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
+                $res = UserSubscription::create([
+                    'user_id' => $user->id,
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $existingSubscriptionExpiry,
+                ]);
+                return response([
+                    'message' => "Success",
+                    'user_subscription' => $res,
+                ], 200);
+            } else {
+                $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
+                $res = UserSubscription::create([
+                    'user_id' => $user->id,
+                    'product_id' => $product->id,
+                    'product_plan_id' => $productPlan->id,
+                    'connection_count' => $productPlan->connection_count,
+                    'post_count' => $productPlan->post_count,
+                    'applicant_count' => $productPlan->applicant_count,
+                    'expiry_at' => $expiryAt,
+                ]);
+                return response([
+                    'message' => "Success",
+                    'user_subscription' => $res,
+                ], 200);
+            }
         }
 
         if (!!$userSubscriptionExist) {
