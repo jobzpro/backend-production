@@ -297,8 +297,8 @@ class ProductController extends Controller
                     'expiry_at' => Carbon::now()->addMonths(1),
                 ]);
             } else {
-                $employer = UserSubscription::where('user_id', $id)->first();
-                if (!$employer) {
+                // $employer = UserSubscription::where('user_id', $id)->first();
+                if (!$userSubscriptionCount) {
                     $res = UserSubscription::create([
                         'user_id' => $id,
                         'connection_count' => 0,
@@ -342,7 +342,7 @@ class ProductController extends Controller
             $employerSub = UserSubscription::displaySubscriptionTrial($id);
 
             if ($employerSub) {
-                $merged = UserSubscription::displaySubscriptionAsEmployer($id, 2)->get();
+                $merged = UserSubscription::displaySubscriptionAsEmployer($id, 1)->get();
                 if ($merged->count() > 1) {
                 } else if ($merged->count() == 1) {
                     $res = [
