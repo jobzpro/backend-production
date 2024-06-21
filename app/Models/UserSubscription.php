@@ -80,8 +80,7 @@ class UserSubscription extends Model
             ->where("user_id", $id)
             ->where('expiry_at', '>', Carbon::now())
             ->where('connection_count', '>', 0)
-            ->limit(2)
-            ->sum('connection_count');
+            ->limit(2);
     }
 
     public static function displayConnectionCountTotalFirst($id)
