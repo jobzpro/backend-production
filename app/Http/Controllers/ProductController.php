@@ -342,15 +342,18 @@ class ProductController extends Controller
 
             if ($employerSub) {
                 $merged = UserSubscription::displaySubscriptionAsEmployer($id, 2)->get();
-                $res = [
-                    'total_post_count' => $merged->sum('post_count'),
-                    'total_applicant_count' => $merged->sum('applicant_count'),
-                    'subscriptions' => $merged
-                ];
-                return response([
-                    'message' => "subscribe",
-                    'user_subscription' => $res
-                ], 200);
+                if ($merged->count() > 1) {
+                } else if ($merged->count() == 1) {
+                    $res = [
+                        'total_post_count' => $merged->sum('post_count'),
+                        'total_applicant_count' => $merged->sum('applicant_count'),
+                        'subscriptions' => $employerSub
+                    ];
+                    return response([
+                        'message' => "subscribe",
+                        'user_subscription' => $res
+                    ], 200);
+                }
             } else {
                 if ($userSubscription->expiry_at) {
                     $expiryDate = Carbon::parse($userSubscription->expiry_at);
