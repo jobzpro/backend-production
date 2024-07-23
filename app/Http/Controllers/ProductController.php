@@ -104,7 +104,7 @@ class ProductController extends Controller
                             'description' => $product->description,
                             'plan' => $productPrices,
                             'created' => $product->created,
-                            'user_id' => $session->subscription_data,
+                            'user_id' => $session,
                         ];
                     }
                 }
