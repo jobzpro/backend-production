@@ -75,8 +75,8 @@ class ProductController extends Controller
                                         'success_url' => env('BASE_URL'),
                                         'cancel_url' => env('BASE_URL'),
                                         'subscription_data' => [
-                                            'subscription_data.metadata' => [
-                                                'user_id' => $user_id
+                                            'metadata' => [
+                                                'user_id' => $user_id,
                                             ]
                                         ]
                                     ]);
