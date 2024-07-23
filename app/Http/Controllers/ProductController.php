@@ -87,7 +87,6 @@ class ProductController extends Controller
                                         'lookup_key' => $price->lookup_key,
                                         'recurring' => $price->recurring ? $price->recurring->interval : 'one-time',
                                         'checkout_url' => $session->url,
-                                        'session' => $session,
                                     ];
                                 }
                             }
@@ -103,6 +102,7 @@ class ProductController extends Controller
                             'description' => $product->description,
                             'plan' => $productPrices,
                             'created' => $product->created,
+                            'user_id' => $session->metadata->user_id,
                         ];
                     }
                 }
