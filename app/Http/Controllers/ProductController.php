@@ -74,8 +74,10 @@ class ProductController extends Controller
                                         'mode' => $mode,
                                         'success_url' => env('BASE_URL'),
                                         'cancel_url' => env('BASE_URL'),
-                                        'metadata' => [
-                                            'user_id' => $user_id
+                                        'subscription_data' => [
+                                            'metadata' => [
+                                                'user_id' => $user_id,
+                                            ]
                                         ]
                                     ]);
 
@@ -102,7 +104,7 @@ class ProductController extends Controller
                             'description' => $product->description,
                             'plan' => $productPrices,
                             'created' => $product->created,
-                            'user_id' => $session->metadata->user_id,
+                            'user_id' => $session->subscription_data,
                         ];
                     }
                 }
