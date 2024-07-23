@@ -87,6 +87,7 @@ class ProductController extends Controller
                                         'lookup_key' => $price->lookup_key,
                                         'recurring' => $price->recurring ? $price->recurring->interval : 'one-time',
                                         'checkout_url' => $session->url,
+                                        'session' => $session,
                                     ];
                                 }
                             }
@@ -315,8 +316,8 @@ class ProductController extends Controller
                     'expiry_at' => Carbon::now()->addMonths(1),
                 ]);
             } else {
-                // $employer = UserSubscription::where('user_id', $id)->first();
-                if (!$userSubscriptionCount) {
+                $employer = UserSubscription::where('user_id', $id)->first();
+                if (!$employer) {
                     $res = UserSubscription::create([
                         'user_id' => $id,
                         'connection_count' => 0,
