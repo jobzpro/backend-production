@@ -249,7 +249,8 @@ class ProductController extends Controller
                     'user_subscription' => $res,
                 ], 200);
             } else {
-                $existingSubscriptionExpiry = Carbon::parse($userSubscriptionExist->expiry_at)->addMonths($expiryMonths);
+                $expiry = ($userSubscriptionExist === null) ? Carbon::now() : $userSubscriptionExist->expiry_at;
+                $existingSubscriptionExpiry = Carbon::parse($expiry)->addMonths($expiryMonths);
                 $res = UserSubscription::create([
                     'user_id' => $user->id,
                     'product_id' => $product->id,
