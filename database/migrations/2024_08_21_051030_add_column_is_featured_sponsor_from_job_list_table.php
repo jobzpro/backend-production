@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('job_lists', function (Blueprint $table) {
-            $table->boolean('is_featured_sponsor')->default(false);
+            $table->boolean('is_featured_sponsor')->default(0)->nullable();
         });
     }
 
