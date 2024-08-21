@@ -984,8 +984,8 @@ class JobListController extends Controller
             }
 
             $res = $job_listss->with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
-                ->orderBy('updated_at', 'DESC')
-				->orderByDesc('is_featured_sponsor', true)
+				->orderBy('is_featured_sponsor', 'DESC')
+				->orderBy('updated_at', 'DESC')
                 ->get();
 
             return response([
@@ -994,8 +994,8 @@ class JobListController extends Controller
             ], 200);
         } else {
             $job_lists = JobList::with('company', 'industry', 'job_location', 'job_types.type', 'job_benefits.benefits', 'job_specialities.industrySpeciality', 'jobListDealbreakers.dealbreaker.choices')
+				->orderBy('is_featured_sponsor', 'DESC')
                 ->orderBy('updated_at', 'DESC')
-				->orderByDesc('is_featured_sponsor', true)
                 ->get();
 
             return response([
