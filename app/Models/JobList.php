@@ -46,6 +46,7 @@ class JobList extends Model
         'can_commute',
         'qualification_id',
         'connection_token',
+		'is_featured_sponsor',
     ];
 
     protected $casts = [

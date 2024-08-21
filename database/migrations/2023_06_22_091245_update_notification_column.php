@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+		Schema::create('notifications', function(Blueprint $table){
+			$table->id();
+        });
+		
         Schema::table('notifications', function(Blueprint $table){
             $table->foreignId('job_application_id');
             $table->string('title');
