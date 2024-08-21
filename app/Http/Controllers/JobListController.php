@@ -81,8 +81,8 @@ class JobListController extends Controller
 
             $job_list = JobList::create([
                 'company_id' => $userCompany->id,
-				'is_featured_sponsor' => $data['is_featured_sponsor'],
-                'job_title' => $data['job_title'],
+				'is_featured_sponsor' => $data['is_featured_sponsor'] ?? 0,
+                'job_title' => $data['job_title'], 
                 'connection_token' => $request->input('connection_token') ?? 1,
                 'description' => $data['description'] ?? null,
                 'show_pay' => $data['show_pay'] ?? null,
