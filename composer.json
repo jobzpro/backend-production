@@ -15,7 +15,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^14.12",
         "laravel/framework": "^10.10",
-        "laravel/nova": "~4.0",
+        "laravel/nova": "4.33.3",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.6",
