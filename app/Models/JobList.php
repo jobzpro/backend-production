@@ -59,7 +59,6 @@ class JobList extends Model
         'authorized_to_work_in_us' => 'boolean',
         'is_vaccinated' => 'boolean',
         'can_commute' => 'boolean',
-		'is_featured_sponsor' => 'boolean',
     ];
 
     public function company(): BelongsTo
