@@ -332,10 +332,6 @@ class ProductController extends Controller
         $userSubscriptionCount = UserSubscription::displaySubscriptionFree($id);
         $user = User::find($id);
 		$test = UserSubscription::all();
-		return response([
-			'subscription_count' => $test,
-			// 'user_subscription' => $userSubscriptionArray,
-		], 200);
         if (!$userSubscriptionCount) {
             if ($user->userRoles->role_id === 3) {
                 $res = UserSubscription::create([
