@@ -29,6 +29,25 @@ class ProductController extends Controller
             ], 400);
         }
     }
+
+	public function subscription(Request $request)
+    {
+        $stripe = new StripeClient(env('STRIPE_SECRET'));
+
+        try {
+            $user = $request->user();
+			$customer = $stripe->customers->retrieve($user->email);
+
+            return response($products, 200);
+
+        } catch (\Exception $e) {
+            // Handle errors
+            return response([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
+    }
+
     public function jobseekerSubscription($id)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
@@ -312,7 +331,10 @@ class ProductController extends Controller
         $userSubscription = UserSubscription::displaySubscription($id);
         $userSubscriptionCount = UserSubscription::displaySubscriptionFree($id);
         $user = User::find($id);
-
+		return response([
+			'subscription_count' => $userSubscription,
+			// 'user_subscription' => $userSubscriptionArray,
+		], 200);
         if (!$userSubscriptionCount) {
             if ($user->userRoles->role_id === 3) {
                 $res = UserSubscription::create([
