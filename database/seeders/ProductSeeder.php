@@ -222,6 +222,7 @@ class ProductSeeder extends Seeder
             "name" => "Posting (10 applicants)",
             "description" => "Ideal for small businesses or specialized roles, this plan ensures you receive a manageable number of high-quality applicants. Pay only for the applicants you receive, making it a cost-effective solution for targeted recruitment.",
         ]);
+
         $posting10->product_plans()->create([
             // "price_code" => "price_1PO72CChe3vlhgX33HU8Nvv9",
             "price_code" => "price_1PjEsxHxBaMvMKXwKNZWR3Js",
@@ -232,6 +233,24 @@ class ProductSeeder extends Seeder
             "lookup_key" => "na",
             "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a19YmIyJxStx9966M6rXLzF8vbkzCbkmwi7Xl3rJ7Nw5p4Ttxo0EAPWy47#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
             "post_count" => 10,
+
+        ]);
+		
+		$product = Product::create([
+            "product_code" => "prod_QhrGlC3eMfNCTj",
+            "name" => "Pro",
+            "description" => "For starters that want to try out the sponsorship.",
+        ]);
+
+		$product->product_plans()->create([
+            "price_code" => "price_1PqRXdChe3vlhgX3GTY8A1AG",
+            "price" => 9.99,
+            "recurring" => "month",
+            "mode" => "subscription",
+            "unit_label" => "employer",
+            "lookup_key" => "na",
+            "checkout_url" => "https://checkout.stripe.com/c/pay/cs_test_a1xili99nJqWuSbHvhsX6o8ZQdpYLAMREGRMLkXRFFM0n3P5u6O2ggEt8v#fid2cGd2ZndsdXFsamtQa2x0cGBrYHZ2QGtkZ2lgYSc%2FY2RpdmApJ2R1bE5gfCc%2FJ3VuWnFgdnFaMDRVTE80MUZtYDZzaW1iXTZrcVVqQGN8M3VgVGA2Vmw3NzVAcDIyQ1BXTjdgMTFpfW1MT3FNcTF0Q1xocEhmY24wUWhOdFdoT01QczJ0YW8zRk5Kan83X2s1NVFzV0dJNlBoJyknY3dqaFZgd3Ngdyc%2FcXdwYCknaWR8anBxUXx1YCc%2FJ3Zsa2JpYFpscWBoJyknYGtkZ2lgVWlkZmBtamlhYHd2Jz9xd3BgeCUl",
+            "post_count" => 1,
 
         ]);
 

@@ -222,6 +222,8 @@ class ProductController extends Controller
         }
     }
 
+
+
     public function insertSubscription(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -240,8 +242,10 @@ class ProductController extends Controller
         $user = User::find($request->input('user_id'));
         $userSubscriptionExist = UserSubscription::displaySubscription($user->id);
         $userSubscriptionFree = UserSubscription::displaySubscriptionFree($user->id);
+
         $product = Product::where('product_code', $request->input('product_id'))->first();
         $productPlan = ProductPlan::where('price_code', $request->input('price_id'))->first();
+
         $expiryMonths = $productPlan->recurring == "month" ? 1 : 12;
         $expiryAt = Carbon::now()->addMonths($expiryMonths);
 
@@ -286,8 +290,8 @@ class ProductController extends Controller
             }
         }
 
-        if (!!$userSubscriptionExist) {
-            if ($user->userRoles->role_id != 3) {
+        if ($userSubscriptionExist) {
+            if ($user->userRoles->role_id == 2) {
                 $res = UserSubscription::create([
                     'user_id' => $user->id,
                     'product_id' => $product->id,
@@ -318,6 +322,39 @@ class ProductController extends Controller
                 ], 200);
             }
         }
+
+		// if ($userSubscriptionExist) {
+        //     if ($user->userRoles->role_id != 3) {
+        //         $res = UserSubscription::create([
+        //             'user_id' => $user->id,
+        //             'product_id' => $product->id,
+        //             'product_plan_id' => $productPlan->id,
+        //             'connection_count' => $productPlan->connection_count,
+        //             'post_count' => $productPlan->post_count,
+        //             'applicant_count' => $productPlan->applicant_count,
+        //             'expiry_at' => $expiryAt,
+        //         ]);
+        //         return response([
+        //             'message' => "Success",
+        //             'user_subscription' => $res,
+        //         ], 200);
+        //     } else {
+        //         $userSubscriptionFree = UserSubscription::displaySubscriptionFree($user->id);
+        //         $existingSubscriptionExpiry = Carbon::parse($userSubscriptionFree->expiry_at)->addMonths($expiryMonths);
+        //         $res = $user->user_subscription()->create([
+        //             'product_id' => $product->id,
+        //             'product_plan_id' => $productPlan->id,
+        //             'connection_count' => $productPlan->connection_count,
+        //             'post_count' => $productPlan->post_count,
+        //             'applicant_count' => $productPlan->applicant_count,
+        //             'expiry_at' => $existingSubscriptionExpiry,
+        //         ]);
+        //         return response([
+        //             'message' => "Success",
+        //             'user_subscription' => $res,
+        //         ], 200);
+        //     }
+        // }
     }
 
     public function getSubscription($id)
