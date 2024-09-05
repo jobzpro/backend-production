@@ -28,6 +28,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\JobStatusDataController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SubscriptionProduct;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\SubscriptionController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -291,11 +295,25 @@ Route::apiResources([
 Route::prefix('/products')->controller(ProductController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/jobseeker-subscription/{id}', 'jobseekerSubscription');
-    Route::get('/employer-subscription/{id}', 'employerSubscription');
-    Route::get('/get-subscription/{id}', 'getSubscription');
+    Route::get('/employer-subscription/{id}', 'employerSubscription'); 
+    Route::get('/get-subscription/{id}', 'getSubscription');	
     Route::get('/get-subscription-employer/{id}', 'getSubscriptionEmployer');
     Route::post('/insert-subscription', 'insertSubscription');
 });
+
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+Route::get('/user', function (Request $request) {
+	return $request->user();
+});	
+
+Route::apiResource('subscription-products', SubscriptionProduct::class);
+Route::get('subscription-checkout', CheckoutController::class)->middleware(['auth:api']);
+Route::post('subscriptions/{id}', [SubscriptionController::class, 'cancel_subscription'])->middleware(['auth:api']);
+Route::get('subscribed', [SubscriptionController::class, 'subscribed'])->middleware(['auth:api']);
+Route::get('subscriptions', [SubscriptionController::class, 'subscriptions'] )->middleware(['auth:api']);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
     Route::get('/jobs', 'searchJobs')->name('jobs.search');

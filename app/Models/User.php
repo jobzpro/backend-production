@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Laravel\Cashier\Billable;
 
 
 class User extends Authenticatable
-{
-    use HasFactory, HasApiTokens, SoftDeletes;
+{	
+    use HasFactory, HasApiTokens, SoftDeletes, Billable;
 
     /**
      * The attributes that are mass assignable.

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('job_types', function (Blueprint $table) {
             $table->id();
             $table->foreignId('type_id');
-            $table->timestamps('');
+            $table->timestamps();
             $table->softDeletes();
         });
     }

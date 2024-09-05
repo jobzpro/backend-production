@@ -30,24 +30,6 @@ class ProductController extends Controller
         }
     }
 
-	public function subscription(Request $request)
-    {
-        $stripe = new StripeClient(env('STRIPE_SECRET'));
-
-        try {
-            $user = $request->user();
-			$customer = $stripe->customers->retrieve($user->email);
-
-            return response($products, 200);
-
-        } catch (\Exception $e) {
-            // Handle errors
-            return response([
-                'error' => $e->getMessage(),
-            ], 400);
-        }
-    }
-
     public function jobseekerSubscription($id)
     {
         $stripe = new StripeClient(env('STRIPE_SECRET'));
@@ -231,7 +213,7 @@ class ProductController extends Controller
             'product_id' => 'required',
             'price_id' => 'required',
         ]);
-
+ 
         if ($validator->fails()) {
             return response([
                 'message' => "Registration Unsuccessful",

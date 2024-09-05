@@ -803,6 +803,7 @@ class JobListController extends Controller
                 'accepted' => JobApplication::where('job_list_id', $job_list->id)->where('status', "Accepted")->count(),
                 'status' => $job_list->status,
 				'is_featured_sponsor' => $job_list->is_featured_sponsor,
+				'count_featured_sponsor' => JobList::where('is_featured_sponsor', true)->count(),
                 'date_created' => $job_list->created_at,
                 'job_types' => $types,
                 'dealbreakers' => $job_list->jobListDealbreakers,
