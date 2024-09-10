@@ -17,8 +17,9 @@ class SubscriptionProduct extends Controller
 
 	public function index(Request $request) { 
 
-		$products = Cashier::stripe()->products->all();
-
+		$products = Cashier::stripe()->products->search([
+			'query' => 'active:\'true\' AND metadata[\'plan\']:\'monization\'',
+		]);
 		return response()->json([
 			'data' => array_map(function($product) {
 				$price = Cashier::stripe()->prices->retrieve($product->default_price);
