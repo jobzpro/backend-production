@@ -30,8 +30,8 @@ class CheckoutController extends Controller
 			$checkout = $user
 				->newSubscription($plan_name, $price_id)
 				->checkout([
-					'success_url' => env('FRONTEND_URL'),
-					'cancel_url' => env('FRONTEND_URL') . 'monization',
+					'success_url' => env('BASE_URL'),
+					'cancel_url' => env('BASE_URL') . 'monization',
 				]);
 	
 			return response()->json([ 
