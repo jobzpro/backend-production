@@ -312,8 +312,11 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('subscription-products', SubscriptionProduct::class);
 Route::get('subscription-checkout', CheckoutController::class)->middleware(['auth:api']);
 Route::post('subscriptions/{id}', [SubscriptionController::class, 'cancel_subscription'])->middleware(['auth:api']);
+Route::post('subscription', [SubscriptionController::class, 'update_subscription'])->middleware(['auth:api']);
+
 Route::get('subscribed', [SubscriptionController::class, 'subscribed'])->middleware(['auth:api']);
 Route::get('subscriptions', [SubscriptionController::class, 'subscriptions'] )->middleware(['auth:api']);
+Route::get('subscription', [SubscriptionController::class, 'subscription'] )->middleware(['auth:api']);
 
 Route::prefix('/search')->controller(JobListController::class)->group(function () {
     Route::get('/jobs', 'searchJobs')->name('jobs.search');

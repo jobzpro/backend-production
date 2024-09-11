@@ -45,27 +45,80 @@ class SubscriptionController extends Controller
 
 	}
 
+
+	public function update_subscription(Request $request) { 
+
+		$user = User::findOrFail($request->user()->id);
+		$type = $request->type;
+		$subscription = collect($user->subscriptions()->active()->get())->first();
+		$product = Cashier::stripe()->products->retrieve($subscription->name);
+
+
+		foreach($subscription->items as $item) { 
+			$subscription_data = [
+				'id' => $subscription->id,
+				'user_id'=> $subscription->user_id,
+				'subscription_id' => $subscription->stripe_id,
+				'product_id' => $subscription->name,
+				'price_id' => $subscription->stripe_price,
+				'status' => $subscription->stripe_status,
+				'trial_ends_at' => $subscription->trial_ends_at ? $subscription->trial_ends_at->toDateTimeString() : null,
+				'ends_at' => $subscription->ends_at ? $subscription->ends_at->toDateTimeString() : null,
+				'created_at' => $subscription->created_at->toDateTimeString(),
+				'updated_at' => $subscription->updated_at->toDateTimeString(),
+				'total_feature_sponsored' => $item->total_featured_sponsor,
+				'limit_feature_sponsored' => (int) $product->metadata->limit_feature_sponsored,
+			];
+		}
+
+		
+		$total_feature_sponsored = (int) $subscription_data['total_feature_sponsored'];
+		$limit_feature_sponsored = (int) $subscription_data['limit_feature_sponsored'];
+
+		
+		if($type === 'add' && $total_feature_sponsored !== $limit_feature_sponsored) {
+
+			$updated_value = max(0, $total_feature_sponsored + 1);
+			$item->update(['total_featured_sponsor' => $updated_value]);
+
+		} else if($type === 'remove' && $total_feature_sponsored !== 0) {
+
+			$updated_value = max(0, $total_feature_sponsored - 1);
+			$item->update(['total_featured_sponsor' => $updated_value]);
+
+		} else { 
+
+			return response()->json(['message' => 'You already reached your limit!'], 400);
+
+		}
+	
+		return response()->json(['message' => 'Successfully updated!'], 200);
+	}
+
 	public function subscribed(Request $request) {
 		$user = User::findOrFail($request->user()->id);
 		$subscription = collect($user->subscriptions()->active()->get())->first();
 
 		$product = Cashier::stripe()->products->retrieve($subscription->name);
 
-		$subscription_data = [
-			'id' => $subscription->id,
-			'user_id'=> $subscription->user_id,
-			'subscription_id' => $subscription->stripe_id,
-			'product_id' => $subscription->name,
-			'status' => $subscription->stripe_status,
-			'trial_ends_at' => $subscription->trial_ends_at ? $subscription->trial_ends_at->toDateTimeString() : null,
-			'ends_at' => $subscription->ends_at ? $subscription->ends_at->toDateTimeString() : null,
-			'created_at' => $subscription->created_at->toDateTimeString(),
-			'updated_at' => $subscription->updated_at->toDateTimeString(),
-			'total_feature_sponsored' => $product->metadata->total_feature_sponsored,
-			'limit_feature_sponsored' => $product->metadata->limit_feature_sponsored,
+		foreach($subscription->items as $item) { 
 			
-		];
-		
+			$subscription_data = [
+				'id' => $subscription->id,
+				'user_id'=> $subscription->user_id,
+				'subscription_id' => $subscription->stripe_id,
+				'product_id' => $subscription->name,
+				'price_id' => $subscription->stripe_price,
+				'status' => $subscription->stripe_status,
+				'trial_ends_at' => $subscription->trial_ends_at ? $subscription->trial_ends_at->toDateTimeString() : null,
+				'ends_at' => $subscription->ends_at ? $subscription->ends_at->toDateTimeString() : null,
+				'created_at' => $subscription->created_at->toDateTimeString(),
+				'updated_at' => $subscription->updated_at->toDateTimeString(),
+				'total_feature_sponsored' => $item->total_featured_sponsor,
+				'limit_feature_sponsored' => (int) $product->metadata->limit_feature_sponsored,
+			];
+		}
+
 
 		return response()->json(['data' => $subscription_data], 200);
 	}
