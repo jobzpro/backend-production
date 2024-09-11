@@ -12,14 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('job_lists', function(Blueprint $table){
-        //     $table->boolean('is_vaccinated')->change();
-        //     $table->boolean('can_commute')->change();
-        // });
-		DB::statement('ALTER TABLE job_lists ALTER COLUMN 
-                  is_vaccinated TYPE boolean USING (is_vaccinated)::boolean');
-		DB::statement('ALTER TABLE job_lists ALTER COLUMN 
-                  can_commute TYPE boolean USING (can_commute)::boolean');
+        {
+			// Schema::table('job_lists', function(Blueprint $table){
+			//     $table->boolean('is_vaccinated')->change();
+			//     $table->boolean('can_commute')->change();
+			// });
+			DB::statement('ALTER TABLE job_lists ALTER COLUMN 
+					  is_vaccinated TYPE boolean USING (is_vaccinated)::boolean');
+			DB::statement('ALTER TABLE job_lists ALTER COLUMN 
+					  can_commute TYPE boolean USING (can_commute)::boolean');
+		}
     }
 
     /**
