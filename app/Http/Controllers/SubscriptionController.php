@@ -93,7 +93,8 @@ class SubscriptionController extends Controller
 		}
 
 		// $total_feature_sponsored;
-	
+		// $total_feature_sponsored;
+		
 		return response()->json(['message' => 'Successfully updated!'], 200);
 	}
 
