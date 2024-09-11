@@ -75,7 +75,7 @@ class SubscriptionController extends Controller
 		$total_feature_sponsored = (int) $subscription_data['total_feature_sponsored'];
 		$limit_feature_sponsored = (int) $subscription_data['limit_feature_sponsored'];
 
-		
+		//hey
 		if($type === 'add' && $total_feature_sponsored !== $limit_feature_sponsored) {
 
 			$updated_value = max(0, $total_feature_sponsored + 1);
@@ -91,6 +91,8 @@ class SubscriptionController extends Controller
 			return response()->json(['message' => 'You already reached your limit!'], 400);
 
 		}
+
+		// $total_feature_sponsored;
 	
 		return response()->json(['message' => 'Successfully updated!'], 200);
 	}
