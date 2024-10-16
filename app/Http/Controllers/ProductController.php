@@ -73,8 +73,8 @@ class ProductController extends Controller
                                             'quantity' => 1,
                                         ]],
                                         'mode' => $mode,
-                                        'success_url' => env('BASE_URL'),
-                                        'cancel_url' => env('BASE_URL'),
+                                        'success_url' => env('FRONTEND_URL'),
+                                        'cancel_url' => env('FRONTEND_URL'),
                                         'metadata' => [
                                             'user_id' => $user_id,
                                         ],
@@ -162,8 +162,8 @@ class ProductController extends Controller
                                             'quantity' => 1,
                                         ]],
                                         'mode' => $mode,
-                                        'success_url' => env('BASE_URL'),
-                                        'cancel_url' => env('BASE_URL'),
+                                        'success_url' => env('FRONTEND_URL'),
+                                        'cancel_url' => env('FRONTEND_URL'),
                                         'metadata' => [
                                             'user_id' => $id
                                         ]
@@ -213,7 +213,7 @@ class ProductController extends Controller
             'product_id' => 'required',
             'price_id' => 'required',
         ]);
- 
+
         if ($validator->fails()) {
             return response([
                 'message' => "Registration Unsuccessful",
@@ -305,7 +305,7 @@ class ProductController extends Controller
             }
         }
 
-		// if ($userSubscriptionExist) {
+        // if ($userSubscriptionExist) {
         //     if ($user->userRoles->role_id != 3) {
         //         $res = UserSubscription::create([
         //             'user_id' => $user->id,
@@ -350,7 +350,7 @@ class ProductController extends Controller
         $userSubscription = UserSubscription::displaySubscription($id);
         $userSubscriptionCount = UserSubscription::displaySubscriptionFree($id);
         $user = User::find($id);
-		$test = UserSubscription::all();
+        $test = UserSubscription::all();
         if (!$userSubscriptionCount) {
             if ($user->userRoles->role_id === 3) {
                 $res = UserSubscription::create([
