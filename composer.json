@@ -65,7 +65,7 @@
             "php artisan clear-compiled",
             "chmod -R 777 storage",
             "php artisan passport:keys",
-            "php artisan db:seed"
+            "php artisan db:seed --force"
         ]
     },
     "extra": {
