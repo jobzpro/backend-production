@@ -22,7 +22,7 @@ class CompanySeeder extends Seeder
             'name' => 'Company 1 Admin',
             'email' => 'admin@company1.com',
             'password' => Hash::make('t3stCompany1'),
-            'email_verified_at' => Carbon::now(), 
+            'email_verified_at' => Carbon::now(),
         ]);
 
         $account1->user()->create([
@@ -57,7 +57,7 @@ class CompanySeeder extends Seeder
             'name' => 'Company 2 Admin',
             'email' => 'admin@company2.com',
             'password' => Hash::make('t3stCompany2'),
-            'email_verified_at' => Carbon::now(), 
+            'email_verified_at' => Carbon::now(),
         ]);
 
         $account2->user()->create([
@@ -89,3 +89,4 @@ class CompanySeeder extends Seeder
         ]);
     }
 }
+//test
